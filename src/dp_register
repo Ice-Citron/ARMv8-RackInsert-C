@@ -1,0 +1,73 @@
+#include "emulate.h"
+#include "dp.h"
+
+void dpreg (uint32_t instr) {
+    clearstate(&pState);
+    uint32_t sf_dpreg;
+    sf_dpreg = bitmask_check(31, 31, instr);
+    uint32_t opc_dpreg;
+    opc_dpreg = bitmask_check(30, 29, instr);
+    uint32_t m_dpreg;
+    m_dpreg = bitmask_check(28, 28, instr);
+    uint64_t rn;
+    rn = registers[bitmask_check(9, 5, instr)];
+    uint64_t rm;
+    rm = registers[bitmask_check(20, 16, instr)];
+    uint64_t rd;
+    rd = registers[bitmask_check(4, 0, instr)];
+    if (m_dpreg == 1) {
+        uint64_t ra_mult;
+        ra_mult = registers[bitmask_check(14, 10, instr)];
+        uint8_t x_mult;
+        x_mult = registers[bitmask_check(15, 15, instr)];
+        if (x_mult == 0) {
+            ra_mult += rm * rn;
+        } else {
+            ra_mult -= rm * rn;
+        }
+        if (sf_dpreg == 0) {
+            registers[bitmask_check(4, 0, instr)] =  (bitmask_check(63, 32, rd)) << 32 + ra_mult;
+        } else {
+            registers[bitmask_check(4, 0, instr)] = ra_mult;
+        }
+    } else {
+        uint8_t opr0;
+        opr0 = registers[bitmask_check(24, 24, instr)];
+        uint8_t shifttype;
+        shifttype = registers[bitmask_check(23, 22, instr)];
+        uint32_t shiftdist;
+        shifttype = registers[bitmask_check(15, 10, instr)];
+        if (opr0 == 1) {
+            if (shifttype == 0) {
+                if (bitmask_check(31, 31 - shiftdist, rn) != 0) {
+                    pState.c = true;
+                    pState.v = true;
+                }
+                rn = rn << shiftdist;
+                if (sf_dpreg == 0) {
+                    registers[bitmask_check(4, 0, instr)] =  (bitmask_check(63, 32, rd)) << 32 + bitmask_check(31, 0, rn);
+                    if (bitmask_check(31, 0, rn) == 0) {
+                        pState.z = true;
+                    }
+                    if (sign32(bitmask_check(31, 0, rn)) == 1) {
+                        pState.n = true;
+                    }
+                } else {
+                    registers[bitmask_check(4, 0, instr)] = rn;
+                    if (rn == 0) {
+                        pState.z = true;
+                    }
+                    if (sign64(rn) == 1) {
+                        pState.n = true;
+                    }
+                }
+            }
+            if (shifttype == 1 || shifttype == 2) {
+                //TODO: Arith/Logical Right
+            }
+        } else {
+            //TODO: Logical Ops
+        }
+    }
+    
+}
