@@ -23,7 +23,12 @@ state pState = {false, false, false, false};
 
 uint32_t bitmask (uint8_t start, uint8_t end) {
     //generates the bitmask which starts at start and ends at end
-    return ((1 << (start - end + 1)) - 1) << end;
+    uint8_t width = start - end + 1;
+
+    if (width == 32) {
+        return UINT32_MAX;
+    }
+    return ((1u << width) - 1u) << end;
 }
 
 uint32_t bitmask_check (uint8_t start, uint8_t end, uint32_t target) {
@@ -35,5 +40,5 @@ uint8_t sign32 (uint64_t target) {
 }
 
 uint8_t sign64 (uint64_t target) {
-    return bitmask_check(63, 63, target);
+    return (target >> 63) & 1;
 }

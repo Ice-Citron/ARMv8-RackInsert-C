@@ -1,128 +1,85 @@
-#include "emulate.h"
+#include "dp.h"
 
-void dpimm (uint32_t instr) {
-    clearstate(&pState);
-    uint32_t sf_dpimm;
-    uint32_t opc_dpimm;
-    uint32_t opi_dpimm;
-    uint32_t rd_dpimm;
-    sf_dpimm = bitmask_check(31, 31, instr);
-    opc_dpimm = bitmask_check(30, 29, instr);
-    opi_dpimm = bitmask_check(25, 23, instr);
-    rd_dpimm = bitmask_check(4, 0, instr);
-    if (2 == opi_dpimm) {
-        uint32_t rn_arith;
-        rn_arith = bitmask_check(9, 5, instr);
-        uint32_t shift_arith;
-        shift_arith = bitmask_check(22, 22, instr);
-        uint32_t operand2;
-        operand2 = bitmask_check(21, 10, instr);
+static uint64_t mask_from_sf(uint32_t sf) {
+    return sf == 0 ? UINT32_MAX : UINT64_MAX;
+}
+
+static uint64_t read_dp_register(uint32_t reg) {
+    return reg == 31 ? zeroRegister : registers[reg];
+}
+
+static void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
+    if (rd == 31) {
+        return;
+    }
+
+    if (sf == 0) {
+        registers[rd] = (registers[rd] & 0xffffffff00000000ULL)
+                      | (entry & UINT32_MAX);
+    } else {
+        registers[rd] = entry;
+    }
+}
+
+void dpimm(uint32_t instr) {
+    pState = (state){false, false, false, false};
+
+    uint32_t sf_dpimm = bitmask_check(31, 31, instr);
+    uint32_t opc_dpimm = bitmask_check(30, 29, instr);
+    uint32_t opi_dpimm = bitmask_check(25, 23, instr);
+    uint32_t rd_dpimm = bitmask_check(4, 0, instr);
+    uint64_t mask = mask_from_sf(sf_dpimm);
+    uint64_t entry = 0;
+
+    if (opi_dpimm == 2) {
+        uint32_t rn_arith = bitmask_check(9, 5, instr);
+        uint32_t shift_arith = bitmask_check(22, 22, instr);
+        uint64_t operand2 = bitmask_check(21, 10, instr);
+        uint64_t rn_value = read_dp_register(rn_arith) & mask;
+
         if (shift_arith == 1) {
-            operand2 = operand2 << 12;
-            //op2 should be unsigned
+            operand2 <<= 12;
         }
+        operand2 &= mask;
+
         if (opc_dpimm < 2) {
-            if (sf_dpimm == 0) {
-                uint32_t temp = registers[rd_dpimm];
-                temp = registers[rn_arith] + operand2;
-                if (opc_dpimm == 1) {
-                    if (temp == 0) {
-                        pState.z = true;
-                    }
-                    if (sign32(temp) == 1) {
-                        pState.n = true;
-                    }
-                    if (operand2 > ~get32from64(registers[rn_arith])) {
-                        pState.c = true;
-                    }
-                    if (sign32(registers[rn_arith]) == 0 && sign32(temp) == 1) {
-                        pState.v = true;
-                    }
-                }
-                registers[rd_dpimm] = bitmask_check(63, 32, registers[rd_dpimm]) << 32;
-                registers[rd_dpimm] = registers[rd_dpimm] |  temp;
-            } else {
-                registers[rd_dpimm] = registers[rn_arith] + operand2;
-                if (opc_dpimm == 1) {
-                    if (registers[rd_dpimm] == 0) {
-                        pState.z = true;
-                    }
-                    if (sign64(registers[rd_dpimm]) == 1) {
-                        pState.n = true;
-                    }
-                    if (operand2 > ~registers[rn_arith]) {
-                        pState.c = true;
-                    }
-                    if (sign64(registers[rn_arith]) == 0 && sign64(registers[rd_dpimm]) == 1) {
-                        pState.v = true;
-                    }
+            entry = (rn_value + operand2) & mask;
+            if (opc_dpimm == 1) {
+                if (sf_dpimm == 0) {
+                    add32flags(rn_arith, entry, &pState, operand2);
+                } else {
+                    add64flags(rn_arith, entry, &pState, operand2);
                 }
             }
         } else {
-            if (sf_dpimm == 0) {
-                uint32_t temp = registers[rd_dpimm];
-                temp = registers[rn_arith] - operand2;
-                if (opc_dpimm == 1) {
-                    if (temp == 0) {
-                        pState.z = true;
-                    }
-                    if (sign32(temp) == 1) {
-                        pState.n = true;
-                    }
-                    if (operand2 > get32from64(registers[rn_arith])) {
-                        pState.c = true;
-                    }
-                    if (sign32(registers[rn_arith]) == 1 && sign32(temp) == 0) {
-                        pState.v = true;
-                    }
-                }
-                registers[rd_dpimm] = bitmask_check(63, 32, registers[rd_dpimm]) << 32;
-                registers[rd_dpimm] = registers[rd_dpimm] |  temp;
-            } else {
-                registers[rd_dpimm] = registers[rn_arith] - operand2;
-                if (opc_dpimm == 1) {
-                    if (registers[rd_dpimm] == 0) {
-                        pState.z = true;
-                    }
-                    if (sign64(registers[rd_dpimm]) == 1) {
-                        pState.n = true;
-                    }
-                    if (operand2 > registers[rn_arith]) {
-                        pState.c = true;
-                    }
-                    if (sign64(registers[rn_arith]) == 1 && sign64(registers[rd_dpimm]) == 0) {
-                        pState.v = true;
-                    }
+            entry = (rn_value - operand2) & mask;
+            if (opc_dpimm == 3) {
+                if (sf_dpimm == 0) {
+                    sub32flags(rn_arith, entry, &pState, operand2);
+                } else {
+                    sub64flags(rn_arith, entry, &pState, operand2);
                 }
             }
         }
-    }
-    if (5 == opi_dpimm) {
-        uint32_t sh_wm;
-        sh_wm = bitmask_check(22, 21, instr);
-        uint64_t imm16_wm;
-        imm16_wm = bitmask_check(20, 5, instr) << (16 * sh_wm);
+
+        write_dp_result(rd_dpimm, sf_dpimm, entry);
+    } else if (opi_dpimm == 5) {
+        uint32_t sh_wm = bitmask_check(22, 21, instr);
+        uint64_t imm16_wm = bitmask_check(20, 5, instr);
+        uint32_t shift = 16 * sh_wm;
+        uint64_t shifted = (imm16_wm << shift) & mask;
+
         if (opc_dpimm == 0) {
-            if (sf_dpimm == 0) {
-                uint32_t temp = imm16_wm;
-                registers[rd_dpimm] = bitmask_check(63, 32, registers[rd_dpimm]) << 32;
-                registers[rd_dpimm] = registers[rd_dpimm] |  ~temp;
-            } else {
-                registers[rd_dpimm] = ~imm16_wm;
-            }
+            entry = ~shifted & mask;
+        } else if (opc_dpimm == 2) {
+            entry = shifted;
+        } else if (opc_dpimm == 3) {
+            uint64_t clear_mask = ~(0xffffULL << shift) & mask;
+            entry = (read_dp_register(rd_dpimm) & clear_mask) | shifted;
+        } else {
+            return;
         }
-        if (opc_dpimm == 2) {
-            if (sf_dpimm == 0) {
-                uint32_t temp = imm16_wm;
-                registers[rd_dpimm] = bitmask_check(63, 32, registers[rd_dpimm]) << 32;
-                registers[rd_dpimm] = registers[rd_dpimm] |  temp;
-            } else {
-                registers[rd_dpimm] = imm16_wm;
-            }
-        }
-        if (opc_dpimm == 3) {
-            registers[rd_dpimm] = registers[rd_dpimm] |  bitmask(sh_wm*16 + 15, sh_wm*16);
-            registers[rd_dpimm] = registers[rd_dpimm] & imm16_wm;
-        }
+
+        write_dp_result(rd_dpimm, sf_dpimm, entry);
     }
 }
