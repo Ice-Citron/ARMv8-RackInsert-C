@@ -4,13 +4,12 @@
 #include <stdio.h>
 
 #define MEM_SIZE (1 << 21)
-#define REGS 31
+#define REGS 32
+#define ZERO_REGISTER_INDEX 31
 
 uint8_t memory[MEM_SIZE];
 uint64_t registers[REGS];
 uint64_t pc;
-
-const uint64_t zeroRegister = 0;
 
 typedef struct {
     bool n;
@@ -21,7 +20,7 @@ typedef struct {
 
 state pState = {false, false, false, false};
 
-uint32_t bitmask (uint8_t start, uint8_t end) {
+static inline uint32_t bitmask (uint8_t start, uint8_t end) {
     //generates the bitmask which starts at start and ends at end
     uint8_t width = start - end + 1;
 
@@ -31,14 +30,26 @@ uint32_t bitmask (uint8_t start, uint8_t end) {
     return ((1u << width) - 1u) << end;
 }
 
-uint32_t bitmask_check (uint8_t start, uint8_t end, uint32_t target) {
+static inline uint32_t bitmask_check (uint8_t start, uint8_t end, uint32_t target) {
     return (bitmask(start, end) & target) >> end;
 }
 
-uint8_t sign32 (uint64_t target) {
+static inline uint8_t sign32 (uint64_t target) {
     return bitmask_check(31, 31, target);
 }
 
-uint8_t sign64 (uint64_t target) {
+static inline uint8_t sign64 (uint64_t target) {
     return (target >> 63) & 1;
+}
+
+static inline void update_zero_flag(state* state, uint64_t target) {
+    state->z = target == 0;
+}
+
+static inline void update_negative_flag32(state* state, uint64_t target) {
+    state->n = sign32(target) == 1;
+}
+
+static inline void update_negative_flag64(state* state, uint64_t target) {
+    state->n = sign64(target) == 1;
 }
