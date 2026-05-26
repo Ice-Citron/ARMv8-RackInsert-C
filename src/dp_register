@@ -39,34 +39,100 @@ void dpreg (uint32_t instr) {
         shifttype = registers[bitmask_check(15, 10, instr)];
         if (opr0 == 1) {
             if (shifttype == 0) {
-                if (bitmask_check(31, 31 - shiftdist, rn) != 0) {
+                if (bitmask_check(31, 31 - shiftdist, rm) != 0) {
                     pState.c = true;
                     pState.v = true;
                 }
-                rn = rn << shiftdist;
+                rm = rm << shiftdist;
                 if (sf_dpreg == 0) {
-                    registers[bitmask_check(4, 0, instr)] =  (bitmask_check(63, 32, rd)) << 32 + bitmask_check(31, 0, rn);
-                    if (bitmask_check(31, 0, rn) == 0) {
+                    registers[bitmask_check(4, 0, instr)] =  (bitmask_check(63, 32, rd)) << 32 + bitmask_check(31, 0, rm);
+                    if (bitmask_check(31, 0, rm) == 0) {
                         pState.z = true;
                     }
-                    if (sign32(bitmask_check(31, 0, rn)) == 1) {
+                    if (sign32(bitmask_check(31, 0, rm)) == 1) {
                         pState.n = true;
                     }
                 } else {
-                    registers[bitmask_check(4, 0, instr)] = rn;
-                    if (rn == 0) {
+                    registers[bitmask_check(4, 0, instr)] = rm;
+                    if (rm == 0) {
                         pState.z = true;
                     }
-                    if (sign64(rn) == 1) {
+                    if (sign64(rm) == 1) {
                         pState.n = true;
                     }
                 }
             }
-            if (shifttype == 1 || shifttype == 2) {
-                //TODO: Arith/Logical Right
+            if (shifttype == 1) {
+                if (sf_dpreg == 0) {
+                    registers[bitmask_check(4, 0, instr)] = (bitmask_check(63, 32, rd) << 32) + (bitmask_check(31, 0, rm) >> shiftdist);
+                    if (bitmask_check(31, 0, registers[bitmask_check(4, 0, instr)]) == 0) {
+                        pState.z = 0;
+                    }
+                    if (sign32(registers[bitmask_check(4, 0, instr)]) == 1) {
+                        pState.n = 0;
+                    }
+                } else {
+                    registers[bitmask_check(4, 0, instr)] = rm >> shiftdist;
+                    if (registers[bitmask_check(4, 0, instr)] == 0) {
+                        pState.z = 0;
+                    }
+                    if (sign64(registers[bitmask_check(4, 0, instr)]) == 1) {
+                        pState.n = 0;
+                    }
+                }
+            }
+            if (shifttype == 2) {
+                if (sf_dpreg == 0) {
+                    registers[bitmask_check(4, 0, instr)] = (bitmask_check(63, 32, rd) << 32) + (bitmask_check(31, 0, rm) >> shiftdist);
+                    if (bitmask_check(31, 0, registers[bitmask_check(4, 0, instr)]) == 0) {
+                        pState.z = true;
+                    }
+                    if (sign32(registers[bitmask_check(4, 0, instr)]) == 1) {
+                        registers[bitmask_check(4, 0, instr)] += bitmask(31, 31-shiftdist);
+                        pState.n = true;
+                    }
+                } else {
+                    registers[bitmask_check(4, 0, instr)] = rm >> shiftdist;
+                    if (registers[bitmask_check(4, 0, instr)] == 0) {
+                        pState.z = true;
+                    }
+                    if (sign64(registers[bitmask_check(4, 0, instr)]) == 1) {
+                        registers[bitmask_check(4, 0, instr)] += bitmask(63, 63-shiftdist);
+                        pState.n = true;
+                    }
+                }
             }
         } else {
-            //TODO: Logical Ops
+            int64_t op2 = rm;
+            if (bitmask_check(21, 21, instr) == 1) {
+                op2 = ~op2;
+            }
+            int64_t result;
+            switch (shifttype) {
+                case 0:
+                    result = rn & op2;
+                    break;
+                case 1:
+                    result = rn | op2; 
+                    break;
+                case 2:
+                    result = rn ^ op2;
+                    break;
+                default:
+                    result = rn & op2;
+                    if (sf_dpreg == 0) {
+                        pState.n = sign32(result);
+                        pState.z = (get32from64(result) == 0);
+                    } else {
+                        pState.n = sign64(result);
+                        pState.z = (result == 0);
+                    }
+            }
+            if (sf_dpreg == 0) {
+                registers[bitmask_check(4, 0, instr)] = (bitmask_check(63, 32, rd)) << 32 + get32from64(result);
+            } else {
+                registers[bitmask_check(4, 0, instr)] = result;
+            }
         }
     }
     
