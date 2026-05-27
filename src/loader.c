@@ -1,7 +1,5 @@
-#include <loader.h>
-
-#include <emulate.h>
-#include <stdint.h>
+#include "loader.h"
+#include "emulate.h"
 
 
 bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
@@ -18,8 +16,8 @@ bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
     unsigned char extra;
     // Program File size > RAM size. Error!
     if (fread(&extra, 1, 1, file) > 0) {
-        fprintf(stderr, "ERROR: Unable to fully load program into RAM, as 
-            Program File size > RAM size.\n");
+        fprintf(stderr, "ERROR: Unable to fully load program into RAM, as "
+                        "Program File size > RAM size.\n");
         fclose(file);
         return false;
     }
@@ -37,18 +35,16 @@ uint32_t fetch_u32_le(const uint8_t memory[], uint64_t address) {
 }
 
 void decode_and_execute(uint32_t instr) {
-    switch (bitmask_check(28, 25, instr)) {
-        case :
-    }
+
 }
 
 void run_emulator(void) {
     while (true) {
         uint32_t curr_instruction = fetch_u32_le(memory, pc);
-        if (curr_instruction == HALT_INSTUCTION) {
+        if (curr_instruction == HALT_INSTRUCTION) {
             break;
         }
-        uint32_t old_pc
+        // uint32_t old_pc;
         pc += 4;
     }
 }

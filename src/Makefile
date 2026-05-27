@@ -1,12 +1,11 @@
 CC      = gcc
-CFLAGS  = -std=c17 -D_POSIX_SOURCE=200809L -D_DEFAULT_SOURCE \
+CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
 			-Wall -Wextra -pedantic -Wshadow -Wconversion -g
 LDFLAGS	=
 
 ASSEMBLE_SRCS	= assemble.c
 ASSEMBLE_OBJS 	= $(ASSEMBLE_SRCS:%.c=build/%.o)
-EMULATE_SRCS 	= emulate.c dp_imm.c dp_register.c emulate.c \
-					helper_func_tests.c loader.c
+EMULATE_SRCS 	= emulate.c dp_imm.c dp_register.c helper_func_tests.c loader.c
 EMULATE_OBJS 	= $(EMULATE_SRCS:%.c=build/%.o)
 
 .PHONY: all clean asan
@@ -14,10 +13,10 @@ EMULATE_OBJS 	= $(EMULATE_SRCS:%.c=build/%.o)
 all: assemble emulate
 
 assemble: $(ASSEMBLE_OBJS)
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 emulate: $(EMULATE_OBJS)
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 # For debugging (Address Sanitizers)
 asan: CFLAGS 	+= -fsanitize=address,undefined -fno-omit-frame-pointer
