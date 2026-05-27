@@ -30,14 +30,27 @@ bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
 }
 
 uint32_t fetch_u32_le(const uint8_t memory[], uint64_t address) {
-    return (uint32_t)(memory[address + 3] << 24)
-         | (uint32_t)(memory[address + 2] << 16)
-         | (uint32_t)(memory[address + 1] << 8)
-         | (uint32_t)(memory[address + 0] << 0);
+    return ((uint32_t)memory[address + 3] << 24)
+         | ((uint32_t)memory[address + 2] << 16)
+         | ((uint32_t)memory[address + 1] << 8)
+         | ((uint32_t)memory[address + 0] << 0);
+}
+
+void decode_and_execute(uint32_t instr) {
+    switch (bitmask_check(28, 25, instr)) {
+        case :
+    }
 }
 
 void run_emulator(void) {
-
+    while (true) {
+        uint32_t curr_instruction = fetch_u32_le(memory, pc);
+        if (curr_instruction == HALT_INSTUCTION) {
+            break;
+        }
+        uint32_t old_pc
+        pc += 4;
+    }
 }
 
 void write_final_state(FILE *out) {

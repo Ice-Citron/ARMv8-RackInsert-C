@@ -6,6 +6,7 @@
 #define MEM_SIZE (1 << 21)
 #define REGS 32
 #define ZERO_REGISTER_INDEX 31
+#define HALT_INSTRUCTION 0x8a000000
 
 uint8_t memory[MEM_SIZE];
 uint64_t registers[REGS];
