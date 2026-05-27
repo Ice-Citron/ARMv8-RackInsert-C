@@ -1,5 +1,6 @@
 #include "loader.h"
 #include "emulate.h"
+#include "dp.h"
 
 
 bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
@@ -39,11 +40,13 @@ void decode_and_execute(uint32_t instr) {
         // 100x: Data Processing (Immediate)
         case 8:
         case 9:
+            dpimm(instr);
             break;
 
         // x101: Data Processing (Register)
         case 5:
         case 13:
+            dpreg(instr);
             break;
 
         // x1x0: Loads and Stores
@@ -51,10 +54,16 @@ void decode_and_execute(uint32_t instr) {
         case 6:
         case 12:
         case 14:
+            // execute_load_store(instr);
             break;
 
         case 10:
         case 11:
+            // execute_branch(instr);
+            break;
+
+        default:
+            fprintf(stderr, "ERROR: Unrecognised instruction type!\n");
             break;
     }
 }

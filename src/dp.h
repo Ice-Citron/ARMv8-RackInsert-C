@@ -77,10 +77,12 @@
 #define OPC_DPREG_ORR 1
 #define OPC_DPREG_EOR 2
 
+void dpimm(uint32_t instr);
+void dpreg(uint32_t instr);
+
 static uint32_t get32from64(uint64_t target) {
     return (uint32_t) target;
 }
-
 
 static inline void add32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
     update_zero_flag(state, target);
