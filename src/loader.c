@@ -39,6 +39,7 @@ void decode_and_execute(uint32_t instr) {
 }
 
 void run_emulator(void) {
+
     while (true) {
         uint32_t curr_instruction = fetch_u32_le(memory, pc);
         if (curr_instruction == HALT_INSTRUCTION) {
