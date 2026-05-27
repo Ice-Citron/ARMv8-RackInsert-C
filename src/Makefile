@@ -1,18 +1,33 @@
 CC      = gcc
 CFLAGS  = -std=c17 -D_POSIX_SOURCE=200809L -D_DEFAULT_SOURCE \
 			-Wall -Wextra -pedantic -Wshadow -Wconversion -g
-SRCS 	= $(wildcard *.c)
-OBJS 	= $(SRCS:%.c=build/%.o)
+LDFLAGS	=
 
-.SUFFIXES: .c .o
+ASSEMBLE_SRCS	= assemble.c
+ASSEMBLE_OBJS 	= $(ASSEMBLE_SRCS:%.c=build/%.o)
+EMULATE_SRCS 	= emulate.c
+EMULATE_OBJS 	= $(EMULATE_SRCS:%.c=build/%.o)
 
-.PHONY: all clean asan build
+.PHONY: all clean asan
 
-build: $(OBJS)
+all: assemble emulate
+
+assemble: $(ASSEMBLE_OBJS)
+	$(CC) $(CFLAGS) $< -o $@
+
+emulate: $(EMULATE_OBJS)
+	$(CC) $(CFLAGS) $< -o $@
+
+# For debugging (Address Sanitizers)
+asan: CFLAGS 	+= -fsanitize=address,undefined -fno-omit-frame-pointer
+asan: LDFLAGS	+= -fsanitize=address,undefined
+asan: clean all
+
+build:
 	mkdir -p build
 
 build/%.o : %.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf build
+	rm -rf build assemble emulate
