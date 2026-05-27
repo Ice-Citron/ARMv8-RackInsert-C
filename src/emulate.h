@@ -1,3 +1,6 @@
+#ifndef EMULATOR_EMULATE_H
+#define EMULATOR_EMULATE_H
+
 #include <stdlib.h>
 #include <stdint.h>
 #include <stdbool.h>
@@ -54,3 +57,13 @@ static inline void update_negative_flag32(state* state, uint64_t target) {
 static inline void update_negative_flag64(state* state, uint64_t target) {
     state->n = sign64(target) == 1;
 }
+
+static uint64_t read_dp_register(uint32_t regindex) {
+    return regindex == ZERO_REGISTER_INDEX ? 0 : registers[regindex];
+}
+
+static uint64_t flag_register_value(uint32_t regindex) {
+    return read_dp_register(regindex);
+}
+
+#endif

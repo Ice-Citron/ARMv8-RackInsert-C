@@ -10,5 +10,5 @@ int main (void) {
     printf("0x%x", bitmask_check(7, 6, 67));
     printf("%c", '\n');
     */
-    printf("%zu", decode_and_execute(28, 25, 0x12FFFFFF))
+    printf("%zu", bitmask_check(28, 25, 0x12FFFFFF));
 }
