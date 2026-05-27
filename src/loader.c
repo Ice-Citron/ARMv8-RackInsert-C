@@ -75,6 +75,7 @@ void run_emulator(void) {
         if (curr_instruction == HALT_INSTRUCTION) {
             break;
         }
+        decode_and_execute(curr_instruction);
         // uint32_t old_pc;
         pc += 4;
     }

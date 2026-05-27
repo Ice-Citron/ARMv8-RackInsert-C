@@ -7,6 +7,6 @@ state pState = { false, false, false, false };
 
 int main(void) {
     registers[31] = 0ULL;
-    printf("%zu", bitmask_check(28, 25, 0x12FFFFFF));
+    // printf("%zu", bitmask_check(28, 25, 0x12FFFFFF));
     return EXIT_SUCCESS;
 }
