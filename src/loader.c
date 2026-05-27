@@ -36,7 +36,26 @@ uint32_t fetch_u32_le(const uint8_t memory[], uint64_t address) {
 
 void decode_and_execute(uint32_t instr) {
     switch (bitmask_check(28, 25, instr)) {
-        case :
+        // 100x: Data Processing (Immediate)
+        case 8:
+        case 9:
+            break;
+
+        // x101: Data Processing (Register)
+        case 5:
+        case 13:
+            break;
+
+        // x1x0: Loads and Stores
+        case 4:
+        case 6:
+        case 12:
+        case 14:
+            break;
+
+        case 10:
+        case 11:
+            break;
     }
 }
 
