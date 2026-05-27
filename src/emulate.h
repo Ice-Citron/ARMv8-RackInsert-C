@@ -11,10 +11,6 @@
 #define ZERO_REGISTER_INDEX 31
 #define HALT_INSTRUCTION 0x8a000000
 
-extern uint8_t memory[MEM_SIZE];
-extern uint64_t registers[REGS];
-extern uint64_t pc;
-extern state pState; // = {false, false, false, false};
 
 typedef struct {
     bool n;
@@ -22,6 +18,11 @@ typedef struct {
     bool c;
     bool v;
 } state;
+
+extern uint8_t memory[MEM_SIZE];
+extern uint64_t registers[REGS];
+extern uint64_t pc;
+extern state pState; // = {false, false, false, false};
 
 static inline uint32_t bitmask (uint8_t start, uint8_t end) {
     //generates the bitmask which starts at start and ends at end
