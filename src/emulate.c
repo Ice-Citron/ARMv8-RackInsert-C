@@ -8,5 +8,6 @@ state pState = { false, false, false, false };
 int main(void) {
     registers[31] = 0ULL;
     // printf("%zu", bitmask_check(28, 25, 0x12FFFFFF));
+    run_emulator();
     return EXIT_SUCCESS;
 }

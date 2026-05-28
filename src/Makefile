@@ -5,7 +5,7 @@ LDFLAGS	=
 
 ASSEMBLE_SRCS	= assemble.c
 ASSEMBLE_OBJS 	= $(ASSEMBLE_SRCS:%.c=build/%.o)
-EMULATE_SRCS 	= emulate.c dp_imm.c dp_register.c helper_func_tests.c loader.c
+EMULATE_SRCS 	= emulate.c bit_manipulation.c dp_shared.c dp_imm.c dp_register.c helper_func_tests.c loader.c
 EMULATE_OBJS 	= $(EMULATE_SRCS:%.c=build/%.o)
 
 .PHONY: all clean asan

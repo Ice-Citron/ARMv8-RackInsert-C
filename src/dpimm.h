@@ -19,4 +19,17 @@
 #define IMM12_DPIMM_END 10
 #define DPIMM_ARITH_SHIFT_AMOUNT 12
 
+#define OPI_DPIMM_WIDE_MOVE 5
+#define SH_DPIMM_WM_START 22
+#define SH_DPIMM_WM_END 21
+#define IMM16_DPIMM_WM_START 20
+#define IMM16_DPIMM_WM_END 5
+
+#define DPIMM_WIDE_MOVE_SHIFT_FACTOR 16
+#define OPC_DPIMM_MOVN 0
+#define OPC_DPIMM_MOVZ 2
+#define OPC_DPIMM_MOVK 3
+
+void dpimm(uint32_t instr);
+
 #endif

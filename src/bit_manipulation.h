@@ -5,6 +5,7 @@
 #ifndef SRC_BIT_MANIPULATION_H
 #define SRC_BIT_MANIPULATION_H
 #include <stdint.h>
+#include "emulate.h"
 
 static inline uint32_t bitmask (const uint8_t start, const uint8_t end) {
     //generates the bitmask which starts at start and ends at end
@@ -20,5 +21,12 @@ static inline uint32_t extract_bits (const uint8_t start, const uint8_t end, con
     return (bitmask(start, end) & target) >> end;
 }
 
+static inline uint8_t sign32 (uint64_t target) {
+    return extract_bits(31, 31, target);
+}
+
+static inline uint8_t sign64 (uint64_t target) {
+    return (target >> 63) & 1;
+}
 
 #endif //SRC_BIT_MANIPULATION_H

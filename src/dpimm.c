@@ -1,4 +1,5 @@
-#include "dp.h"
+#include "dpimm.h"
+#include "dp_shared.h"
 
 void dpimm(uint32_t instr) {
     pState = (state){false, false, false, false};
@@ -17,7 +18,7 @@ void dpimm(uint32_t instr) {
                                              SH_DPIMM_ARITH_END, instr);
         uint64_t operand2 = bitmask_check(IMM12_DPIMM_START,
                                           IMM12_DPIMM_END, instr);
-        uint64_t rn_value = read_dp_register(rn_arith) & mask;
+        uint64_t rn_value = read_dp_register(rn_arith, *registers) & mask;
 
         if (shift_arith) {
             operand2 <<= DPIMM_ARITH_SHIFT_AMOUNT;
@@ -26,7 +27,7 @@ void dpimm(uint32_t instr) {
 
         if (opc_dpimm < DP_OPC_SUBTRACT_START) {
             entry = (rn_value + operand2) & mask;
-            if (opc_dpimm == DP_OPC_ADDS) {
+            if (opc_dpimm == DP_OPC_ADD_SETFLAG) {
                 if (sf_dpimm == 0) {
                     add32flags(rn_arith, entry, &pState, operand2);
                 } else {
@@ -35,7 +36,7 @@ void dpimm(uint32_t instr) {
             }
         } else {
             entry = (rn_value - operand2) & mask;
-            if (opc_dpimm == DP_OPC_SUBS) {
+            if (opc_dpimm == DP_OPC_SUB_SETFLAG) {
                 if (sf_dpimm == 0) {
                     sub32flags(rn_arith, entry, &pState, operand2);
                 } else {
@@ -43,8 +44,7 @@ void dpimm(uint32_t instr) {
                 }
             }
         }
-
-        write_dp_result(rd_dpimm, sf_dpimm, entry);
+        write_dp_result(rd_dpimm, sf_dpimm, entry, *registers);
     } else if (opi_dpimm == OPI_DPIMM_WIDE_MOVE) {
         uint32_t hw_wm = bitmask_check(SH_DPIMM_WM_START, SH_DPIMM_WM_END,
                                        instr);
@@ -61,12 +61,14 @@ void dpimm(uint32_t instr) {
             entry = shifted;
             break;
         case OPC_DPIMM_MOVK:
-            uint64_t mask_16_bits = ~((uint64_t) DP_WIDE_MOVE_IMM_MASK << shift);
-            entry = (read_dp_register(rd_dpimm) | mask_16_bits) & shifted;
+            uint64_t mask_16_bits = ~((uint64_t) DP_16BIT_MASK << shift);
+            entry = (read_dp_register(rd_dpimm, *registers) | mask_16_bits) & shifted;
             break;
         default:
+            fprintf(stderr, "invalid opcode for dp imm widemove");
+            exit(1);
             return;
         } 
-        rd_dpimm = entry;
+        write_dp_result(rd_dpimm, sf_dpimm, entry, *registers);
     }
 }

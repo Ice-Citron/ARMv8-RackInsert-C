@@ -1,6 +1,6 @@
 #include "loader.h"
 #include "emulate.h"
-#include "dp.h"
+#include "dp_shared.h"
 
 
 bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
@@ -69,7 +69,6 @@ void decode_and_execute(uint32_t instr) {
 }
 
 void run_emulator(void) {
-
     while (true) {
         uint32_t curr_instruction = fetch_u32_le(memory, pc);
         if (curr_instruction == HALT_INSTRUCTION) {

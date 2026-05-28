@@ -1,3 +1,6 @@
+#ifndef DPREG
+#define DPREG
+
 #include "dp_shared.h"
 
 #define SF_DPREG_START 31
@@ -39,3 +42,5 @@
 #define OPC_DPREG_EOR 2
 
 void dpreg(uint32_t instr);
+
+#endif
