@@ -62,14 +62,15 @@ void single_data_transfer(uint32_t instr)
         }
         if (bitmask_check(22, 22, instr) == IS_LOAD_OP) // load operation
         {
+            registers[RtAddr] = 0;
+            int n = 8;
             if (sizeToggle == IS_32BIT_RES)
-            {   // set last 32 bits to 0
-                registers[RtAddr] = 0 | memory[target];
-            }
-            else
             {
-                registers[RtAddr] = memory[target];
-
+                n = 4;
+            }
+            for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
+            {
+                registers[RtAddr] |= ( memory[target+i] << (i * 8)); // plug in 8 bits at a time
             }
         }
         else // store operation
