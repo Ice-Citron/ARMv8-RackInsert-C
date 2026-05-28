@@ -4,6 +4,8 @@
 #define PRE_INDEXED 1
 #define IS_32BIT_RES 1
 #define IS_LOAD_OP 1
+#define IS_REG_OFFSET_MODE 26
+#define IS_SINGLE_DATA_TRANSFER 1
 
 void load_operation(uint32_t rtAddr, uint64_t target, int n)
 {
@@ -38,44 +40,62 @@ void single_data_transfer(uint32_t instr)
 {
     clearstate(&pState);
     uint32_t rtAddr = bitmask_check(0, 4, instr);
-    uint32_t xnAddr = bitmask_check(5, 9, instr);
-    uint32_t sizeToggle = bitmask_check(30, 30, instr);
-    uint32_t operation = bitmask_check(22, 22, instr) ;
-    uint64_t target;
     int n = 8;
     if (sizeToggle == IS_32BIT_RES) // sf is 1 so we're changing in 32 bit mode
     {
         n = 4;
     }
-    if (bitmask_check(24, 24, instr) == UNSIGNED_IMM_OFFSET) // unsigned immediate offset
+    if (bitmask_check(31, 31, instr) == IS_SINGLE_DATA_TRANSFER)
     {
-        uint32_t imm12 = bitmask_check(10, 21, instr);
-        target = registers[xnAddr];
-        if (sizeToggle == IS_32BIT_RES) // sf is 1 so we're changing in 32 bit mode
+        uint32_t xnAddr = bitmask_check(5, 9, instr);
+        uint32_t sizeToggle = bitmask_check(30, 30, instr);
+        uint32_t operation = bitmask_check(22, 22, instr) ;
+        uint64_t target;
+        if (bitmask_check(24, 24, instr) == UNSIGNED_IMM_OFFSET) // unsigned immediate offset
         {
-            target += (imm12 << 2); // imm12 * 4
-            n = 4;
+            uint32_t imm12 = bitmask_check(10, 21, instr);
+            target = registers[xnAddr];
+            if (sizeToggle == IS_32BIT_RES) // sf is 1 so we're changing in 32 bit mode
+            {
+                target += (imm12 << 2); // imm12 * 4
+                n = 4;
+            }
+            else
+            {
+                target += (imm12 << 3); // imm12 * 8
+            }
+            handle_operation(rtAddr, target, n, operation);
         }
-        else
+        else if (bitmask_check(10, 10, instr) == PRE_POST_INDEXED)
         {
-            target += (imm12 << 3); // imm12 * 8
+            int32_t simm9 = bitmask_check(12, 20, instr);
+            target = registers[xnAddr];
+            // we need proper methods of extracting bits, I don't think returning uint32 is sufficient every time
+            if (bitmask_check(11, 11, instr) == PRE_INDEXED)
+            {
+                target += simm9;
+                registers[xnAddr] = target;
+                handle_operation(rtAddr, target, n, operation);
+            }
+            else // POST_INDEXED
+            {
+                handle_operation(rtAddr, target, n, operation);
+                target += simm9;
+                registers[xnAddr] = target;
+            }
         }
-        handle_operation(rtAddr, target, n, operation);
+        else if (bitmask_check(10, 15, instr) == IS_REG_OFFSET_MODE) // register offset
+        {
+            uint32_t xmAddr = bitmask_check(16, 20, instr);
+            target = registers[xnAddr] + registers[xmAddr]; // might need to have a check that xm is <=30
+            handle_operation(rtAddr, target, n, operation);
+        }
     }
-    else if (bitmask_check(10, 10, instr) == PRE_POST_INDEXED)
+    else // IS_LOAD_LITERAL
     {
-        int32_t simm9 = bitmask_check(12, 20, instr);
-        target = xnAddr + simm9;
-        // we need proper methods of extracting bits, I don't think returning uint32 is sufficient every time
-        if (bitmask_check(11, 11, instr) == PRE_INDEXED)
-        {
-            registers[xnAddr] = target;
-            handle_operation(rtAddr, target, n, operation);
-        }
-        else // POST_INDEXED
-        {
-            handle_operation(rtAddr, target, n, operation);
-            registers[xnAddr] = target;
-        }
+        uint32_t simm19 = bitmask_check(5, 23, instr);
+        uint64_t offset = simm19 << 4;
+        uint64_t target = pc + offset;
+        load_operation(rtAddr, target, n);
     }
 }
