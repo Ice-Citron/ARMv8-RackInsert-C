@@ -1,4 +1,5 @@
-#include "dp.h"
+#include "dp_shared.h"
+#include "dp_register.h"
 
 static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
                               uint32_t shift_dist, uint32_t sf) {
@@ -83,7 +84,7 @@ void dpreg(uint32_t instr) {
         if (opr0 == OPR0_DPREG_ARITH) {
             if (opc_dpreg < DP_OPC_SUBTRACT_START) {
                 entry = (rn + operand2) & mask;
-                if (opc_dpreg == DP_OPC_ADDS) {
+                if (opc_dpreg == DP_OPC_ADD_SETFLAG) {
                     if (sf_dpreg == 0) {
                         add32flags(rn_index, entry, &pState, operand2);
                     } else {
@@ -92,7 +93,7 @@ void dpreg(uint32_t instr) {
                 }
             } else {
                 entry = (rn - operand2) & mask;
-                if (opc_dpreg == DP_OPC_SUBS) {
+                if (opc_dpreg == DP_OPC_SUB_SETFLAG) {
                     if (sf_dpreg == 0) {
                         sub32flags(rn_index, entry, &pState, operand2);
                     } else {
