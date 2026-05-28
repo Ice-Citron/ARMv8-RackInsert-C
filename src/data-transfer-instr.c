@@ -83,8 +83,7 @@ void single_data_transfer(const uint32_t instr,
         }
         else if (extract_bits(10, 10, instr) == PRE_POST_INDEXED)
         {
-            int32_t simm9 = extract_bits(20, 12, instr);
-            // we need proper methods of extracting bits, I don't think returning uint32 is sufficient every time
+            const int simm9 = get_signed_value_from_bits(20, 12, instr);
             if (extract_bits(11, 11, instr) == PRE_INDEXED)
             {
                 target += simm9;
