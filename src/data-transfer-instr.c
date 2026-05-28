@@ -7,7 +7,7 @@
 #define IS_REG_OFFSET_MODE 26
 #define IS_SINGLE_DATA_TRANSFER 1
 
-void load_operation(uint32_t rtAddr, uint64_t target, int n)
+void load_operation(uint32_t rtAddr, uint64_t target, const int n, uint8_t *memory, uint64_t *registers)
 {
     registers[rtAddr] = 0;
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
@@ -16,7 +16,7 @@ void load_operation(uint32_t rtAddr, uint64_t target, int n)
     }
 }
 
-void store_operation(uint32_t rtAddr, uint64_t target, int n)
+void store_operation(uint32_t rtAddr, uint64_t target, const int n, uint8_t *memory, uint64_t *registers)
 {
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
     {
@@ -24,7 +24,7 @@ void store_operation(uint32_t rtAddr, uint64_t target, int n)
         memory[target+i] = (uint8_t)(registers[rtAddr] >> (i * 8)) & 0xff; // will implement later in a helper
     }
 }
-void handle_operation(uint32_t rtAddr, uint64_t target, int n, uint32_t operation)
+void handle_operation(uint32_t rtAddr, uint64_t target, const int n, uint32_t operation, uint8_t *memory, uint64_t *registers)
 {
     if (operation == IS_LOAD_OP)
     {
@@ -36,7 +36,7 @@ void handle_operation(uint32_t rtAddr, uint64_t target, int n, uint32_t operatio
     }
 }
 
-void single_data_transfer(uint32_t instr)
+void single_data_transfer(uint32_t instr, uint8_t *memory, uint64_t *registers)
 {
     clearstate(&pState);
     uint32_t rtAddr = bitmask_check(4, 0, instr);
@@ -62,7 +62,7 @@ void single_data_transfer(uint32_t instr)
             {
                 target += (imm12 << 3); // imm12 * 8
             }
-            handle_operation(rtAddr, target, numOfBytes, operation);
+            handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
         }
         else if (bitmask_check(10, 10, instr) == PRE_POST_INDEXED)
         {
@@ -72,11 +72,11 @@ void single_data_transfer(uint32_t instr)
             {
                 target += simm9;
                 registers[xnAddr] = target;
-                handle_operation(rtAddr, target, numOfBytes, operation);
+                handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
             }
             else // POST_INDEXED
             {
-                handle_operation(rtAddr, target, numOfBytes, operation);
+                handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
                 target += simm9;
                 registers[xnAddr] = target;
             }
@@ -85,7 +85,7 @@ void single_data_transfer(uint32_t instr)
         {
             uint32_t xmAddr = bitmask_check(20, 16, instr);
             target += registers[xmAddr]; // might need to have a check that xm is <=30
-            handle_operation(rtAddr, target, numOfBytes, operation);
+            handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
         }
     }
     else // IS_LOAD_LITERAL
@@ -93,6 +93,6 @@ void single_data_transfer(uint32_t instr)
         uint32_t simm19 = bitmask_check(23, 5, instr); // sign extend to 64
         uint64_t offset = simm19 << 2; // simm19 * 4
         uint64_t target = pc + offset;
-        load_operation(rtAddr, target, numOfBytes);
+        load_operation(rtAddr, target, numOfBytes, memory, registers);
     }
 }
