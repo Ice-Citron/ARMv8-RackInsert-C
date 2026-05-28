@@ -21,29 +21,25 @@ void single_data_transfer(uint32_t instr)
         {
             target += (imm12 << 3); // imm12 * 8
         }
+        int n = 8; // dictates how many bytes of memory will be used
+        if (sizeToggle == IS_32BIT_RES)
+        {
+            n = 4;
+        }
         if (bitmask_check(22, 22, instr) == IS_LOAD_OP) // load operation
         {
             registers[RtAddr] = 0;
-            int n = 8;
-            if (sizeToggle == IS_32BIT_RES)
-            {
-                n = 4;
-            }
             for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
             {
-                registers[RtAddr] |= ( memory[target+i] << (i * 8)); // plug in 8 bits at a time
+                registers[RtAddr] |= ( (uint64_t) memory[target+i] << (i * 8)); // plug in 8 bits at a time
             }
         }
         else // store operation
         {
-            if (sizeToggle == IS_32BIT_RES)
-            {   // preserve last 32 bits
-                memory[target] = bitmask_check(63, 32, memory[target]) << 32;
-                memory[target] |= registers[RtAddr];
-            }
-            else
+            for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
             {
-                memory[target] = registers[RtAddr];
+                // code to copy value of bits in registers into the memory locations
+                memory[target+i] = (uint8_t)(registers[RtAddr] >> (i * 8)) & 0xff; // will implement later in a helper
             }
         }
     }
