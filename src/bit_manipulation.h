@@ -5,7 +5,7 @@
 
 static uint32_t bitmask (const uint8_t start, const uint8_t end) {
     //generates the bitmask which starts at start and ends at end
-    uint8_t width = start - end + 1;
+    const uint8_t width = start - end + 1;
 
     if (width == 32) {
         return UINT32_MAX;
