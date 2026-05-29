@@ -67,7 +67,7 @@ bool decode_and_execute(uint32_t instr) {
 
 void run_emulator(void) {
     while (true) {
-        uint32_t curr_instruction = fetch_u32_le(memory, pc);
+        uint32_t curr_instruction = fetch_u32_le(pc);
         if (curr_instruction == HALT_INSTRUCTION) {
             break;
         }
@@ -84,12 +84,16 @@ void write_final_state(FILE *file) {
         fprintf(file, "X%02d    = %016"PRIx64"\n", i, registers[i]);
     }
     fprintf(file, "PC     = %016"PRIx64"\n", pc);
+    char n = (pState.n == true) ? 'N' : '-';
+    char z = (pState.z == true) ? 'Z' : '-';
+    char c = (pState.c == true) ? 'C' : '-';
+    char w = (pState.v == true) ? 'V' : '-';
+    fprintf(file, "PSTATE : %c%c%c%c\n", n, z, c, w);
     fprintf(file, "Non-zero memory: \n");
     for (int i = 0; i <= MEM_SIZE - 4; i += 4) {
+        uint32_t word = fetch_u32_le(i);
         if (memory[i] != 0) {
-            fprintf(file, "0x%08"PRIx16": 0x%08"PRIx16"\n", (uint16_t)(i * 4), 
-                    fetch_u32_le(i));
+            fprintf(file, "0x%08"PRIx64": 0x%08"PRIx32"\n", (uint16_t)i, word);
         }
     }
-    fclose(file);
 }
