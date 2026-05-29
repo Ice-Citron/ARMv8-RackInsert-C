@@ -31,7 +31,7 @@ static uint64_t mask_from_sf(uint32_t sf) {
     return sf == 0 ? UINT32_MAX : UINT64_MAX; 
 }
 
-void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry, uint64_t* regs);
+void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry);
 
 static inline uint8_t sign32 (uint64_t target) {
     return (target >> 31) & 1;

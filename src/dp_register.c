@@ -79,7 +79,7 @@ void dpreg(uint32_t instr) {
             entry = (ra_mult - product) & mask;
         }
 
-        write_dp_result(rd_index, sf_dpreg, entry, registers);
+        write_dp_result(rd_index, sf_dpreg, entry);
     } else {
         uint32_t opr0 = extract_bits(OPR0_DPREG_START, OPR0_DPREG_END,
                                       instr);
@@ -130,6 +130,6 @@ void dpreg(uint32_t instr) {
                     break;
             }
         }
-        write_dp_result(rd_index, sf_dpreg, entry, registers);
+        write_dp_result(rd_index, sf_dpreg, entry);
     }
 }

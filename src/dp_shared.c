@@ -32,15 +32,15 @@ static void sub64flags(uint32_t regindex, uint64_t target, state* state, uint64_
     state->v = sign64(flag_register_value(regindex)) == 1 && sign64(target) == 0;
 }
 
-void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry, uint64_t* regs) {
+void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
     if (rd == ZERO_REGISTER_INDEX) {
         return;
     }
     if (sf == 0) {
-        regs[rd] = (regs[rd] & DP_CLEAR_LOWER_32_MASK)
+        registers[rd] = (registers[rd] & DP_CLEAR_LOWER_32_MASK)
                       | (entry & UINT32_MAX);
     } else {
-        regs[rd] = entry;
+        registers[rd] = entry;
     }
 }
 
