@@ -36,6 +36,7 @@
 #define SHIFT_TYPE_LSL 0
 #define SHIFT_TYPE_LSR 1
 #define SHIFT_TYPE_ASR 2
+#define SHIFT_TYPE_ROR 3
 
 #define OPC_DPREG_AND 0
 #define OPC_DPREG_ORR 1

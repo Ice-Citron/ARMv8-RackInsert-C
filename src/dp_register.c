@@ -8,7 +8,6 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
     if (shift_dist == 0) {
         return operand;
     }
-
     if (shift_type == SHIFT_TYPE_LSL) {
         return (operand << shift_dist) & mask;
     }
@@ -30,6 +29,16 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
             return answer;
         }
     }
+    if (shift_type == SHIFT_TYPE_ROR) {
+        if (sf == 0) {
+            return (extract_bits(shift_dist - 1, 0, operand) <<
+            (32 - shift_dist)) | extract_bits(31, shift_dist, operand);
+        } else {
+            return (extract_bits(shift_dist - 1, 0, operand) <<
+            (64 - shift_dist)) | extract_bits(63, shift_dist, operand);
+        }
+    }
+    
 
     shift_dist %= width;
     if (shift_dist == 0) {
