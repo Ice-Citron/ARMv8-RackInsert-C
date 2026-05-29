@@ -1,19 +1,9 @@
 #include "bit_manipulation.h"
-#define UNSIGNED_IMM_OFFSET 1
-#define PRE_POST_INDEXED 1
-#define PRE_INDEXED 1
-#define IS_32BIT_RES 1
-#define IS_LOAD_OP 1
-#define IS_REG_OFFSET_MODE 26
-#define IS_SINGLE_DATA_TRANSFER 1
+#include "data-transfer.h"
 
-void load_operation(
-    const uint32_t rtAddr,
-    const uint64_t target,
-    const int n,
-    const uint8_t *memory,
-    uint64_t *registers)
-{
+
+void load_operation(const uint32_t rtAddr, const uint64_t target, const int n,
+    const uint8_t *memory, uint64_t *registers) {
     registers[rtAddr] = 0;
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
     {
@@ -21,41 +11,27 @@ void load_operation(
     }
 }
 
-void store_operation(
-    const uint32_t rtAddr,
-    const uint64_t target,
-    const int n,
-    uint8_t *memory,
-    const uint64_t *registers)
-{
+void store_operation(const uint32_t rtAddr, const uint64_t target, const int n,
+    uint8_t *memory, const uint64_t *registers) {
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
     {
         // code to copy value of bits in registers into the memory locations
         memory[target+i] = (uint8_t)(registers[rtAddr] >> (i * 8)) & 0xff; // will implement later in a helper
     }
 }
-void handle_operation(
-    const uint32_t rtAddr,
-    const uint64_t target,
-    const int n,
-    const uint32_t operation,
-    uint8_t *memory,
-    uint64_t *registers)
-{
-    if (operation == IS_LOAD_OP)
-    {
+void perform_load_or_store(const uint32_t rtAddr, const uint64_t target, 
+                           const int n, const uint32_t operation, 
+                           uint8_t *memory, uint64_t *registers) {
+    if (operation == IS_LOAD_OP) {
         load_operation(rtAddr, target, n, memory, registers);
     }
-    else
-    {
+    else {
         store_operation(rtAddr, target, n, memory, registers);
     }
 }
 
-void single_data_transfer(const uint32_t instr,
-    uint8_t *memory,
-    uint64_t *registers)
-{
+void single_data_transfer(const uint32_t instr, uint8_t *memory, 
+                          uint64_t *registers) {
     const uint32_t rtAddr = extract_bits(4, 0, instr);
     const uint32_t sizeToggle = extract_bits(30, 30, instr);
     int numOfBytes = 8;
