@@ -1,4 +1,3 @@
-#include "dp_shared.h"
 #include "dp_register.h"
 
 static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,

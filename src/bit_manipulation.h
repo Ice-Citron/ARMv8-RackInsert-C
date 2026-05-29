@@ -1,5 +1,6 @@
 #ifndef SRC_BIT_MANIPULATION_H
 #define SRC_BIT_MANIPULATION_H
+
 #include <stdint.h>
 #include "emulate.h"
 
