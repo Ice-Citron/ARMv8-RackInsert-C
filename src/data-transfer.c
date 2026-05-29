@@ -1,9 +1,9 @@
 #include "bit_manipulation.h"
 #include "data-transfer.h"
+#include "emulate.h"
 
 
-void load_operation(const uint32_t rtAddr, const uint64_t target, const int n,
-    const uint8_t *memory, uint64_t *registers) {
+void load_operation(const uint32_t rtAddr, const uint64_t target, const int n) {
     registers[rtAddr] = 0;
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
     {
@@ -11,8 +11,7 @@ void load_operation(const uint32_t rtAddr, const uint64_t target, const int n,
     }
 }
 
-void store_operation(const uint32_t rtAddr, const uint64_t target, const int n,
-    uint8_t *memory, const uint64_t *registers) {
+void store_operation(const uint32_t rtAddr, const uint64_t target, const int n) {
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
     {
         // code to copy value of bits in registers into the memory locations
@@ -20,18 +19,16 @@ void store_operation(const uint32_t rtAddr, const uint64_t target, const int n,
     }
 }
 void perform_load_or_store(const uint32_t rtAddr, const uint64_t target, 
-                           const int n, const uint32_t operation, 
-                           uint8_t *memory, uint64_t *registers) {
+                           const int n, const uint32_t operation) {
     if (operation == IS_LOAD_OP) {
-        load_operation(rtAddr, target, n, memory, registers);
+        load_operation(rtAddr, target, n);
     }
     else {
-        store_operation(rtAddr, target, n, memory, registers);
+        store_operation(rtAddr, target, n);
     }
 }
 
-void single_data_transfer(const uint32_t instr, uint8_t *memory, 
-                          uint64_t *registers) {
+void single_data_transfer(const uint32_t instr) {
     const uint32_t rtAddr = extract_bits(4, 0, instr);
     const uint32_t sizeToggle = extract_bits(30, 30, instr);
     int numOfBytes = 8;
@@ -55,7 +52,7 @@ void single_data_transfer(const uint32_t instr, uint8_t *memory,
             {
                 target += (imm12 << 3); // imm12 * 8
             }
-            handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
+            perform_load_or_store(rtAddr, target, numOfBytes, operation);
         }
         else if (extract_bits(10, 10, instr) == PRE_POST_INDEXED)
         {
@@ -64,11 +61,11 @@ void single_data_transfer(const uint32_t instr, uint8_t *memory,
             {
                 target += simm9;
                 registers[xnAddr] = target;
-                handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
+                perform_load_or_store(rtAddr, target, numOfBytes, operation);
             }
             else // POST_INDEXED
             {
-                handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
+                perform_load_or_store(rtAddr, target, numOfBytes, operation);
                 target += simm9;
                 registers[xnAddr] = target;
             }
@@ -77,14 +74,14 @@ void single_data_transfer(const uint32_t instr, uint8_t *memory,
         {
             const uint32_t xmAddr = extract_bits(20, 16, instr);
             target += registers[xmAddr]; // might need to have a check that xm is <=30
-            handle_operation(rtAddr, target, numOfBytes, operation, memory, registers);
+            perform_load_or_store(rtAddr, target, numOfBytes, operation);
         }
     }
     else // IS_LOAD_LITERAL
     {
         const uint32_t simm19 = extract_bits(23, 5, instr); // sign extend to 64
-        uint64_t offset = simm19 << 2; // simm19 * 4
+        const uint64_t offset = simm19 << 2; // simm19 * 4
         const uint64_t target = pc + offset;
-        load_operation(rtAddr, target, numOfBytes, memory, registers);
+        load_operation(rtAddr, target, numOfBytes);
     }
 }
