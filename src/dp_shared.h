@@ -26,10 +26,6 @@ void sub32flags(uint32_t regindex, uint64_t target, state* state,
 void sub64flags(uint32_t regindex, uint64_t target, state* state, 
                 uint64_t operand2);
 
-static uint32_t get32from64(uint64_t target) { 
-    return (uint32_t)target; 
-}
-
 static uint64_t mask_from_sf(uint32_t sf) { 
     return sf == 0 ? UINT32_MAX : UINT64_MAX; 
 }

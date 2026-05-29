@@ -4,7 +4,8 @@ void load_operation(const uint32_t rtAddr, const uint64_t target, const int n) {
     registers[rtAddr] = 0;
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
     {
-        registers[rtAddr] |= ((uint64_t) memory[target+i] << (i * 8)); // plug in 8 bits at a time
+        registers[rtAddr] |= ((uint64_t) memory[target + (uint64_t)i] 
+                                << (i * 8)); // plug in 8 bits at a time
     }
 }
 
@@ -12,7 +13,7 @@ void store_operation(const uint32_t rtAddr, const uint64_t target, const int n) 
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits
     {
         // code to copy value of bits in registers into the memory locations
-        memory[target+i] = (uint8_t)(registers[rtAddr] >> (i * 8)) & 0xff; // will implement later in a helper
+        memory[target + (uint64_t)i] = (uint8_t)(registers[rtAddr] >> (i * 8)) & 0xff; // will implement later in a helper
     }
 }
 void perform_load_or_store(const uint32_t rtAddr, const uint64_t target, 

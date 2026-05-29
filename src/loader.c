@@ -79,5 +79,15 @@ void run_emulator(void) {
 }
 
 void write_final_state(FILE *out) {
+    FILE* file = fopen(path, "wb");
+    fprintf(file, "Registers:\n");
+    for (int i = 0; i < 31; i++) {
+        fprintf(file, "X%02d    = %016"PRIx64"\n", i, registers[i]);
+    }
+    fprintf(file, "PC     = %016"PRIx64"\n");
+    fprintf(file, "Non-zero memory: \n");
+    for (i ) {
 
+    }
+    fclose(file);
 }

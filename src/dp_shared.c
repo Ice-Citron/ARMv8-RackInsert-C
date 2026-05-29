@@ -3,7 +3,7 @@
 void add32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
     update_zero_flag(state, target);
     update_negative_flag32(state, target);
-    state->c = (uint32_t) operand2 > ~get32from64(flag_register_value(regindex));
+    state->c = (uint32_t) operand2 > ~(uint64_t)(flag_register_value(regindex));
     state->v = sign32(flag_register_value(regindex)) == 0 && sign32(target) == 1;
 }
 
@@ -17,7 +17,7 @@ void add64flags(uint32_t regindex, uint64_t target, state* state, uint64_t opera
 void sub32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
     update_zero_flag(state, target);
     update_negative_flag32(state, target);
-    state->c = (uint32_t) operand2 > get32from64(flag_register_value(regindex));
+    state->c = (uint32_t) operand2 > (uint64_t)(flag_register_value(regindex));
     state->v = sign32(flag_register_value(regindex)) == 1 && sign32(target) == 0;
 }
 

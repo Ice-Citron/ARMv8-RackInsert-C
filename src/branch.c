@@ -1,11 +1,11 @@
 #include "branch.h"
 
-void unconditional_branch(long long simm26) {
+bool unconditional_branch(long long simm26) {
     pc = (uint64_t)((long long)pc + simm26);
     return true;
 }
 
-void register_branch(uint32_t xn) {
+bool register_branch(uint32_t xn) {
     if (xn == 31) {
         fprintf(stderr, "ERROR: Branching with zero-register is invalid.\n");
         return false;
@@ -44,7 +44,7 @@ bool condition_holds(uint32_t cond) {
     }
 }
 
-void conditional_branch(long long simm19, uint32_t cond) {
+bool conditional_branch(long long simm19, uint32_t cond) {
     bool condition = condition_holds(cond);
     if (condition) {
         pc = (uint64_t)((long long)pc + simm19);
@@ -66,7 +66,6 @@ bool execute_branch(uint32_t instr) {
         return conditional_branch(simm19, cond);
     } else {
         fprintf(stderr, "ERROR: Unknown type of branch instruction.\n");
-    }
-    
-    return false;
+        return false;
+    }    
 }
