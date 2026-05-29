@@ -26,18 +26,18 @@ void dpimm(uint32_t instr) {
             entry = (rn_value + operand2) & mask;
             if (opc_dpimm == DP_OPC_ADD_SETFLAG) {
                 if (sf_dpimm == 0) {
-                    add32flags(rn_arith, entry, &pState, operand2);
+                    add32flags(rn_arith, entry, operand2);
                 } else {
-                    add64flags(rn_arith, entry, &pState, operand2);
+                    add64flags(rn_arith, entry, operand2);
                 }
             }
         } else {
             entry = (rn_value - operand2) & mask;
             if (opc_dpimm == DP_OPC_SUB_SETFLAG) {
                 if (sf_dpimm == 0) {
-                    sub32flags(rn_arith, entry, &pState, operand2);
+                    sub32flags(rn_arith, entry, operand2);
                 } else {
-                    sub64flags(rn_arith, entry, &pState, operand2);
+                    sub64flags(rn_arith, entry, operand2);
                 }
             }
         }

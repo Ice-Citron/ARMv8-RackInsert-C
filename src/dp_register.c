@@ -50,11 +50,11 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
 static void set_logic_flags(uint64_t entry, uint32_t sf) {
     uint64_t masked = entry & mask_from_sf(sf);
     if (sf == 0) {
-        update_negative_flag32(&pState, masked);
+        update_negative_flag32(masked);
     } else {
-        update_negative_flag64(&pState, masked);
+        update_negative_flag64(masked);
     }
-    update_zero_flag(&pState, masked);
+    update_zero_flag(masked);
     pState.c = false;
     pState.v = false;
 }
@@ -102,18 +102,18 @@ void dpreg(uint32_t instr) {
                 entry = (rn + operand2) & mask;
                 if (opc_dpreg == DP_OPC_ADD_SETFLAG) {
                     if (sf_dpreg == 0) {
-                        add32flags(rn_index, entry, &pState, operand2);
+                        add32flags(rn_index, entry, operand2);
                     } else {
-                        add64flags(rn_index, entry, &pState, operand2);
+                        add64flags(rn_index, entry, operand2);
                     }
                 }
             } else {
                 entry = (rn - operand2) & mask;
                 if (opc_dpreg == DP_OPC_SUB_SETFLAG) {
                     if (sf_dpreg == 0) {
-                        sub32flags(rn_index, entry, &pState, operand2);
+                        sub32flags(rn_index, entry, operand2);
                     } else {
-                        sub64flags(rn_index, entry, &pState, operand2);
+                        sub64flags(rn_index, entry, operand2);
                     }
                 }
             }

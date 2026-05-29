@@ -1,31 +1,31 @@
 #include "dp_shared.h"
 
-void add32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
-    update_zero_flag(state, target);
-    update_negative_flag32(state, target);
-    state->c = (uint32_t) operand2 > ~(uint64_t)(flag_register_value(regindex));
-    state->v = sign32(flag_register_value(regindex)) == 0 && sign32(target) == 1;
+void add32flags(uint32_t regindex, uint64_t target, uint64_t operand2) {
+    update_zero_flag(target);
+    update_negative_flag32(target);
+    pState.c = (uint32_t) operand2 > ~(uint64_t)(flag_register_value(regindex));
+    pState.v = sign32(flag_register_value(regindex)) == 0 && sign32(target) == 1;
 }
 
-void add64flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
-    update_zero_flag(state, target);
-    update_negative_flag64(state, target);
-    state->c = (uint64_t) operand2 > ~flag_register_value(regindex);
-    state->v = sign64(flag_register_value(regindex)) == 0 && sign64(target) == 1;
+void add64flags(uint32_t regindex, uint64_t target, uint64_t operand2) {
+    update_zero_flag(target);
+    update_negative_flag64(target);
+    pState.c = (uint64_t) operand2 > ~flag_register_value(regindex);
+    pState.v = sign64(flag_register_value(regindex)) == 0 && sign64(target) == 1;
 }
 
-void sub32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
-    update_zero_flag(state, target);
-    update_negative_flag32(state, target);
-    state->c = (uint32_t) operand2 > (uint64_t)(flag_register_value(regindex));
-    state->v = sign32(flag_register_value(regindex)) == 1 && sign32(target) == 0;
+void sub32flags(uint32_t regindex, uint64_t target, uint64_t operand2) {
+    update_zero_flag(target);
+    update_negative_flag32(target);
+    pState.c = (uint32_t) operand2 > (uint64_t)(flag_register_value(regindex));
+    pState.v = sign32(flag_register_value(regindex)) == 1 && sign32(target) == 0;
 }
 
-void sub64flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
-    update_zero_flag(state, target);
-    update_negative_flag64(state, target);
-    state->c = (uint64_t) operand2 > flag_register_value(regindex);
-    state->v = sign64(flag_register_value(regindex)) == 1 && sign64(target) == 0;
+void sub64flags(uint32_t regindex, uint64_t target, uint64_t operand2) {
+    update_zero_flag(target);
+    update_negative_flag64(target);
+    pState.c = (uint64_t) operand2 > flag_register_value(regindex);
+    pState.v = sign64(flag_register_value(regindex)) == 1 && sign64(target) == 0;
 }
 
 void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
