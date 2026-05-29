@@ -46,21 +46,21 @@ static void set_logic_flags(uint64_t entry, uint32_t sf) {
 void dpreg(uint32_t instr) {
     pState = (state){false, false, false, false};
 
-    uint32_t sf_dpreg = bitmask_check(SF_DPREG_START, SF_DPREG_END, instr);
-    uint32_t opc_dpreg = bitmask_check(OPC_DPREG_START, OPC_DPREG_END, instr);
-    uint32_t m_dpreg = bitmask_check(M_DPREG_START, M_DPREG_END, instr);
-    uint32_t rd_index = bitmask_check(RD_DPREG_START, RD_DPREG_END, instr);
-    uint32_t rn_index = bitmask_check(RN_DPREG_START, RN_DPREG_END, instr);
-    uint32_t rm_index = bitmask_check(RM_DPREG_START, RM_DPREG_END, instr);
+    uint32_t sf_dpreg = extract_bits(SF_DPREG_START, SF_DPREG_END, instr);
+    uint32_t opc_dpreg = extract_bits(OPC_DPREG_START, OPC_DPREG_END, instr);
+    uint32_t m_dpreg = extract_bits(M_DPREG_START, M_DPREG_END, instr);
+    uint32_t rd_index = extract_bits(RD_DPREG_START, RD_DPREG_END, instr);
+    uint32_t rn_index = extract_bits(RN_DPREG_START, RN_DPREG_END, instr);
+    uint32_t rm_index = extract_bits(RM_DPREG_START, RM_DPREG_END, instr);
     uint64_t mask = mask_from_sf(sf_dpreg);
     uint64_t rn = read_dp_register(rn_index, *registers) & mask;
     uint64_t rm = read_dp_register(rm_index, *registers) & mask;
     uint64_t entry = 0;
 
     if (m_dpreg == M_DPREG_MULTIPLY) {
-        uint32_t ra_index = bitmask_check(RA_DPREG_MULT_START,
+        uint32_t ra_index = extract_bits(RA_DPREG_MULT_START,
                                           RA_DPREG_MULT_END, instr);
-        uint32_t x_mult = bitmask_check(X_DPREG_MULT_START,
+        uint32_t x_mult = extract_bits(X_DPREG_MULT_START,
                                         X_DPREG_MULT_END, instr);
         uint64_t ra_mult = read_dp_register(ra_index, *registers) & mask;
         uint64_t product = (rn * rm) & mask;
@@ -73,11 +73,11 @@ void dpreg(uint32_t instr) {
 
         write_dp_result(rd_index, sf_dpreg, entry, *registers);
     } else {
-        uint32_t opr0 = bitmask_check(OPR0_DPREG_START, OPR0_DPREG_END,
+        uint32_t opr0 = extract_bits(OPR0_DPREG_START, OPR0_DPREG_END,
                                       instr);
-        uint32_t shift_type = bitmask_check(SHIFT_DPREG_START,
+        uint32_t shift_type = extract_bits(SHIFT_DPREG_START,
                                             SHIFT_DPREG_END, instr);
-        uint32_t shift_dist = bitmask_check(SHIFT_DIST_DPREG_START,
+        uint32_t shift_dist = extract_bits(SHIFT_DIST_DPREG_START,
                                             SHIFT_DIST_DPREG_END, instr);
         uint64_t operand2 = shift_operand(rm, shift_type, shift_dist, sf_dpreg);
 
@@ -102,7 +102,7 @@ void dpreg(uint32_t instr) {
                 }
             }
         } else {
-            if (bitmask_check(N_DPREG_START, N_DPREG_END, instr) == 1) {
+            if (extract_bits(N_DPREG_START, N_DPREG_END, instr) == 1) {
                 operand2 = ~operand2 & mask;
             }
 
