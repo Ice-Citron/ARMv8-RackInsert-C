@@ -4,7 +4,7 @@
 #include "data_transfer.h"
 #include "branch.h"
 
-bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
+bool load_program(const char *path, size_t *bytes_loaded) {
     FILE* file = fopen(path, "rb");
     if (file == NULL) {
         fprintf(stderr, "ERROR: Failed to open file at path: %s\n", path);
@@ -29,7 +29,7 @@ bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
     return true;
 }
 
-uint32_t fetch_u32_le(const uint8_t memory[], uint64_t address) {
+uint32_t fetch_u32_le(uint64_t address) {
     // Since instructions are stored in little-endian format.
     return ((uint32_t)memory[address + 3] << 24)
          | ((uint32_t)memory[address + 2] << 16)
@@ -78,16 +78,18 @@ void run_emulator(void) {
     }
 }
 
-void write_final_state(FILE *out) {
-    FILE* file = fopen(path, "wb");
+void write_final_state(FILE *file) {
     fprintf(file, "Registers:\n");
-    for (int i = 0; i < 31; i++) {
+    for (int i = 0; i < REGS - 1; i++) {
         fprintf(file, "X%02d    = %016"PRIx64"\n", i, registers[i]);
     }
-    fprintf(file, "PC     = %016"PRIx64"\n");
+    fprintf(file, "PC     = %016"PRIx64"\n", pc);
     fprintf(file, "Non-zero memory: \n");
-    for (i ) {
-
+    for (int i = 0; i <= MEM_SIZE - 4; i += 4) {
+        if (memory[i] != 0) {
+            fprintf(file, "0x%08"PRIx16": 0x%08"PRIx16"\n", (uint16_t)(i * 4), 
+                    fetch_u32_le(i));
+        }
     }
     fclose(file);
 }
