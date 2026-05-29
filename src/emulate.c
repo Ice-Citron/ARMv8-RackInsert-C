@@ -1,4 +1,5 @@
 #include "emulate.h"
+#include "loader.h"
 
 uint8_t memory[MEM_SIZE];
 uint64_t registers[REGS];
