@@ -1,5 +1,5 @@
-#ifndef DPREG
-#define DPREG
+#ifndef DP_REGISTER_H
+#define DP_REGISTER_H
 
 #include "dp_shared.h"
 
