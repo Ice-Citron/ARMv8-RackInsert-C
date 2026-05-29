@@ -1,0 +1,35 @@
+#ifndef DPIMMH
+#define DPIMMH
+
+#include "dp_shared.h"
+
+#define SF_DPIMM_START 31
+#define SF_DPIMM_END 31
+#define OPC_DPIMM_START 30
+#define OPC_DPIMM_END 29
+#define OPI_DPIMM_START 25
+#define OPI_DPIMM_END 23
+#define RD_DPIMM_START 4
+#define RD_DPIMM_END 0
+
+#define OPI_DPIMM_ARITH 2
+#define RN_DPIMM_ARITH_START 9
+#define RN_DPIMM_ARITH_END 5
+#define SH_DPIMM_ARITH_START 22
+#define SH_DPIMM_ARITH_END 22
+#define IMM12_DPIMM_START 21
+#define IMM12_DPIMM_END 10
+#define DPIMM_ARITH_SHIFT_AMOUNT 12
+
+#define OPI_DPIMM_WIDE_MOVE 5
+#define SH_DPIMM_WM_START 22
+#define SH_DPIMM_WM_END 21
+#define IMM16_DPIMM_WM_START 20
+#define IMM16_DPIMM_WM_END 5
+
+#define DPIMM_WIDE_MOVE_SHIFT_FACTOR 16
+#define OPC_DPIMM_MOVN 0
+#define OPC_DPIMM_MOVZ 2
+#define OPC_DPIMM_MOVK 3
+
+#endif
