@@ -1,8 +1,4 @@
-#ifndef DPSHARED
-#define DPSHARED
-
 #include "dp_shared.h"
-
 
 void add32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
     update_zero_flag(state, target);
@@ -43,5 +39,3 @@ void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
         registers[rd] = entry;
     }
 }
-
-#endif

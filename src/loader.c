@@ -3,7 +3,6 @@
 #include "dp_shared.h"
 #include "data_transfer.h"
 
-
 bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
     FILE* file = fopen(path, "rb");
     if (file == NULL) {
@@ -30,6 +29,7 @@ bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
 }
 
 uint32_t fetch_u32_le(const uint8_t memory[], uint64_t address) {
+    // Since instructions are stored in little-endian format.
     return ((uint32_t)memory[address + 3] << 24)
          | ((uint32_t)memory[address + 2] << 16)
          | ((uint32_t)memory[address + 1] << 8)

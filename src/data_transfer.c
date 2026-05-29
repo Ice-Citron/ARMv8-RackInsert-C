@@ -1,6 +1,5 @@
 #include "data_transfer.h"
 
-
 void load_operation(const uint32_t rtAddr, const uint64_t target, const int n) {
     registers[rtAddr] = 0;
     for (int i = 0; i < n; i++) // n = 8 bytes for 64 bits and n = 4 for 32 bits

@@ -1,6 +1,8 @@
 #ifndef DPIMMH
 #define DPIMMH
 
+#include "dp_shared.h"
+
 #define SF_DPIMM_START 31
 #define SF_DPIMM_END 31
 #define OPC_DPIMM_START 30

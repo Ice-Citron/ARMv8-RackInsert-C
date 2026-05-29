@@ -1,3 +1,6 @@
+#ifndef DP_SHARED_H
+#define DP_SHARED_H
+
 #include "bit_manipulation.h"
 #include "emulate.h"
 
@@ -60,3 +63,5 @@ static inline uint64_t read_dp_register(uint32_t regindex) {
 static inline uint64_t flag_register_value(uint32_t regindex) {
     return read_dp_register(regindex);
 }
+
+#endif

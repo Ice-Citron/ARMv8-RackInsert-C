@@ -14,7 +14,8 @@ static uint32_t bitmask (const uint8_t start, const uint8_t end) {
     return ((1u << width) - 1u) << end;
 }
 
-static uint32_t extract_bits (const uint8_t start, const uint8_t end, const uint64_t target) {
+static uint32_t extract_bits (const uint8_t start, const uint8_t end, 
+                              const uint64_t target) {
     return (bitmask(start, end) & target) >> end;
 }
 
