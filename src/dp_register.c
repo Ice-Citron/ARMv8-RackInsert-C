@@ -49,7 +49,6 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
 
 static void set_logic_flags(uint64_t entry, uint32_t sf) {
     uint64_t masked = entry & mask_from_sf(sf);
-
     if (sf == 0) {
         update_negative_flag32(&pState, masked);
     } else {
@@ -61,14 +60,12 @@ static void set_logic_flags(uint64_t entry, uint32_t sf) {
 }
 
 void dpreg(uint32_t instr) {
-    pState = (state){false, false, false, false};
-
-    uint32_t sf_dpreg = extract_bits(SF_DPREG_START, SF_DPREG_END, instr);
+    uint32_t sf_dpreg  = extract_bits(SF_DPREG_START, SF_DPREG_END, instr);
     uint32_t opc_dpreg = extract_bits(OPC_DPREG_START, OPC_DPREG_END, instr);
-    uint32_t m_dpreg = extract_bits(M_DPREG_START, M_DPREG_END, instr);
-    uint32_t rd_index = extract_bits(RD_DPREG_START, RD_DPREG_END, instr);
-    uint32_t rn_index = extract_bits(RN_DPREG_START, RN_DPREG_END, instr);
-    uint32_t rm_index = extract_bits(RM_DPREG_START, RM_DPREG_END, instr);
+    uint32_t m_dpreg   = extract_bits(M_DPREG_START, M_DPREG_END, instr);
+    uint32_t rd_index  = extract_bits(RD_DPREG_START, RD_DPREG_END, instr);
+    uint32_t rn_index  = extract_bits(RN_DPREG_START, RN_DPREG_END, instr);
+    uint32_t rm_index  = extract_bits(RM_DPREG_START, RM_DPREG_END, instr);
     uint64_t mask = mask_from_sf(sf_dpreg);
     uint64_t rn = read_dp_register(rn_index) & mask;
     uint64_t rm = read_dp_register(rm_index) & mask;
@@ -77,7 +74,7 @@ void dpreg(uint32_t instr) {
     if (m_dpreg == M_DPREG_MULTIPLY) {
         uint32_t ra_index = extract_bits(RA_DPREG_MULT_START,
                                           RA_DPREG_MULT_END, instr);
-        uint32_t x_mult = extract_bits(X_DPREG_MULT_START,
+        uint32_t x_mult   = extract_bits(X_DPREG_MULT_START,
                                         X_DPREG_MULT_END, instr);
         uint64_t ra_mult = read_dp_register(ra_index) & mask;
         uint64_t product = (rn * rm) & mask;
@@ -90,12 +87,11 @@ void dpreg(uint32_t instr) {
 
         write_dp_result(rd_index, sf_dpreg, entry);
     } else {
-        uint32_t opr0 = extract_bits(OPR0_DPREG_START, OPR0_DPREG_END,
-                                      instr);
+        uint32_t opr0 = extract_bits(OPR0_DPREG_START, OPR0_DPREG_END, instr);
         uint32_t shift_type = extract_bits(SHIFT_DPREG_START,
-                                            SHIFT_DPREG_END, instr);
+                                           SHIFT_DPREG_END, instr);
         uint32_t shift_dist = extract_bits(SHIFT_DIST_DPREG_START,
-                                            SHIFT_DIST_DPREG_END, instr);
+                                           SHIFT_DIST_DPREG_END, instr);
         uint64_t operand2 = shift_operand(rm, shift_type, shift_dist, sf_dpreg);
         if (shift_type == SHIFT_TYPE_ROR && opr0 == OPR0_DPREG_ARITH) {
             fprintf(stderr, "invalid: rotate right with arithmetic op\n");

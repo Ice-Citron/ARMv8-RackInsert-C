@@ -1,22 +1,20 @@
 #include "dp_immediate.h"
 
 void dpimm(uint32_t instr) {
-    pState = (state){false, false, false, false};
-
-    uint32_t sf_dpimm = extract_bits(SF_DPIMM_START, SF_DPIMM_END, instr);
+    uint32_t sf_dpimm  = extract_bits(SF_DPIMM_START, SF_DPIMM_END, instr);
     uint32_t opc_dpimm = extract_bits(OPC_DPIMM_START, OPC_DPIMM_END, instr);
     uint32_t opi_dpimm = extract_bits(OPI_DPIMM_START, OPI_DPIMM_END, instr);
-    uint32_t rd_dpimm = extract_bits(RD_DPIMM_START, RD_DPIMM_END, instr);
+    uint32_t rd_dpimm  = extract_bits(RD_DPIMM_START, RD_DPIMM_END, instr);
     uint64_t mask = mask_from_sf(sf_dpimm);
     uint64_t entry = 0;
 
     if (opi_dpimm == OPI_DPIMM_ARITH) {
-        uint32_t rn_arith = extract_bits(RN_DPIMM_ARITH_START,
-                                          RN_DPIMM_ARITH_END, instr);
+        uint32_t rn_arith    = extract_bits(RN_DPIMM_ARITH_START,
+                                            RN_DPIMM_ARITH_END, instr);
         uint32_t shift_arith = extract_bits(SH_DPIMM_ARITH_START,
-                                             SH_DPIMM_ARITH_END, instr);
-        uint64_t operand2 = extract_bits(IMM12_DPIMM_START,
-                                          IMM12_DPIMM_END, instr);
+                                            SH_DPIMM_ARITH_END, instr);
+        uint64_t operand2    = extract_bits(IMM12_DPIMM_START,
+                                            IMM12_DPIMM_END, instr);
         uint64_t rn_value = read_dp_register(rn_arith) & mask;
 
         if (shift_arith) {
