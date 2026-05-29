@@ -23,6 +23,14 @@ static uint64_t mask_from_sf(uint32_t sf) {return sf == 0 ? UINT32_MAX : UINT64_
 
 void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry, uint64_t* regs);
 
+static inline uint8_t sign32 (uint64_t target) {
+    return (target >> 31) & 1;
+}
+
+static inline uint8_t sign64 (uint64_t target) {
+    return (target >> 63) & 1;
+}
+
 static inline void update_zero_flag(state* state, uint64_t target) {
     state->z = target == 0;
 }
@@ -35,6 +43,10 @@ static inline void update_negative_flag64(state* state, uint64_t target) {
     state->n = extract_bits(63, 63, target) == 1;
 }
 
-static uint64_t read_dp_register(uint32_t regindex, uint64_t* regs) {
+static inline uint64_t read_dp_register(uint32_t regindex, uint64_t* regs) {
     return regindex == ZERO_REGISTER_INDEX ? 0 : regs[regindex];
+}
+
+static inline uint64_t flag_register_value(uint32_t regindex) {
+    return read_dp_register(regindex, registers);
 }
