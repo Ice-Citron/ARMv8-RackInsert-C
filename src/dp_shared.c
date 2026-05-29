@@ -3,6 +3,7 @@
 
 #include "dp_shared.h"
 
+
 static void add32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2) {
     update_zero_flag(state, target);
     update_negative_flag32(state, target);

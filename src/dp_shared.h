@@ -9,6 +9,11 @@
 #define DP_OPC_SUB_SETFLAG 3
 
 #define DP_16BIT_MASK UINT16_MAX
+
+
+void dpimm(uint32_t instr);
+void dpreg(uint32_t instr);
+
 static void add32flags(uint32_t regindex, uint64_t target, state* state, 
                        uint64_t operand2);
 static void add64flags(uint32_t regindex, uint64_t target, state* state, 
@@ -48,10 +53,10 @@ static inline void update_negative_flag64(state* state, uint64_t target) {
     state->n = extract_bits(63, 63, target) == 1;
 }
 
-static inline uint64_t read_dp_register(uint32_t regindex, uint64_t* regs) {
-    return regindex == ZERO_REGISTER_INDEX ? 0 : regs[regindex];
+static inline uint64_t read_dp_register(uint32_t regindex) {
+    return regindex == ZERO_REGISTER_INDEX ? 0 : registers[regindex]; // regs[regindex];
 }
 
 static inline uint64_t flag_register_value(uint32_t regindex) {
-    return read_dp_register(regindex, registers);
+    return read_dp_register(regindex);
 }

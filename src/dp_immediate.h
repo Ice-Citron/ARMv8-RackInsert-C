@@ -30,6 +30,4 @@
 #define OPC_DPIMM_MOVZ 2
 #define OPC_DPIMM_MOVK 3
 
-void dpimm(uint32_t instr);
-
 #endif

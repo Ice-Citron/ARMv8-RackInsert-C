@@ -52,8 +52,8 @@ void dpreg(uint32_t instr) {
     uint32_t rn_index = extract_bits(RN_DPREG_START, RN_DPREG_END, instr);
     uint32_t rm_index = extract_bits(RM_DPREG_START, RM_DPREG_END, instr);
     uint64_t mask = mask_from_sf(sf_dpreg);
-    uint64_t rn = read_dp_register(rn_index, *registers) & mask;
-    uint64_t rm = read_dp_register(rm_index, *registers) & mask;
+    uint64_t rn = read_dp_register(rn_index) & mask;
+    uint64_t rm = read_dp_register(rm_index) & mask;
     uint64_t entry = 0;
 
     if (m_dpreg == M_DPREG_MULTIPLY) {
@@ -61,7 +61,7 @@ void dpreg(uint32_t instr) {
                                           RA_DPREG_MULT_END, instr);
         uint32_t x_mult = extract_bits(X_DPREG_MULT_START,
                                         X_DPREG_MULT_END, instr);
-        uint64_t ra_mult = read_dp_register(ra_index, *registers) & mask;
+        uint64_t ra_mult = read_dp_register(ra_index) & mask;
         uint64_t product = (rn * rm) & mask;
 
         if (x_mult == X_DPREG_MADD) {

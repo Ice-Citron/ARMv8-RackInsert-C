@@ -11,7 +11,6 @@
 #define ZERO_REGISTER_INDEX 31
 #define HALT_INSTRUCTION 0x8a000000
 
-
 typedef struct {
     bool n;
     bool z;
@@ -19,9 +18,11 @@ typedef struct {
     bool v;
 } state;
 
+#define INITIAL_PSTATE ((state){ .n = false, .z = true, .c = false, .v = false})
+
 extern uint8_t memory[MEM_SIZE];
 extern uint64_t registers[REGS];
 extern uint64_t pc;
-extern state pState; // = {false, false, false, false};
+extern state pState;
 
 #endif

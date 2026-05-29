@@ -41,6 +41,4 @@
 #define OPC_DPREG_ORR 1
 #define OPC_DPREG_EOR 2
 
-void dpreg(uint32_t instr);
-
 #endif
