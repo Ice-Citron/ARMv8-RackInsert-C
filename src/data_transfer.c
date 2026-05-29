@@ -76,8 +76,12 @@ void single_data_transfer(const uint32_t instr) {
     }
     else // IS_LOAD_LITERAL
     {
-        const uint32_t simm19 = extract_bits(23, 5, instr); // sign extend to 64
-        const uint64_t offset = simm19 << 2; // simm19 * 4
+        const uint32_t simm19 = extract_bits(23, 5, instr);
+        uint64_t offset = simm19 << 2; // simm19 * 4
+        if (extract_bits(20, 20, offset) & 1)
+        {
+            offset |= 0xfffffffffff00000; // sign extend to 64
+        }
         const uint64_t target = pc + offset;
         load_operation(rtAddr, target, numOfBytes);
     }
