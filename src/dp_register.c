@@ -97,7 +97,10 @@ void dpreg(uint32_t instr) {
         uint32_t shift_dist = extract_bits(SHIFT_DIST_DPREG_START,
                                             SHIFT_DIST_DPREG_END, instr);
         uint64_t operand2 = shift_operand(rm, shift_type, shift_dist, sf_dpreg);
-
+        if (shift_type == SHIFT_TYPE_ROR && opr0 == OPR0_DPREG_ARITH) {
+            fprintf(stderr, "invalid: rotate right with arithmetic op");
+            exit(1);
+        }
         if (opr0 == OPR0_DPREG_ARITH) {
             if (opc_dpreg < DP_OPC_SUBTRACT_START) {
                 entry = (rn + operand2) & mask;
