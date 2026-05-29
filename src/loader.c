@@ -2,6 +2,7 @@
 #include "emulate.h"
 #include "dp_shared.h"
 #include "data_transfer.h"
+#include "branch.h"
 
 bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
     FILE* file = fopen(path, "rb");
@@ -36,36 +37,31 @@ uint32_t fetch_u32_le(const uint8_t memory[], uint64_t address) {
          | ((uint32_t)memory[address + 0] << 0);
 }
 
-void decode_and_execute(uint32_t instr) {
+bool decode_and_execute(uint32_t instr) {
     switch (extract_bits(28, 25, instr)) {
         // 100x: Data Processing (Immediate)
-        case 8:
-        case 9:
+        case 0x08:
+        case 0x09:
             dpimm(instr);
-            break;
-
+            return false;
         // x101: Data Processing (Register)
-        case 5:
-        case 13:
+        case 0x05:
+        case 0x0d:
             dpreg(instr);
-            break;
-
+            return false;
         // x1x0: Loads and Stores
-        case 4:
-        case 6:
-        case 12:
-        case 14:
+        case 0x04:
+        case 0x06:
+        case 0x0c:
+        case 0x0e:
             single_data_transfer(instr);
-            break;
-
-        case 10:
-        case 11:
-            // execute_branch(instr);
-            break;
-
+            return false;
+        case 0x0a:
+        case 0x0b:
+            return execute_branch(instr);
         default:
             fprintf(stderr, "ERROR: Unrecognised instruction type!\n");
-            break;
+            return false;
     }
 }
 
@@ -75,9 +71,10 @@ void run_emulator(void) {
         if (curr_instruction == HALT_INSTRUCTION) {
             break;
         }
-        decode_and_execute(curr_instruction);
-        // uint32_t old_pc;
-        pc += 4;
+        bool pc_changed = decode_and_execute(curr_instruction);
+        if (!pc_changed) {
+            pc += 4;
+        }
     }
 }
 

@@ -53,18 +53,16 @@ void single_data_transfer(const uint32_t instr) {
         }
         else if (extract_bits(10, 10, instr) == PRE_POST_INDEXED)
         {
-            const int simm9 = get_signed_value_from_bits(20, 12, instr);
+            const long long simm9 = get_signed_value_from_bits(20, 12, instr);
             if (extract_bits(11, 11, instr) == PRE_INDEXED)
             {
-                target += simm9;
-                registers[xnAddr] = target;
+                registers[xnAddr] = (uint64_t)((long long)target + simm9);
                 perform_load_or_store(rtAddr, target, numOfBytes, operation);
             }
             else // POST_INDEXED
             {
                 perform_load_or_store(rtAddr, target, numOfBytes, operation);
-                target += simm9;
-                registers[xnAddr] = target;
+                registers[xnAddr] = (uint64_t)((long long)target + simm9);
             }
         }
         else if (extract_bits(15, 10, instr) == IS_REG_OFFSET_MODE) // register offset
