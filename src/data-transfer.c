@@ -1,6 +1,4 @@
-#include "bit_manipulation.h"
 #include "data-transfer.h"
-#include "emulate.h"
 
 
 void load_operation(const uint32_t rtAddr, const uint64_t target, const int n) {

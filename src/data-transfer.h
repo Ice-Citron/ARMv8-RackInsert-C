@@ -1,6 +1,9 @@
 #ifndef DATA_TRANSFER_H
 #define DATA_TRANSFER_H
 
+#include "emulate.h"
+#include "bit_manipulation.h"
+
 #define UNSIGNED_IMM_OFFSET 1
 #define PRE_POST_INDEXED 1
 #define PRE_INDEXED 1
