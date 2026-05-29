@@ -23,7 +23,6 @@ bool load_program(const char *path, size_t *bytes_loaded) {
         fclose(file);
         return false;
     }
-
     fclose(file);   // fclose to free up file-pointer to prevent memory leak.
     *bytes_loaded = bytes_read;
     return true;
@@ -37,27 +36,24 @@ uint32_t fetch_u32_le(uint64_t address) {
          | ((uint32_t)memory[address + 0] << 0);
 }
 
-bool decode_and_execute(uint32_t instr) {
-    switch (extract_bits(28, 25, instr)) {
-        // 100x: Data Processing (Immediate)
-        case 0x08:
-        case 0x09:
+static bool decode_and_execute(uint32_t instr) {
+    switch (extract_bits(OP0_HI, OP0_LO, instr)) {
+        case OP0_DP_IMM_1000:
+        case OP0_DP_IMM_1001:
             dpimm(instr);
             return false;
-        // x101: Data Processing (Register)
-        case 0x05:
-        case 0x0d:
+        case OP0_DP_REG_0101:
+        case OP0_DP_REG_1101:
             dpreg(instr);
             return false;
-        // x1x0: Loads and Stores
-        case 0x04:
-        case 0x06:
-        case 0x0c:
-        case 0x0e:
+        case OP0_LOAD_STORE_0100:
+        case OP0_LOAD_STORE_0110:
+        case OP0_LOAD_STORE_1100:
+        case OP0_LOAD_STORE_1110:
             single_data_transfer(instr);
             return false;
-        case 0x0a:
-        case 0x0b:
+        case OP0_BRANCH_1010:
+        case OP0_BRANCH_1011:
             return execute_branch(instr);
         default:
             fprintf(stderr, "ERROR: Unrecognised instruction type!\n");
@@ -73,7 +69,7 @@ void run_emulator(void) {
         }
         bool pc_changed = decode_and_execute(curr_instruction);
         if (!pc_changed) {
-            pc += 4;
+            pc += INSTRUCTION_BYTES;
         }
     }
 }
@@ -90,7 +86,7 @@ void write_final_state(FILE *file) {
     char w = (pState.v == true) ? 'V' : '-';
     fprintf(file, "PSTATE : %c%c%c%c\n", n, z, c, w);
     fprintf(file, "Non-zero memory: \n");
-    for (int i = 0; i <= MEM_SIZE - 4; i += 4) {
+    for (int i = 0; i <= MEM_SIZE - WORD_BYTES; i += WORD_BYTES) {
         uint32_t word = fetch_u32_le(i);
         if (memory[i] != 0) {
             fprintf(file, "0x%08"PRIx64": 0x%08"PRIx32"\n", (uint16_t)i, word);
