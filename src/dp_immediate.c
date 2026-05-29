@@ -64,7 +64,7 @@ void dpimm(uint32_t instr) {
             entry = (read_dp_register(rd_dpimm) | mask_16_bits) & shifted;
             break;
         default:
-            fprintf(stderr, "invalid opcode for dp imm widemove");
+            fprintf(stderr, "invalid opcode for dp imm widemove\n");
             exit(1);
             return;
         } 

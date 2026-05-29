@@ -19,14 +19,14 @@ static uint32_t extract_bits (const uint8_t start, const uint8_t end,
     return (bitmask(start, end) & target) >> end;
 }
 
-static int get_signed_value_from_bits(
+static long long get_signed_value_from_bits(
     const uint8_t start,
     const uint8_t end,
     const uint32_t target)
 {
     const uint8_t width = start - end + 1;
     const uint32_t unsigned_val = extract_bits(start, end, target);
-    int val = unsigned_val;
+    long long val = (long long)unsigned_val;
     if ((unsigned_val >> (width - 1)) & 1)
     {
         val -= (unsigned_val >> (width - 1)) << width;
