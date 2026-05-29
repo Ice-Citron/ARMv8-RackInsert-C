@@ -1,6 +1,7 @@
 #include "loader.h"
 #include "emulate.h"
 #include "dp_shared.h"
+#include "data_transfer.h"
 
 
 bool load_program(const char *path, uint8_t memory[], size_t *bytes_loaded) {
@@ -54,7 +55,7 @@ void decode_and_execute(uint32_t instr) {
         case 6:
         case 12:
         case 14:
-            // execute_load_store(instr);
+            single_data_transfer(instr);
             break;
 
         case 10:

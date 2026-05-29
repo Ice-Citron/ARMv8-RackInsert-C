@@ -47,9 +47,9 @@ void dpimm(uint32_t instr) {
         write_dp_result(rd_dpimm, sf_dpimm, entry);
     } else if (opi_dpimm == OPI_DPIMM_WIDE_MOVE) {
         uint32_t hw_wm = extract_bits(SH_DPIMM_WM_START, SH_DPIMM_WM_END,
-                                       instr);
+                                      instr);
         uint64_t imm16_wm = extract_bits(IMM16_DPIMM_WM_START,
-                                          IMM16_DPIMM_WM_END, instr);
+                                         IMM16_DPIMM_WM_END, instr);
         uint32_t shift = DPIMM_WIDE_MOVE_SHIFT_FACTOR * hw_wm;
         uint64_t shifted = (imm16_wm << shift) & mask;
         
