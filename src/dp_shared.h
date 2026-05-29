@@ -9,9 +9,18 @@
 #define DP_OPC_SUB_SETFLAG 3
 
 #define DP_16BIT_MASK UINT16_MAX
+static void add32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2);
+
+static void add64flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2);
+
+static void sub32flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2);
+
+static void sub64flags(uint32_t regindex, uint64_t target, state* state, uint64_t operand2);
 
 static uint32_t get32from64(uint64_t target) {return (uint32_t) target;}
+
 static uint64_t mask_from_sf(uint32_t sf) {return sf == 0 ? UINT32_MAX : UINT64_MAX;}
+
 void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry, uint64_t* regs);
 
 static inline void update_zero_flag(state* state, uint64_t target) {
@@ -19,11 +28,11 @@ static inline void update_zero_flag(state* state, uint64_t target) {
 }
 
 static inline void update_negative_flag32(state* state, uint64_t target) {
-    state->n = sign32(target) == 1;
+    state->n = extract_bits(31, 31, target) == 1;
 }
 
 static inline void update_negative_flag64(state* state, uint64_t target) {
-    state->n = sign64(target) == 1;
+    state->n = extract_bits(63, 63, target) == 1;
 }
 
 static uint64_t read_dp_register(uint32_t regindex, uint64_t* regs) {
