@@ -17,9 +17,18 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
     }
     if (shift_type == SHIFT_TYPE_ASR) {
         if (sf == 0) {
-            return (uint32_t)((int32_t)operand >> shift_dist);
+            uint32_t answer = ((int32_t)operand >> shift_dist);
+            if (extract_bits(31, 31, operand) == 1) {
+                answer = answer | (bitmask(shift_dist, 1) << (31 - shift_dist));
+            }
+            return answer;
+        } else {
+            uint64_t answer = ((int64_t)operand >> shift_dist);
+            if (extract_bits(63, 63, operand) == 1) {
+                answer = answer | (bitmask(shift_dist, 1) << (63 - shift_dist));
+            }
+            return answer;
         }
-        return (uint64_t)((int64_t)operand >> shift_dist);
     }
 
     shift_dist %= width;
