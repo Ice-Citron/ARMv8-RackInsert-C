@@ -7,44 +7,27 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
     operand &= mask;
     if (shift_dist == 0) {
         return operand;
-    }
-    if (shift_type == SHIFT_TYPE_LSL) {
+    } else if (shift_type == SHIFT_TYPE_LSL) {
         return (operand << shift_dist) & mask;
-    }
-    if (shift_type == SHIFT_TYPE_LSR) {
+    } else if (shift_type == SHIFT_TYPE_LSR) {
         return operand >> shift_dist;
-    }
-    if (shift_type == SHIFT_TYPE_ASR) {
+    } else if (shift_type == SHIFT_TYPE_ASR) {
         if (sf == 0) {
-            uint32_t answer = ((int32_t)operand >> shift_dist);
-            if (sign32(operand)) {
-                answer = answer | (bitmask(shift_dist, 1) << (31 - shift_dist));
-            }
-            return answer;
+            return (uint32_t)((int32_t)operand >> shift_dist);
         } else {
-            uint64_t answer = ((int64_t)operand >> shift_dist);
-            if (sign64(operand)) {
-                answer = answer | (bitmask(shift_dist, 1) << (63 - shift_dist));
-            }
-            return answer;
+            return (uint64_t)((int64_t)operand >> shift_dist);
         }
-    }
-    if (shift_type == SHIFT_TYPE_ROR) {
-        if (sf == 0) {
-            return (extract_bits(shift_dist - 1, 0, operand) <<
-            (32 - shift_dist)) | extract_bits(31, shift_dist, operand);
-        } else {
-            return (extract_bits(shift_dist - 1, 0, operand) <<
-            (64 - shift_dist)) | extract_bits(63, shift_dist, operand);
+    } else if (shift_type == SHIFT_TYPE_ROR) {
+        shift_dist %= width;
+        if (shift_dist == 0) {
+            return operand;
         }
+        return ((operand >> shift_dist) | (operand << (width - shift_dist))) & mask;
+    } else {
+        fprintf(stderr, "ERROR: Invalid shift type/dist detected.");
+        return -1;
     }
     
-
-    shift_dist %= width;
-    if (shift_dist == 0) {
-        return operand;
-    }
-    return ((operand >> shift_dist) | (operand << (width - shift_dist))) & mask;
 }
 
 static void ands_bics_set__flags(uint64_t entry, uint32_t sf) {

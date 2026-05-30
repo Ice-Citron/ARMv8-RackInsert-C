@@ -42,12 +42,9 @@ void single_data_transfer(const uint32_t instr) {
         if (extract_bits(24, 24, instr) == UNSIGNED_IMM_OFFSET) // unsigned immediate offset
         {
             const uint32_t imm12 = extract_bits(21, 10, instr);
-            if (sizeToggle == IS_32BIT_RES) // sf is 1 so we're changing in 32 bit mode
-            {
+            if (sizeToggle == IS_32BIT_RES) {
                 target += (imm12 << 2); // imm12 * 4
-            }
-            else
-            {
+            } else {
                 target += (imm12 << 3); // imm12 * 8
             }
             perform_load_or_store(rtAddr, target, numOfBytes, operation);
@@ -57,13 +54,15 @@ void single_data_transfer(const uint32_t instr) {
             const long long simm9 = get_signed_value_from_bits(20, 12, instr);
             if (extract_bits(11, 11, instr) == PRE_INDEXED)
             {
-                registers[xnAddr] = (uint64_t)((long long)target + simm9);
+                target = (long long)target + simm9;
+                registers[xnAddr] = (uint64_t)target;
                 perform_load_or_store(rtAddr, target, numOfBytes, operation);
             }
             else // POST_INDEXED
             {
                 perform_load_or_store(rtAddr, target, numOfBytes, operation);
-                registers[xnAddr] = (uint64_t)((long long)target + simm9);
+                target = (long long)target + simm9;
+                registers[xnAddr] = (uint64_t)target;
             }
         }
         else if (extract_bits(15, 10, instr) == IS_REG_OFFSET_MODE) // register offset

@@ -4,14 +4,14 @@ void add32flags(uint32_t rn_value, uint32_t target, uint32_t operand2) {
     update_zero_flag(target);
     update_negative_flag32(target);
     pState.c = (uint32_t)operand2 > ~(uint32_t)rn_value;
-    pState.v = sign32(rn_value) == 0 && sign32(target) == 1;
+    pState.v = (sign32(rn_value) == sign32(operand2)) && (sign32(target) != sign32(rn_value));
 }
 
 void add64flags(uint64_t rn_value, uint64_t target, uint64_t operand2) {
     update_zero_flag(target);
     update_negative_flag64(target);
     pState.c = operand2 > ~rn_value;
-    pState.v = sign64(rn_value) == 0 && sign64(target) == 1;
+    pState.v = (sign64(rn_value) == sign64(operand2)) && (sign64(target) != sign64(rn_value));
 }
 
 void sub32flags(uint32_t rn_value, uint32_t target, uint32_t operand2) {
