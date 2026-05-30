@@ -38,8 +38,9 @@
 #define SHIFT_TYPE_ASR 2
 #define SHIFT_TYPE_ROR 3
 
-#define OPC_DPREG_AND 0
-#define OPC_DPREG_ORR 1
-#define OPC_DPREG_EOR 2
+#define OPC_DPREG_AND       0
+#define OPC_DPREG_ORR       1
+#define OPC_DPREG_EOR       2
+#define OPC_DPREG_AND_BRICS 3
 
 #endif

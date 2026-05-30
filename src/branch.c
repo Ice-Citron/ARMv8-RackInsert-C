@@ -1,12 +1,12 @@
 #include "branch.h"
 
-bool unconditional_branch(long long simm26) {
+static bool unconditional_branch(long long simm26) {
     pc = (uint64_t)((long long)pc + simm26);
     return true;
 }
 
-bool register_branch(uint32_t xn) {
-    if (xn == 31) {
+static bool register_branch(uint32_t xn) {
+    if (xn == ZERO_REGISTER_INDEX) {
         fprintf(stderr, "ERROR: Branching with zero-register is invalid.\n");
         return false;
     }
@@ -14,29 +14,22 @@ bool register_branch(uint32_t xn) {
     return true;
 }
 
-bool condition_holds(uint32_t cond) {
+static bool condition_holds(uint32_t cond) {
     switch (cond) {
-        case 0x00: // EQ
+        case EQ_COND:
             return pState.z;
-            break;
-        case 0x01: // NE
+        case NE_COND:
             return !pState.z;
-            break;
-        case 0x0a: // GE
+        case GE_COND:
             return pState.n == pState.v;
-            break;
-        case 0x0b: // LT
+        case LT_COND:
             return pState.n != pState.v;
-            break;
-        case 0x0c: // GT
+        case GT_COND:
             return !pState.z && pState.n == pState.v;
-            break;
-        case 0x0d: // LE
+        case LE_COND:
             return !(!pState.z && pState.n == pState.v);
-            break;
-        case 0x0e: // AL
+        case AL_COND:
             return true;
-            break;
         default:
             fprintf(stderr, "ERROR: Unrecognised branch-instruction "
                             "condition.\n");
@@ -44,7 +37,7 @@ bool condition_holds(uint32_t cond) {
     }
 }
 
-bool conditional_branch(long long simm19, uint32_t cond) {
+static bool conditional_branch(long long simm19, uint32_t cond) {
     bool condition = condition_holds(cond);
     if (condition) {
         pc = (uint64_t)((long long)pc + simm19);
@@ -54,15 +47,17 @@ bool conditional_branch(long long simm19, uint32_t cond) {
 }
 
 bool execute_branch(uint32_t instr) {
-    if (extract_bits(31, 26, instr) == 0x05) {
-        long long simm26 = get_signed_value_from_bits(25, 0, instr) << 2;
+    if (extract_bits(BR_UNCOND_HI, BR_UNCOND_LO, instr) == BR_TYPE_UNCOND) {
+        long long simm26 = get_signed_value_from_bits(BR_SIMM26_HI, 
+                                    BR_SIMM26_LO, instr) << BR_OFFSET_SHIFT;
         return unconditional_branch(simm26);
-    } else if (extract_bits(31, 10, instr) == 0x3587c0) {
-        uint32_t xn = extract_bits(9, 5, instr);
+    } else if (extract_bits(BR_REG_HI, BR_REG_LO, instr) == BR_TYPE_REG) {
+        uint32_t xn = extract_bits(BR_XN_HI, BR_XN_LO, instr);
         return register_branch(xn);
-    } else if (extract_bits(31, 24, instr) == 0x54) {
-        long long simm19 = get_signed_value_from_bits(23, 5, instr) << 2;
-        uint32_t cond = extract_bits(3, 0, instr);
+    } else if (extract_bits(BR_COND_HI, BR_COND_LO, instr) == BR_TYPE_COND) {
+        long long simm19 = get_signed_value_from_bits(BR_SIMM19_HI, 
+                                    BR_SIMM19_LO, instr) << BR_OFFSET_SHIFT;
+        uint32_t cond = extract_bits(BR_COND_CODE_HI, BR_COND_CODE_LO, instr);
         return conditional_branch(simm19, cond);
     } else {
         fprintf(stderr, "ERROR: Unknown type of branch instruction.\n");
