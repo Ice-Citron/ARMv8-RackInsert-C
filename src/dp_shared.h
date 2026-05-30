@@ -19,6 +19,13 @@ void sub32flags(uint32_t regindex, uint64_t target, uint64_t operand2);
 void sub64flags(uint32_t regindex, uint64_t target, uint64_t operand2);
 void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry);
 
+static inline void clear_pstate_flags(void) {
+    pState.n = false;
+    pState.z = false;
+    pState.c = false;
+    pState.v = false;
+}
+
 static inline uint64_t mask_from_sf(uint32_t sf) { 
     return sf == 0 ? UINT32_MAX : UINT64_MAX; 
 }

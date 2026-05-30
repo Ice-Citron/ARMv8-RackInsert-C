@@ -47,7 +47,7 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
     return ((operand >> shift_dist) | (operand << (width - shift_dist))) & mask;
 }
 
-static void set_logic_flags(uint64_t entry, uint32_t sf) {
+static void ands_bics_set__flags(uint64_t entry, uint32_t sf) {
     uint64_t masked = entry & mask_from_sf(sf);
     if (sf == 0) {
         update_negative_flag32(masked);
@@ -102,8 +102,10 @@ void dpreg(uint32_t instr) {
                 entry = (rn + operand2) & mask;
                 if (opc_dpreg == DP_OPC_ADD_SETFLAG) {
                     if (sf_dpreg == 0) {
+                        clear_pstate_flags();
                         add32flags(rn_index, entry, operand2);
                     } else {
+                        clear_pstate_flags();
                         add64flags(rn_index, entry, operand2);
                     }
                 }
@@ -111,8 +113,10 @@ void dpreg(uint32_t instr) {
                 entry = (rn - operand2) & mask;
                 if (opc_dpreg == DP_OPC_SUB_SETFLAG) {
                     if (sf_dpreg == 0) {
+                        clear_pstate_flags();
                         sub32flags(rn_index, entry, operand2);
                     } else {
+                        clear_pstate_flags();
                         sub64flags(rn_index, entry, operand2);
                     }
                 }
@@ -132,10 +136,14 @@ void dpreg(uint32_t instr) {
                 case OPC_DPREG_EOR:
                     entry = rn ^ operand2;
                     break;
-                default:
+                case OPC_DPREG_AND_BRICS:
                     entry = rn & operand2;
-                    set_logic_flags(entry, sf_dpreg);
+                    clear_pstate_flags();       // ANDS, BICS
+                    ands_bics_set__flags(entry, sf_dpreg);
                     break;
+                default:
+                    fprintf(stderr, "ERROR: Unrecognised OPC type for Data"
+                                    "Processing instruction (Register).");    
             }
         }
         write_dp_result(rd_index, sf_dpreg, entry);

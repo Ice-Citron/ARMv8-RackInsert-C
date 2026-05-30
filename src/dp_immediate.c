@@ -52,14 +52,15 @@ void dpimm(uint32_t instr) {
         
         switch (opc_dpimm) {
         case OPC_DPIMM_MOVN:
-            entry = shifted | mask;
+            entry = (~shifted) & mask;
             break;
         case OPC_DPIMM_MOVZ: 
             entry = shifted;
             break;
         case OPC_DPIMM_MOVK:
-            uint64_t mask_16_bits = ~((uint64_t) DP_16BIT_MASK << shift);
-            entry = (read_dp_register(rd_dpimm) | mask_16_bits) & shifted;
+            uint64_t old = read_dp_register(rd_dpimm) & mask;
+            uint64_t clear_mask = ~(0xffff << shift) & mask;
+            entry = (old & clear_mask) | shifted;
             break;
         default:
             fprintf(stderr, "invalid opcode for dp imm widemove\n");
