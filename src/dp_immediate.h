@@ -31,5 +31,6 @@
 #define OPC_DPIMM_MOVN 0
 #define OPC_DPIMM_MOVZ 2
 #define OPC_DPIMM_MOVK 3
+#define DP_16BIT_MASK  0xffff
 
 #endif

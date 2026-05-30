@@ -15,7 +15,7 @@ void dpimm(uint32_t instr) {
                                             SH_DPIMM_ARITH_END, instr);
         uint64_t operand2    = extract_bits(IMM12_DPIMM_START,
                                             IMM12_DPIMM_END, instr);
-        uint64_t rn_value = read_dp_register(rn_arith) & mask;
+        uint64_t rn_value    = read_dp_register(rn_arith) & mask;
 
         if (shift_arith) {
             operand2 <<= DPIMM_ARITH_SHIFT_AMOUNT;
@@ -26,18 +26,18 @@ void dpimm(uint32_t instr) {
             entry = (rn_value + operand2) & mask;
             if (opc_dpimm == DP_OPC_ADD_SETFLAG) {
                 if (sf_dpimm == 0) {
-                    add32flags(rn_arith, entry, operand2);
+                    add32flags(rn_value, entry, operand2);
                 } else {
-                    add64flags(rn_arith, entry, operand2);
+                    add64flags(rn_value, entry, operand2);
                 }
             }
         } else {
             entry = (rn_value - operand2) & mask;
             if (opc_dpimm == DP_OPC_SUB_SETFLAG) {
                 if (sf_dpimm == 0) {
-                    sub32flags(rn_arith, entry, operand2);
+                    sub32flags(rn_value, entry, operand2);
                 } else {
-                    sub64flags(rn_arith, entry, operand2);
+                    sub64flags(rn_value, entry, operand2);
                 }
             }
         }
@@ -59,7 +59,7 @@ void dpimm(uint32_t instr) {
             break;
         case OPC_DPIMM_MOVK:
             uint64_t old = read_dp_register(rd_dpimm) & mask;
-            uint64_t clear_mask = ~(0xffff << shift) & mask;
+            uint64_t clear_mask = ~((uint64_t)DP_16BIT_MASK << shift) & mask;
             entry = (old & clear_mask) | shifted;
             break;
         default:

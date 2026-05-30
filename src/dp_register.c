@@ -17,13 +17,13 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
     if (shift_type == SHIFT_TYPE_ASR) {
         if (sf == 0) {
             uint32_t answer = ((int32_t)operand >> shift_dist);
-            if (extract_bits(31, 31, operand) == 1) {
+            if (sign32(operand)) {
                 answer = answer | (bitmask(shift_dist, 1) << (31 - shift_dist));
             }
             return answer;
         } else {
             uint64_t answer = ((int64_t)operand >> shift_dist);
-            if (extract_bits(63, 63, operand) == 1) {
+            if (sign64(operand)) {
                 answer = answer | (bitmask(shift_dist, 1) << (63 - shift_dist));
             }
             return answer;
@@ -103,10 +103,10 @@ void dpreg(uint32_t instr) {
                 if (opc_dpreg == DP_OPC_ADD_SETFLAG) {
                     if (sf_dpreg == 0) {
                         clear_pstate_flags();
-                        add32flags(rn_index, entry, operand2);
+                        add32flags(rn, entry, operand2);
                     } else {
                         clear_pstate_flags();
-                        add64flags(rn_index, entry, operand2);
+                        add64flags(rn, entry, operand2);
                     }
                 }
             } else {
@@ -114,10 +114,10 @@ void dpreg(uint32_t instr) {
                 if (opc_dpreg == DP_OPC_SUB_SETFLAG) {
                     if (sf_dpreg == 0) {
                         clear_pstate_flags();
-                        sub32flags(rn_index, entry, operand2);
+                        sub32flags(rn, entry, operand2);
                     } else {
                         clear_pstate_flags();
-                        sub64flags(rn_index, entry, operand2);
+                        sub64flags(rn, entry, operand2);
                     }
                 }
             }
