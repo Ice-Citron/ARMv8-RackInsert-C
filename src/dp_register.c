@@ -84,11 +84,9 @@ void dpreg(uint32_t instr) {
             if (opc_dpreg < DP_OPC_SUBTRACT_START) {
                 entry = (rn + operand2) & mask;
                 if (opc_dpreg == DP_OPC_ADD_SETFLAG) {
-                    if (sf_dpreg == 0) {
-                        clear_pstate_flags();
+                    if (sf_dpreg == 0) {                      
                         add32flags(rn, entry, operand2);
                     } else {
-                        clear_pstate_flags();
                         add64flags(rn, entry, operand2);
                     }
                 }
@@ -96,10 +94,8 @@ void dpreg(uint32_t instr) {
                 entry = (rn - operand2) & mask;
                 if (opc_dpreg == DP_OPC_SUB_SETFLAG) {
                     if (sf_dpreg == 0) {
-                        clear_pstate_flags();
                         sub32flags(rn, entry, operand2);
                     } else {
-                        clear_pstate_flags();
                         sub64flags(rn, entry, operand2);
                     }
                 }
