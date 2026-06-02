@@ -1,4 +1,5 @@
-#This the the canonical lab .gitignore file
+# Machine-specific .vscode configuration file
+.vscode/c_cpp_properties.json
 
 #ignore temp files
 *~
