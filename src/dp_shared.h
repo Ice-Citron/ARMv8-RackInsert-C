@@ -34,12 +34,12 @@ static inline void update_zero_flag(uint64_t target) {
     pState.z = target == 0;
 }
 
-static inline void update_negative_flag32(uint64_t target) {
-    pState.n = sign32(target);
-}
-
-static inline void update_negative_flag64(uint64_t target) {
-    pState.n = sign64(target);
+static inline void update_negative_flag(uint64_t target, uint32_t sf) {
+    if (sf == 0) { 
+        pState.n = sign32(target); 
+    } else {
+        pState.n = sign64(target);
+    }
 }
 
 static inline uint64_t read_dp_register(uint32_t regindex) {
@@ -50,7 +50,7 @@ static inline uint64_t flag_register_value(uint32_t regindex) {
     return read_dp_register(regindex);
 }
 
-uint64_t compute_add_sub_result(uint32_t switcher, uint64_t rn, 
-                                uint64_t operand2, uint64_t mask, uint32_t sf);
+uint64_t compute_add_sub_result(uint32_t opc, uint64_t rn, uint64_t operand2, 
+                                uint64_t mask, uint32_t sf);
 
 #endif

@@ -32,11 +32,7 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
 
 static void ands_bics_set__flags(uint64_t entry, uint32_t sf) {
     uint64_t masked = entry & mask_from_sf(sf);
-    if (sf == 0) {
-        update_negative_flag32(masked);
-    } else {
-        update_negative_flag64(masked);
-    }
+    update_negative_flag(masked, sf);
     update_zero_flag(masked);
     pState.c = false;
     pState.v = false;

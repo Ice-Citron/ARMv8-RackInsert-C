@@ -8,7 +8,7 @@ static bool unconditional_branch(long long simm26) {
 static bool register_branch(uint32_t xn) {
     if (xn == ZERO_REGISTER_INDEX) {
         fprintf(stderr, "ERROR: Branching with zero-register is invalid.\n");
-        return false;
+        exit(EXIT_FAILURE);
     }
     pc = registers[xn];
     return true;
