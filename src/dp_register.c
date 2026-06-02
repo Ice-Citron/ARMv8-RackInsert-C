@@ -25,7 +25,7 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
         return ((operand >> shift_dist) | (operand << (width - shift_dist))) & mask;
     } else {
         fprintf(stderr, "ERROR: Invalid shift type/dist detected.");
-        return exit(EXIT_FAILURE);
+        exit(EXIT_FAILURE);
     }
     
 }
