@@ -81,25 +81,7 @@ void dpreg(uint32_t instr) {
             exit(1);
         }
         if (opr0 == OPR0_DPREG_ARITH) {
-            if (opc_dpreg < DP_OPC_SUBTRACT_START) {
-                entry = (rn + operand2) & mask;
-                if (opc_dpreg == DP_OPC_ADD_SETFLAG) {
-                    if (sf_dpreg == 0) {                      
-                        add32flags(rn, entry, operand2);
-                    } else {
-                        add64flags(rn, entry, operand2);
-                    }
-                }
-            } else {
-                entry = (rn - operand2) & mask;
-                if (opc_dpreg == DP_OPC_SUB_SETFLAG) {
-                    if (sf_dpreg == 0) {
-                        sub32flags(rn, entry, operand2);
-                    } else {
-                        sub64flags(rn, entry, operand2);
-                    }
-                }
-            }
+            entry = add_sub_flag(opc_dpreg, entry, rn, operand2, mask, sf_dpreg);
         } else {
             if (extract_bits(N_DPREG_START, N_DPREG_END, instr) == 1) {
                 operand2 = ~operand2 & mask;
