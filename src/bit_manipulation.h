@@ -24,7 +24,6 @@ static long long get_signed_value_from_bits(const uint8_t start,
     const uint8_t width = start - end + 1;
     const uint32_t unsigned_val = extract_bits(start, end, target);
     long long val = (long long)unsigned_val;
-    const bool sign_bit_set = ((unsigned_val >> (width - 1)) & 1u);
     if ((unsigned_val >> (width - 1)) & 1) {
         val -= 1LL << width;    // turns unsigned value into signed equivalent
     }
