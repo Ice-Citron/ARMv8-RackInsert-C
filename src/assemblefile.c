@@ -29,20 +29,23 @@ bool assemblefile(char *infile, char *outfile) {
     (void)init_symtab();
 	bool file_end = false;
 	// Now read all lines from the open file and process them
-	char* end_of_line_ptr = NULL;
-	char* inner_save_ptr = NULL;
-	char* curr_line = strtok_r(infile, "\n", &end_of_line_ptr);
-	while(curr_line != NULL) {
-		char* starting_query = strtok_r(curr_line, " ", &inner_save_ptr);
+
+	char full_line_buffer[512];
+
+	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
+		char* inner_save_ptr = NULL;
+		char* starting_query = strtok_r(full_line_buffer, " \t\n",
+			&inner_save_ptr);
 		// dictate what to do from here
-		char* args_of_query = strtok_r(NULL, ", ", &inner_save_ptr);
+		char* args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
 		while(args_of_query != NULL)
 		{
 			// do what I must here
-			args_of_query = strtok_r(NULL, ", ", &inner_save_ptr);
+			args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
 		}
 	}
 	fclose(in);
+	fclose(out);
     //true if no errors, false if have errors
     return true;
 }
