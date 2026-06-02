@@ -1,5 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 // bool ok = assemblefile( filename );
 //	Takes the name of a .as file, opens it, assembles it,
 //	producing either one or more error messages (and returning false)
@@ -27,12 +29,17 @@ bool assemblefile(char *infile, char *outfile) {
     (void)init_symtab();
 	bool file_end = false;
 	// Now read all lines from the open file and process them
-	char* curr_line = strtok(infile, "\n");
-	while(!file_end) {
-		curr_line = strtok(NULL, "\n");
-		//process current line and write file
-		if (curr_line == NULL) {
-			file_end = true;
+	char* end_of_line_ptr = NULL;
+	char* inner_save_ptr = NULL;
+	char* curr_line = strtok_r(infile, "\n", &end_of_line_ptr);
+	while(curr_line != NULL) {
+		char* starting_query = strtok_r(curr_line, " ", &inner_save_ptr);
+		// dictate what to do from here
+		char* args_of_query = strtok_r(NULL, ", ", &inner_save_ptr);
+		while(args_of_query != NULL)
+		{
+			// do what I must here
+			args_of_query = strtok_r(NULL, ", ", &inner_save_ptr);
 		}
 	}
 	fclose(in);
