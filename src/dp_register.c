@@ -25,7 +25,7 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
         return ((operand >> shift_dist) | (operand << (width - shift_dist))) & mask;
     } else {
         fprintf(stderr, "ERROR: Invalid shift type/dist detected.");
-        return -1;
+        return exit(EXIT_FAILURE);
     }
     
 }
@@ -77,8 +77,8 @@ void dpreg(uint32_t instr) {
                                            SHIFT_DIST_DPREG_END, instr);
         uint64_t operand2 = shift_operand(rm, shift_type, shift_dist, sf_dpreg);
         if (shift_type == SHIFT_TYPE_ROR && opr0 == OPR0_DPREG_ARITH) {
-            fprintf(stderr, "invalid: rotate right with arithmetic op\n");
-            exit(1);
+            fprintf(stderr, "ERROR: Invalid rotate right with arithmetic op\n");
+            exit(EXIT_FAILURE);
         }
         if (opr0 == OPR0_DPREG_ARITH) {
             entry = compute_add_sub_result(opc_dpreg, rn, operand2, mask, 
@@ -105,7 +105,8 @@ void dpreg(uint32_t instr) {
                     break;
                 default:
                     fprintf(stderr, "ERROR: Unrecognised OPC type for Data"
-                                    "Processing instruction (Register).");    
+                                    "Processing instruction (Register).");
+                    exit(EXIT_FAILURE);
             }
         }
         write_dp_result(rd_index, sf_dpreg, entry);

@@ -45,7 +45,7 @@ void dpimm(uint32_t instr) {
                 break;
             default:
                 fprintf(stderr, "invalid opcode for dp imm widemove\n");
-                exit(1);
+                exit(EXIT_FAILURE);
                 return;
         } 
         write_dp_result(rd_dpimm, sf_dpimm, entry);

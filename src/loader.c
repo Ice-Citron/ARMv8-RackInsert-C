@@ -57,7 +57,7 @@ static bool decode_and_execute(uint32_t instr) {
             return execute_branch(instr);
         default:
             fprintf(stderr, "ERROR: Unrecognised instruction type!\n");
-            return false;
+            exit(EXIT_FAILURE);
     }
 }
 

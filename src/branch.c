@@ -33,7 +33,7 @@ static bool condition_holds(uint32_t cond) {
         default:
             fprintf(stderr, "ERROR: Unrecognised branch-instruction "
                             "condition.\n");
-            return false;
+            exit(EXIT_FAILURE);
     }
 }
 
@@ -61,6 +61,6 @@ bool execute_branch(uint32_t instr) {
         return conditional_branch(simm19, cond);
     } else {
         fprintf(stderr, "ERROR: Unknown type of branch instruction.\n");
-        return false;
+        exit(EXIT_FAILURE);
     }    
 }
