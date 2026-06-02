@@ -31,21 +31,21 @@ void dpimm(uint32_t instr) {
         uint32_t shift = DPIMM_WIDE_MOVE_SHIFT_FACTOR * hw_wm;
         uint64_t shifted = (imm16_wm << shift) & mask;
         switch (opc_dpimm) {
-        case OPC_DPIMM_MOVN:
-            entry = (~shifted) & mask;
-            break;
-        case OPC_DPIMM_MOVZ: 
-            entry = shifted;
-            break;
-        case OPC_DPIMM_MOVK:
-            uint64_t old = read_dp_register(rd_dpimm) & mask;
-            uint64_t clear_mask = ~((uint64_t)DP_16BIT_MASK << shift) & mask;
-            entry = (old & clear_mask) | shifted;
-            break;
-        default:
-            fprintf(stderr, "invalid opcode for dp imm widemove\n");
-            exit(1);
-            return;
+            case OPC_DPIMM_MOVN:
+                entry = (~shifted) & mask;
+                break;
+            case OPC_DPIMM_MOVZ: 
+                entry = shifted;
+                break;
+            case OPC_DPIMM_MOVK:
+                uint64_t old = read_dp_register(rd_dpimm) & mask;
+                uint64_t clear_mask = ~((uint64_t)DP_16BIT_MASK << shift) & mask;
+                entry = (old & clear_mask) | shifted;
+                break;
+            default:
+                fprintf(stderr, "invalid opcode for dp imm widemove\n");
+                exit(1);
+                return;
         } 
         write_dp_result(rd_dpimm, sf_dpimm, entry);
     }

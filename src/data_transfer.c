@@ -30,12 +30,10 @@ void single_data_transfer(const uint32_t instr) {
     const uint32_t rtAddr = extract_bits(4, 0, instr);
     const uint32_t sizeToggle = extract_bits(30, 30, instr);
     int numOfBytes = 8;
-    if (sizeToggle == IS_32BIT_RES) // sf is 1 so we're changing in 32 bit mode
-    {
+    if (sizeToggle == IS_32BIT_RES) {// sf is 1 so we're changing in 32 bit mode
         numOfBytes = 4;
     }
-    if (extract_bits(31, 31, instr) == IS_SINGLE_DATA_TRANSFER)
-    {
+    if (extract_bits(31, 31, instr) == IS_SINGLE_DATA_TRANSFER) {
         const uint32_t xnAddr = extract_bits(9, 5, instr);
         const uint32_t operation = extract_bits(22, 22, instr) ;
         uint64_t target = registers[xnAddr];
@@ -74,13 +72,8 @@ void single_data_transfer(const uint32_t instr) {
     }
     else // IS_LOAD_LITERAL
     {
-        const uint32_t simm19 = extract_bits(23, 5, instr);
-        uint64_t offset = simm19 << 2; // simm19 * 4
-        if (extract_bits(20, 20, offset) & 1)
-        {
-            offset |= 0xfffffffffff00000; // sign extend to 64
-        }
-        const uint64_t target = pc + offset;
+        long long offset = get_signed_value_from_bits(23, 5, instr) << 2;
+        uint64_t target = (uint64_t)((long long)pc + offset);
         load_operation(rtAddr, target, numOfBytes);
     }
 }
