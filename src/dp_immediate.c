@@ -21,7 +21,7 @@ void dpimm(uint32_t instr) {
             operand2 <<= DPIMM_ARITH_SHIFT_AMOUNT;
         }
         operand2 &= mask;
-        add_sub_flag(opc_dpimm, entry, rn_value, operand2, mask, sf_dpimm);
+        entry = add_sub_flag(opc_dpimm, entry, rn_value, operand2, mask, sf_dpimm);
         write_dp_result(rd_dpimm, sf_dpimm, entry);
     } else if (opi_dpimm == OPI_DPIMM_WIDE_MOVE) {
         uint32_t hw_wm = extract_bits(SH_DPIMM_WM_START, SH_DPIMM_WM_END,
@@ -30,7 +30,6 @@ void dpimm(uint32_t instr) {
                                          IMM16_DPIMM_WM_END, instr);
         uint32_t shift = DPIMM_WIDE_MOVE_SHIFT_FACTOR * hw_wm;
         uint64_t shifted = (imm16_wm << shift) & mask;
-        
         switch (opc_dpimm) {
         case OPC_DPIMM_MOVN:
             entry = (~shifted) & mask;

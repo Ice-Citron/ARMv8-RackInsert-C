@@ -40,8 +40,8 @@ void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
     }
 }
 
-void add_sub_flag(uint32_t switcher, uint64_t entry, uint64_t rn, 
-    uint64_t operand2, uint64_t mask, uint64_t sf) {
+uint64_t add_sub_flag(uint32_t switcher, uint64_t entry, uint64_t rn, 
+    uint64_t operand2, uint64_t mask, uint32_t sf) {
         if (switcher < DP_OPC_SUB_NOFLAG) {
             entry = (rn + operand2) & mask;
             if (switcher == DP_OPC_ADD_SETFLAG) {
@@ -61,4 +61,5 @@ void add_sub_flag(uint32_t switcher, uint64_t entry, uint64_t rn,
                 }
             }
         }
+        return entry;
     }

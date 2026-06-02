@@ -58,4 +58,7 @@ static inline uint64_t flag_register_value(uint32_t regindex) {
     return read_dp_register(regindex);
 }
 
+uint64_t add_sub_flag(uint32_t switcher, uint64_t entry, uint64_t rn, 
+    uint64_t operand2, uint64_t mask, uint32_t sf);
+
 #endif
