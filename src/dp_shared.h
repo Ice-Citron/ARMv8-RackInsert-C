@@ -30,14 +30,6 @@ static inline uint64_t mask_from_sf(uint32_t sf) {
     return sf == 0 ? UINT32_MAX : UINT64_MAX; 
 }
 
-static inline uint8_t sign32 (uint64_t target) {
-    return (target >> 31) & 1;
-}
-
-static inline uint8_t sign64 (uint64_t target) {
-    return (target >> 63) & 1;
-}
-
 static inline void update_zero_flag(uint64_t target) {
     pState.z = target == 0;
 }
