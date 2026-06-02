@@ -21,26 +21,7 @@ void dpimm(uint32_t instr) {
             operand2 <<= DPIMM_ARITH_SHIFT_AMOUNT;
         }
         operand2 &= mask;
-
-        if (opc_dpimm < DP_OPC_SUBTRACT_START) {
-            entry = (rn_value + operand2) & mask;
-            if (opc_dpimm == DP_OPC_ADD_SETFLAG) {
-                if (sf_dpimm == 0) {
-                    add32flags(rn_value, entry, operand2);
-                } else {
-                    add64flags(rn_value, entry, operand2);
-                }
-            }
-        } else {
-            entry = (rn_value - operand2) & mask;
-            if (opc_dpimm == DP_OPC_SUB_SETFLAG) {
-                if (sf_dpimm == 0) {
-                    sub32flags(rn_value, entry, operand2);
-                } else {
-                    sub64flags(rn_value, entry, operand2);
-                }
-            }
-        }
+        add_sub_flag(opc_dpimm, entry, rn_value, operand2, mask, sf_dpimm);
         write_dp_result(rd_dpimm, sf_dpimm, entry);
     } else if (opi_dpimm == OPI_DPIMM_WIDE_MOVE) {
         uint32_t hw_wm = extract_bits(SH_DPIMM_WM_START, SH_DPIMM_WM_END,

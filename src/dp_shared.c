@@ -39,3 +39,26 @@ void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
         registers[rd] = entry;
     }
 }
+
+void add_sub_flag(uint32_t switcher, uint64_t entry, uint64_t rn, 
+    uint64_t operand2, uint64_t mask, uint64_t sf) {
+        if (switcher < DP_OPC_SUB_NOFLAG) {
+            entry = (rn + operand2) & mask;
+            if (switcher == DP_OPC_ADD_SETFLAG) {
+                if (sf == 0) {
+                    add32flags(rn, entry, operand2);
+                } else {
+                    add64flags(rn, entry, operand2);
+                }
+            }
+        } else {
+            entry = (rn - operand2) & mask;
+            if (switcher == DP_OPC_SUB_SETFLAG) {
+                if (sf == 0) {
+                    sub32flags(rn, entry, operand2);
+                } else {
+                    sub64flags(rn, entry, operand2);
+                }
+            }
+        }
+    }
