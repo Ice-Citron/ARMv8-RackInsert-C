@@ -81,7 +81,8 @@ void dpreg(uint32_t instr) {
             exit(1);
         }
         if (opr0 == OPR0_DPREG_ARITH) {
-            entry = add_sub_flag(opc_dpreg, entry, rn, operand2, mask, sf_dpreg);
+            entry = compute_add_sub_result(opc_dpreg, rn, operand2, mask, 
+                                           sf_dpreg);
         } else {
             if (extract_bits(N_DPREG_START, N_DPREG_END, instr) == 1) {
                 operand2 = ~operand2 & mask;

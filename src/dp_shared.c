@@ -40,8 +40,9 @@ void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
     }
 }
 
-uint64_t add_sub_flag(uint32_t switcher, uint64_t entry, uint64_t rn, 
-    uint64_t operand2, uint64_t mask, uint32_t sf) {
+uint64_t compute_add_sub_result(uint32_t switcher, uint64_t rn, 
+                                uint64_t operand2, uint64_t mask, uint32_t sf) {
+        uint64_t entry;
         switch (switcher) {
             case DP_OPC_ADD_NOFLAG:
                 return (rn + operand2) & mask;;
@@ -66,5 +67,6 @@ uint64_t add_sub_flag(uint32_t switcher, uint64_t entry, uint64_t rn,
             default:
                 fprintf(stderr, "ERROR: Unrecognised opcode for Data"
                                 " Processing.\n");
+                exit(EXIT_FAILURE);
             }
     }

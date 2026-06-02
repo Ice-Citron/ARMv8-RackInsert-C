@@ -16,12 +16,13 @@ void dpimm(uint32_t instr) {
         uint64_t operand2    = extract_bits(IMM12_DPIMM_START,
                                             IMM12_DPIMM_END, instr);
         uint64_t rn_value    = read_dp_register(rn_arith) & mask;
-
+        
         if (shift_arith) {
             operand2 <<= DPIMM_ARITH_SHIFT_AMOUNT;
         }
         operand2 &= mask;
-        entry = add_sub_flag(opc_dpimm, entry, rn_value, operand2, mask, sf_dpimm);
+        entry = compute_add_sub_result(opc_dpimm, rn_value, operand2, mask, 
+                                       sf_dpimm);
         write_dp_result(rd_dpimm, sf_dpimm, entry);
     } else if (opi_dpimm == OPI_DPIMM_WIDE_MOVE) {
         uint32_t hw_wm = extract_bits(SH_DPIMM_WM_START, SH_DPIMM_WM_END,
