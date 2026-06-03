@@ -1,10 +1,8 @@
 #ifndef EMULATOR_LOADER_H
 #define EMULATOR_LOADER_H
 
-#include <stdint.h>
+#include "emulate.h"
 #include <stdlib.h>
-#include <stdio.h>
-#include <stdbool.h>
 #include <inttypes.h>
 
 #define OP0_DP_IMM_1000     0x08

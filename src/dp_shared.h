@@ -4,11 +4,6 @@
 #include "bit_manipulation.h"
 #include "emulate.h"
 
-#define DP_CLEAR_LOWER_32_MASK (~(uint64_t) UINT32_MAX)
-#define DP_OPC_ADD_NOFLAG     0
-#define DP_OPC_ADD_SETFLAG    1
-#define DP_OPC_SUB_NOFLAG     2
-#define DP_OPC_SUB_SETFLAG    3
 #define DP_16BIT_MASK         UINT16_MAX
 
 void dpimm(uint32_t instr);

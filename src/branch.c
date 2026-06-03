@@ -1,4 +1,33 @@
 #include "branch.h"
+#include "bit_manipulation.h"
+
+#define EQ_COND 0u
+#define NE_COND 1u
+#define GE_COND 10u
+#define LT_COND 11u
+#define GT_COND 12u
+#define LE_COND 13u
+#define AL_COND 14u
+
+#define BR_TYPE_UNCOND  0x05
+#define BR_TYPE_REG     0x3587c0
+#define BR_TYPE_COND    0x54
+
+#define BR_UNCOND_HI    31
+#define BR_UNCOND_LO    26
+#define BR_REG_HI       31
+#define BR_REG_LO       10
+#define BR_COND_HI      31
+#define BR_COND_LO      24
+#define BR_SIMM26_HI    25
+#define BR_SIMM26_LO    0
+#define BR_SIMM19_HI    23
+#define BR_SIMM19_LO    5
+#define BR_XN_HI        9
+#define BR_XN_LO        5
+#define BR_COND_CODE_HI 3
+#define BR_COND_CODE_LO 0
+#define BR_OFFSET_SHIFT 2
 
 static bool unconditional_branch(long long simm26) {
     pc = (uint64_t)((long long)pc + simm26);
@@ -48,15 +77,15 @@ static bool conditional_branch(long long simm19, uint32_t cond) {
 
 bool execute_branch(uint32_t instr) {
     if (extract_bits(BR_UNCOND_HI, BR_UNCOND_LO, instr) == BR_TYPE_UNCOND) {
-        long long simm26 = get_signed_value(BR_SIMM26_HI, 
-                                    BR_SIMM26_LO, instr) << BR_OFFSET_SHIFT;
+        long long simm26 = get_signed_value(BR_SIMM26_HI, BR_SIMM26_LO, instr) 
+                                            << BR_OFFSET_SHIFT;
         return unconditional_branch(simm26);
     } else if (extract_bits(BR_REG_HI, BR_REG_LO, instr) == BR_TYPE_REG) {
         uint32_t xn = extract_bits(BR_XN_HI, BR_XN_LO, instr);
         return register_branch(xn);
     } else if (extract_bits(BR_COND_HI, BR_COND_LO, instr) == BR_TYPE_COND) {
-        long long simm19 = get_signed_value(BR_SIMM19_HI, 
-                                    BR_SIMM19_LO, instr) << BR_OFFSET_SHIFT;
+        long long simm19 = get_signed_value(BR_SIMM19_HI, BR_SIMM19_LO, instr) 
+                                            << BR_OFFSET_SHIFT;
         uint32_t cond = extract_bits(BR_COND_CODE_HI, BR_COND_CODE_LO, instr);
         return conditional_branch(simm19, cond);
     } else {
