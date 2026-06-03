@@ -43,7 +43,7 @@ static inline void update_negative_flag(uint64_t target, uint32_t sf) {
 }
 
 static inline uint64_t read_dp_register(uint32_t regindex) {
-    return regindex == ZERO_REGISTER_INDEX ? 0 : registers[regindex]; // regs[regindex];
+    return regindex == ZERO_REGISTER_INDEX ? 0 : registers[regindex];
 }
 
 static inline uint64_t flag_register_value(uint32_t regindex) {
