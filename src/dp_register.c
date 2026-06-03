@@ -75,7 +75,7 @@ static uint64_t compute_logical_result(uint32_t instr, uint32_t opcode,
         case OPC_REG_EOR:
             entry = rn ^ operand2;
             break;
-        case OPC_REG_ANDs_BRICS:
+        case OPC_REG_ANDS_BICS:
             entry = rn & operand2;
             clear_pstate_flags();
             set_logical_flags(entry, sf);

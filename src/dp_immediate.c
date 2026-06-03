@@ -1,6 +1,7 @@
 #include "dp_immediate.h"
 
-uint64_t compute_arithmetic_result(uint32_t instr, uint32_t opcode, uint64_t mask, uint32_t sf) {
+static uint64_t compute_arithmetic_result(uint32_t instr, uint32_t opcode, 
+                                          uint64_t mask, uint32_t sf) {
     uint32_t rn_arith    = extract_bits(RN_IMM_ARITH_HI, RN_IMM_ARITH_LO, 
                                         instr);
     uint32_t shift_arith = extract_bits(SH_IMM_ARITH_HI, SH_IMM_ARITH_LO, 
@@ -15,7 +16,7 @@ uint64_t compute_arithmetic_result(uint32_t instr, uint32_t opcode, uint64_t mas
     return compute_add_sub_result(opcode, rn_value, operand2, mask, sf);
 }
 
-uint64_t compute_wide_move_result(uint32_t instr, uint32_t opcode, 
+static uint64_t compute_wide_move_result(uint32_t instr, uint32_t opcode, 
                                          uint32_t rd, uint64_t mask) {
     uint32_t hw_wm    = extract_bits(SH_IMM_WM_HI, SH_IMM_WM_LO, instr);
     uint64_t imm16_wm = extract_bits(IMM16_IMM_WM_HI, IMM16_IMM_WM_LO, instr);
@@ -43,11 +44,15 @@ void dpimm(uint32_t instr) {
     uint32_t opi    = extract_bits(OPI_IMM_HI, OPI_IMM_LO, instr);
     uint32_t rd     = extract_bits(RD_IMM_HI , RD_IMM_LO , instr);
     uint64_t mask   = mask_from_sf(sf);
-    uint64_t entry;
+    uint64_t entry = 0;
     if (opi == OPI_IMM_ARITH) {
         entry = compute_arithmetic_result(instr, opcode, mask, sf);
     } else if (opi == OPI_IMM_WIDE_MOVE) {
         entry = compute_wide_move_result(instr, opcode, rd, mask);
+    } else {
+        fprintf(stderr, "ERROR: Unrecognised opcode for data-processing "
+                        "immediate instruction.\n");
+        exit(EXIT_FAILURE);
     }
     write_dp_result(rd, sf, entry);
 }

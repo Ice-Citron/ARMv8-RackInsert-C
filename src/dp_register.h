@@ -41,6 +41,6 @@
 #define OPC_REG_AND        0
 #define OPC_REG_ORR        1
 #define OPC_REG_EOR        2
-#define OPC_REG_ANDs_BRICS 3
+#define OPC_REG_ANDS_BICS 3
 
 #endif
