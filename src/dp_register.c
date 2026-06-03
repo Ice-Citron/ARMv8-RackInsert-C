@@ -146,7 +146,7 @@ void dpreg(uint32_t instr) {
     } else {
         uint32_t opr0 = extract_bits(OPR0_REG_HI, OPR0_REG_LO, instr);
         uint32_t shift_type = extract_bits(SHIFT_REG_HI, SHIFT_REG_LO, instr);
-        uint32_t shift_dist = extract_bits(SHIFT_DIST_REG_HI, SHIFT_DIST_REG_LO, 
+        uint32_t shift_dist = extract_bits(SHIFT_DIST_REG_HI, SHIFT_DIST_REG_LO,
                                            instr);
         uint64_t operand2 = shift_operand(rm, shift_type, shift_dist, sf);
 

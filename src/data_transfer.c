@@ -66,7 +66,7 @@ static void perform_load_or_store(const uint32_t rt_index,
 }
 
 static void handle_unsigned_offset(const uint32_t instr, uint64_t target, 
-                                   const uint32_t rt_index, const int num_bytes, 
+                                   const uint32_t rt_index, const int num_bytes,
                                    const uint32_t operation, 
                                    const uint32_t size) {
     const uint32_t imm12 = extract_bits(DT_IMM12_HI, DT_IMM12_LO, instr);
