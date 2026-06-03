@@ -52,14 +52,14 @@ void single_data_transfer(const uint32_t instr) {
             const long long simm9 = get_signed_value_from_bits(20, 12, instr);
             if (extract_bits(11, 11, instr) == PRE_INDEXED)
             {
-                target = (long long)target + simm9;
+                target = (uint64_t)((long long)target + simm9);
                 registers[xnAddr] = (uint64_t)target;
                 perform_load_or_store(rtAddr, target, numOfBytes, operation);
             }
             else // POST_INDEXED
             {
                 perform_load_or_store(rtAddr, target, numOfBytes, operation);
-                target = (long long)target + simm9;
+                target = (uint64_t)((long long)target + simm9);
                 registers[xnAddr] = (uint64_t)target;
             }
         }

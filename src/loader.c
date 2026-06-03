@@ -87,7 +87,7 @@ void write_final_state(FILE *file) {
     fprintf(file, "PSTATE : %c%c%c%c\n", n, z, c, w);
     fprintf(file, "Non-zero memory: \n");
     for (int i = 0; i <= MEM_SIZE - WORD_BYTES; i += WORD_BYTES) {
-        uint32_t word = fetch_u32_le(i);
+        uint32_t word = fetch_u32_le((uint64_t)i);
         if (word != 0) {
             fprintf(file, "0x%08"PRIx64": %08"PRIx32"\n", (uint64_t)i, word);
         }
