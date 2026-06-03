@@ -25,12 +25,7 @@ extern uint64_t registers[REGS];
 extern uint64_t pc;
 extern state pState;
 
-static inline uint8_t sign32 (uint64_t target) {
-    return (target >> 31) & 1;
-}
-
-static inline uint8_t sign64 (uint64_t target) {
-    return (target >> 63) & 1;
-}
+static inline uint8_t sign32 (uint64_t target) { return (target >> 31) & 1; }
+static inline uint8_t sign64 (uint64_t target) { return (target >> 63) & 1; }
 
 #endif
