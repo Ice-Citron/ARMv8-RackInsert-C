@@ -6,7 +6,8 @@
 #define DP_OPC_SUB_NOFLAG     2
 #define DP_OPC_SUB_SETFLAG    3
 
-static inline void set_add_flags(uint64_t rn_value, uint64_t target, uint64_t operand2, uint32_t sf) {
+static inline void set_add_flags(uint64_t rn_value, uint64_t target, 
+                                 uint64_t operand2, uint32_t sf) {
     update_zero_flag(target);
     update_negative_flag(target, sf);
     if (sf == 0) {
@@ -20,7 +21,8 @@ static inline void set_add_flags(uint64_t rn_value, uint64_t target, uint64_t op
     }
 }
 
-static inline void set_sub_flags(uint64_t rn_value, uint64_t target, uint64_t operand2, uint32_t sf) {
+static inline void set_sub_flags(uint64_t rn_value, uint64_t target, 
+                                 uint64_t operand2, uint32_t sf) {
     update_zero_flag(target);
     update_negative_flag(target, sf);
     if (sf == 0) {
