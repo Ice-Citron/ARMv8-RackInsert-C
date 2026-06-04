@@ -2,13 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "first_pass_helpers.c"
+#include "symbol_table.c"
+
 // bool ok = assemblefile( filename );
 //	Takes the name of a .as file, opens it, assembles it,
 //	producing either one or more error messages (and returning false)
 //	or produces the .em (listing) file, and returns true.
-// 
+//
 
-bool assemblefile(char *infile, char *outfile) {
+bool assemble_file(char *infile, char *outfile) {
     // open the input file
 	FILE *in = fopen(infile, "r" );
 	if( in == NULL )
@@ -23,14 +26,23 @@ bool assemblefile(char *infile, char *outfile) {
 		fprintf( stderr, "ass: can't create %s\n", outfile );
 		exit(1);
 	}
-	int numberlines;
 
-    //make new symbol table
-    (void)init_symtab();
-	bool file_end = false;
-	// Now read all lines from the open file and process them
+	int pc = 0;
 
 	char full_line_buffer[512];
+	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
+		char* inner_save_ptr = NULL;
+		const char* starting_query = strtok_r(full_line_buffer, " \t\n",
+			&inner_save_ptr);
+		if (!check_in_alias(starting_query) && !check_in_conds(starting_query)
+			&& !check_in_instrs(starting_query))
+		{
+			add_to_symbol_table(starting_query, pc);
+		}
+		pc += 4;
+	}
+	bool file_end = false;
+	// Now read all lines from the open file and process them
 
 	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
 		char* inner_save_ptr = NULL;
