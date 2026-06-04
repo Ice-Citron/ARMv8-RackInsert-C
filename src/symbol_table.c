@@ -1,5 +1,4 @@
 #include "symbol_table.h"
-#include <stdlib.h>
 
 typedef struct {
     uint32_t address;
@@ -27,7 +26,7 @@ uint32_t find_address_from_sym_table(const char *name)
 {
     for (int i = 0; i < symbol_table_size; i++)
     {
-        if (symbol_table[i].name == name)
+        if (strcmp(symbol_table[i].name, name) == 0)
         {
             return symbol_table[i].address;
         }
@@ -41,14 +40,7 @@ void add_to_symbol_table(const char *name, const uint32_t address)
     {
         resize_symbol_table();
     }
-    for (int i = 0; i < MAX_SYMBOL_LEN; i++)
-    {
-        symbol_table[symbol_table_size].name[i] = name[i];
-        if (name[i] == '\0')
-        {
-            break;
-        }
-    }
+    strcpy(symbol_table[symbol_table_size].name, name);
     symbol_table[symbol_table_size].address = address;
     symbol_table_size++;
 }
