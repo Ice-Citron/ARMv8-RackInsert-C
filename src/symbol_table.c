@@ -5,9 +5,9 @@ typedef struct {
     char name[MAX_SYMBOL_LEN];
 } symbol_pair;
 
-symbol_pair *symbol_table;
-int symbol_table_size = 0;
-int symbol_table_capacity = 0;
+static symbol_pair *symbol_table;
+static int symbol_table_size = 0;
+static int symbol_table_capacity = 0;
 
 void init_symbol_table()
 {
