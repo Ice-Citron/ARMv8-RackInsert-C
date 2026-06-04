@@ -1,10 +1,4 @@
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include "first_pass_helpers.c"
-#include "symbol_table.c"
-
+#include "assemble_file.h"
 // bool ok = assemblefile( filename );
 //	Takes the name of a .as file, opens it, assembles it,
 //	producing either one or more error messages (and returning false)
@@ -27,6 +21,8 @@ bool assemble_file(char *infile, char *outfile) {
 		exit(1);
 	}
 
+	// FIRST PASS:
+
 	int pc = 0;
 
 	char full_line_buffer[512];
@@ -41,7 +37,10 @@ bool assemble_file(char *infile, char *outfile) {
 		}
 		pc += 4;
 	}
+
 	bool file_end = false;
+
+	//  SECOND PASS:
 	// Now read all lines from the open file and process them
 
 	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
