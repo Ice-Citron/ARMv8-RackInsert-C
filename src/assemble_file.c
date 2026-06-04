@@ -28,17 +28,30 @@ bool assemble_file(char *infile, char *outfile) {
 	char full_line_buffer[512];
 	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
 		char* inner_save_ptr = NULL;
-		const char* starting_query = strtok_r(full_line_buffer, " \t\n",
+		char* starting_query = strtok_r(full_line_buffer, " \t\n",
 			&inner_save_ptr);
-		if (!check_in_alias(starting_query) && !check_in_conds(starting_query)
-			&& !check_in_instrs(starting_query))
+		if (starting_query == NULL) // in case of extra lines
 		{
+			continue;
+		}
+
+		const size_t len = strlen(starting_query);
+
+		if (starting_query[len-1] == ':') // if last char is : then it's a label
+		{
+			starting_query[len-1] = '\0';
 			add_to_symbol_table(starting_query, pc);
 		}
-		pc += 4;
+		else
+		{
+			pc+=4; // 4 bytes increase on pc
+		}
 	}
 
 	bool file_end = false;
+
+	rewind(in);
+	pc = 0;
 
 	//  SECOND PASS:
 	// Now read all lines from the open file and process them

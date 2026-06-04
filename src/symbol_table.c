@@ -40,7 +40,7 @@ void add_to_symbol_table(const char *name, const uint32_t address)
     {
         resize_symbol_table();
     }
-    strcpy(symbol_table[symbol_table_size].name, name);
+    strncpy(symbol_table[symbol_table_size].name, name, MAX_SYMBOL_LEN - 1);
     symbol_table[symbol_table_size].address = address;
     symbol_table_size++;
 }
