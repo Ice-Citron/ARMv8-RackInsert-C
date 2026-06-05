@@ -1,5 +1,4 @@
 #include "loader.h"
-#include "emulate.h"
 #include "dp_shared.h"
 #include "data_transfer.h"
 #include "branch.h"

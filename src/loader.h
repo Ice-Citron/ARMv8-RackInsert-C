@@ -22,7 +22,6 @@
 #define INSTRUCTION_BYTES 4
 #define WORD_BYTES        4
 
-
 bool load_program(const char *path, size_t *bytes_loaded);
 uint32_t fetch_u32_le(uint64_t address);
 void run_emulator(void);
