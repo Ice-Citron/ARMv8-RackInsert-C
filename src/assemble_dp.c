@@ -1,24 +1,24 @@
 #include <assemble_dp.h>
 
 int assemble_dp(string mnemonic, char *operands[]) {
-    if (mnemonic == "movn" || mnemonic == "movz" || mnemonic == "movk") {
+    if (strcmp(mnemonic,"movn") == 0 || strcmp(mnemonic,"movz") == 0 || strcmp(mnemonic,"movk") == 0) {
         return assemble_wide_move(mnemonic, *operands)
     } 
-    else if (mnemonic == "madd" || mnemonic == "msub" || mnemonic == "mul" || mnemonic == "mneg") {
+    else if (strcmp(mnemonic , "madd") == 0 || strcmp(mnemonic , "msub") == 0 || strcmp(mnemonic ,"mul") == 0 || strcmp(mnemonic , "mneg") == 0) {
         return assemble_multiply(mnemonic, *operands)
     }
-    else if (mnemonic == "add" || mnemonic == "adds" || mnemonic == "sub"
-     || mnemonic == "subs" || mnemonic == "cmp" || mnemonic == "cmn" || mnemonic == "neg" || mnemonic == "negs") {
+    else if (strcmp(mnemonic , "add") == 0 || strcmp(mnemonic ,"adds") == 0 || strcmp(mnemonic , "sub") == 0
+     || strcmp(mnemonic , "subs") == 0 || strcmp(mnemonic , "cmp") == 0 || strcmp(mnemonic, "cmn") == 0 || strcmp(mnemonic , "neg") == 0 || strcmp(mnemonic , "negs") == 0) {
         arithmetic(mnemonic, *operands)
-        if (operands[2][0] == "#") {
+        if (operands[2][0] == '#') {
             return assemble_dp_imm(mnemonic, *operands[])
         }
         else {
             return assemble_dp_reg(mnemonic, *operands[])
         }
     }
-    else if (mnemonic == "and" || mnemonic == "bic" || mnemonic == "orr" || mnemonic == "orn" || mnemonic == "eor" 
-        || mnemonic == "eon" || mnemonic == "ands" || mnemonic == "bics" || mnemonic == "tst" || mnemonic == "mov" || mnemonic == "mvn") {
+    else if (strcmp(mnemonic , "and") == 0 || strcmp(mnemonic , "bic") == 0 || strcmp(mnemonic , "orr") == 0 || strcmp(mnemonic , "orn") == 0 || strcmp(mnemonic , "eor") == 0
+        || strcmp(mnemonic ,"eon") == 0 || strcmp(mnemonic ,"ands") == 0 || strcmp(mnemonic , "bics") == 0 || strcmp(mnemonic , "tst") == 0 || strcmp(mnemonic , "mov") == 0 || strcmp(mnemonic , "mvn") == 0) {
             return assemble_logical_register()
         }
 
