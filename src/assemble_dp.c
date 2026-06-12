@@ -1,8 +1,5 @@
 #include <assemble_dp.h>
 
-#define ZERO_REGISTER_NUMBER 31u
-
-#define DP_FIXED_BIT (1u << 28u)
 #define WIDE_MOVE_OPI (5u << 23u)
 
 #define SF_SHIFT 31u
