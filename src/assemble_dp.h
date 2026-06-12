@@ -4,29 +4,6 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#define ZERO_REGISTER_NUMBER 31u
-
-#define DP_FIXED_BIT 1u << 28u
-#define WIDE_MOVE_OPI 5u << 23u
-#define MULTIPLY_FIXED_BITS 27u << 24u
-
-#define SF_SHIFT 31u
-#define DP_OPC_SHIFT 29u
-#define WIDE_MOVE_HW_SHIFT 21u
-#define WIDE_MOVE_IMM16_SHIFT 5u
-#define WIDE_MOVE_SHIFT_UNIT 16u
-#define WIDE_MOVE_MAX_SHIFT 48u
-#define WIDE_MOVE_IMM16_MASK 0xffffu
-
-#define OPC_MOVN 0u
-#define OPC_MOVZ 2u
-#define OPC_MOVK 3u
-
-#define OPC_MADD 
-
-
-
-
-int assemble_dp(string mnemonic, char *operands[]);
+uint32_t assemble_dp(string mnemonic, char *operands[],size_t operand_count);
 
 #endif
