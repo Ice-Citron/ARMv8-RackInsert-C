@@ -3,10 +3,10 @@
 // Return value of 0 indicates success, 1 indicates failure
 int assemble_dp(string mnemonic, char *operands[], size_t operand_count, uint32_t *word_out) {
     if (strcmp(mnemonic,"movn") == 0 || strcmp(mnemonic,"movz") == 0 || strcmp(mnemonic,"movk") == 0) {
-        return assemble_wide_move(mnemonic, operands, operand_count, word_out)
+        return assemble_wide_move(mnemonic, operands, operand_count, word_out);
     } 
     else if (strcmp(mnemonic , "madd") == 0 || strcmp(mnemonic , "msub") == 0 || strcmp(mnemonic ,"mul") == 0 || strcmp(mnemonic , "mneg") == 0) {
-        return assemble_multiply(mnemonic, operands, operand_count, word_out)
+        return assemble_multiply(mnemonic, operands, operand_count, word_out);
     }
     else if (strcmp(mnemonic , "add") == 0 || strcmp(mnemonic ,"adds") == 0 || strcmp(mnemonic , "sub") == 0
      || strcmp(mnemonic , "subs") == 0 || strcmp(mnemonic , "cmp") == 0 || strcmp(mnemonic, "cmn") == 0 || strcmp(mnemonic , "neg") == 0 || strcmp(mnemonic , "negs") == 0) {
@@ -18,15 +18,15 @@ int assemble_dp(string mnemonic, char *operands[], size_t operand_count, uint32_
         }
 
         if (operands[operand_2_idx] [0] == '#') {
-            return assemble_dp_imm(mnemonic, operands, operand_count, word_out)
+            return assemble_dp_imm(mnemonic, operands, operand_count, word_out);
         }
         else {
-            return assemble_dp_reg(mnemonic, operands, operand_count, word_out)
+            return assemble_dp_reg(mnemonic, operands, operand_count, word_out);
         }
     }
     else if (strcmp(mnemonic , "and") == 0 || strcmp(mnemonic , "bic") == 0 || strcmp(mnemonic , "orr") == 0 || strcmp(mnemonic , "orn") == 0 || strcmp(mnemonic , "eor") == 0
         || strcmp(mnemonic ,"eon") == 0 || strcmp(mnemonic ,"ands") == 0 || strcmp(mnemonic , "bics") == 0 || strcmp(mnemonic , "tst") == 0 || strcmp(mnemonic , "mov") == 0 || strcmp(mnemonic , "mvn") == 0) {
-            return assemble_logical_register(mnemomic, operands, operand_count, word_out)
+            return assemble_logical_register(mnemomic, operands, operand_count, word_out);
         }
 
     }
@@ -41,11 +41,19 @@ static int assemble_wide_move(string mnemonic,char *operands, size_t operand_cou
     //parse rd from operands[0] and imm16 from operands[1]
 
     if (operands[0][0] != 'x' && operands[0][0] != 'w') {
-        fprintf(stderr, "Invalid register\n")
+        fprintf(stderr, "Invalid register\n");
         return 1;
     }
+
+    if (operand_count != 2u && operand_count != 3u) {
+        fprintf(stderr, "Wrong operand count for %s", mnemonic);
+    }
+
+    if (operands[0] == NULL || operands[1] == NULL) {
+        fprintf(stderr, "Insufficient operands for wide move");
+    }
     
-    sf = operands[0][0] == 'x' ? 1u: 0u;
+    sf = (operands[0][0] == 'x' ? 1u: 0u) << SF_SHIFT;
 
     if (strcmp(operands[0] + 1, "zr")) {
         rd = ZERO_REGISTER_NUMBER;
@@ -68,44 +76,54 @@ static int assemble_wide_move(string mnemonic,char *operands, size_t operand_cou
         return 1;
     }
     
-    imm16 = (uint32_t) value;
+    imm16 =  (uint32_t) value;
 
     if ((imm16 & ~WIDE_MOVE_IMM16_MASK) != 0u) {
-        fprintf(stderr, "Wide move immediate value is larger than 16 bits\n")
+        fprintf(stderr, "Wide move immediate value is larger than 16 bits\n");
         return 1;
     }
 
     //parse shift from operands[3]
 
     if (operand_count == 3u) {
-        if (strncmp(text, "lsl", 3) != 0) {
-            frprintf(stderr, "Wide move only allows left shift")
+        if (strncmp(operands[3], "lsl", 3) != 0) {
+            frprintf(stderr, "Wide move only allows left shift");
             return 1; 
         }
 
-        const char* amount_text = text + 3;
-        while (*amount_text == ' ') {
-            amount_text++;
+        const char *shift_text = operands[3] + 3;
+        while (*shift_text == ' ') {
+            shift_text++;
         }
 
-        
+        if (*shift_text != '#') {
+            fprintf(stderr, "ERROR: Wide move shift amount must begin with #");
+        }
+
+        char *shift_end = NULL;
+        shift = (uint32_t) strtoul(shift_text + 1, &shift_end, 10);
+
     }
 
-    if (strcmp(mnemonic, "movn") == 0) {
-        opc = OPC_MOVN;
-    } else if (strcmp(mnemonic, "movz") == 0) {
-        opc = OPC_MOVZ;
-    } else {
-        opc = OPC_MOVK;
-    }
+    switch (mnemonic) {
+            case "movn":
+                opc = OPC_MOVN << DP_OPC_SHIFT;
+                break;
+            case  "movk":
+                opc = OPC_MOVK << DP_OPC_SHIFT;
+                break;
+            case "movz":
+                opc = OPC_MOVZ << DP_OPC_SHIFT;
+                break;
+            default:
+                fprintf(stderr, "ERROR: Unknown wide move instruction %s",mnemonic)
+        }
 
-    uint32_t hw = shift/16u;
+    uint32_t hw = (shift/WIDE_MOVE_SHIFT_UNIT ) << WIDE_MOVE_HW_SHIFT;
+    imm16 = imm16 << WIDE_MOVE_IMM16_SHIFT
 
-    *word_out = 0;
-
-    
-
-    return 0;
+    *word_out = sf | opc | WIDE_MOVE_FIXED_BIT | WIDE_MOVE_OPI | hw | imm16 | rd;
 
 }
+
 
