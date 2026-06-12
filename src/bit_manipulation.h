@@ -12,13 +12,13 @@ static inline uint32_t bitmask (const uint8_t start, const uint8_t end) {
     return ((1u << width) - 1u) << end;
 }
 
-//extracts the bits in range [start, end] and flushes to the right
+// Extracts the bits in range [start, end] and flushes to the right
 static inline uint32_t extract_bits (const uint8_t start, const uint8_t end, 
                                      const uint64_t target) {
     return (bitmask(start, end) & target) >> end;
 }
 
-//extracts the bits in range [start, end] from target and sign-extends
+// Extracts the bits in range [start, end] from target and sign-extends
 static inline long long get_signed_value(const uint8_t start,
                                          const uint8_t end,
                                          const uint32_t target) {

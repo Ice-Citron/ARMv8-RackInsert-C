@@ -3,7 +3,11 @@
 #include "data_transfer.h"
 #include "branch.h"
 
-//loading the program from binary
+/*
+ * Loads the input binary file into emulator's memory.
+ * Example: given a 16-byte binary, loads 16 bytes into memory and sets 
+ * *bytes_loaded to 16.
+ */
 bool load_program(const char *path, size_t *bytes_loaded) {
     FILE* file = fopen(path, "rb");
     if (file == NULL) {
@@ -28,7 +32,10 @@ bool load_program(const char *path, size_t *bytes_loaded) {
     return true;
 }
 
-//fetching the instructions in from 4 contiguous blocks of memory in address
+/*
+ * Fetches one 32-bit instruction from memory in little-endian order.
+ * Example: bytes 78 56 34 12 at address 0 returns 0x12345678.
+ */
 uint32_t fetch_u32_le(uint64_t address) {
     // Since instructions are stored in little-endian format.
     return ((uint32_t)memory[address + 3] << 24)
@@ -37,7 +44,11 @@ uint32_t fetch_u32_le(uint64_t address) {
          | ((uint32_t)memory[address + 0] << 0);
 }
 
-//decoding and executing instructions
+/*
+ * Decodes an instruction's opcode and dispatches it to relevant instruction
+ * handler. Returns true if the handler changed PC (for run_emulator() function)
+ * Example: a branch instruction is sent to execute_branch and may return true.
+ */
 static bool decode_and_execute(uint32_t instr) {
     switch (extract_bits(OP0_HI, OP0_LO, instr)) {
         case OP0_DP_IMM_1000:
@@ -63,7 +74,10 @@ static bool decode_and_execute(uint32_t instr) {
     }
 }
 
-//running the emulator until termination 
+/*
+ * Runs  emulator until halt instruction (HALT_INSTRUCTION) is fetched.
+ * Example: if memory[pc] is HALT_INSTRUCTION, the loop stops immediately.
+ */
 void run_emulator(void) {
     while (true) {
         uint32_t curr_instruction = fetch_u32_le(pc);
@@ -77,7 +91,11 @@ void run_emulator(void) {
     }
 }
 
-//printing the register for inspection 
+/*
+ * Writes the final register, PC, PSTATE and non-zero memory state into 
+ * designated `FILE *file` path.
+ * Example: write_final_state(stdout) prints the emulator state to terminal.
+ */
 void write_final_state(FILE *file) {
     fprintf(file, "Registers:\n");
     for (int i = 0; i < REGS - 1; i++) {

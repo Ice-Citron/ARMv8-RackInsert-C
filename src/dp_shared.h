@@ -4,7 +4,7 @@
 #include "bit_manipulation.h"
 #include "emulate.h"
 
-#define DP_16BIT_MASK         UINT16_MAX
+#define DP_16BIT_MASK UINT16_MAX
 
 void dpimm(uint32_t instr);
 void dpreg(uint32_t instr);
