@@ -37,7 +37,10 @@
 #define DT_LOAD_HI   23
 #define DT_LOAD_LO   5
 
-//helper for loading from memory
+/*
+ * (Helper) Loads n bytes from memory into a register using little-endian order.
+ * Example: memory bytes 78 56 34 12 load as 0x12345678.
+ */
 static void load_operation(const uint32_t rt_index, const uint64_t target, 
                            const int n) {
     registers[rt_index] = 0;
@@ -47,7 +50,10 @@ static void load_operation(const uint32_t rt_index, const uint64_t target,
     }
 }
 
-//helper for storing from memory
+/*
+ * (Helper) Stores n bytes from a register into memory using little-endian order
+ * Example: value 0x1234 stores byte 0x34 then byte 0x12.
+ */
 static void store_operation(const uint32_t rt_index, const uint64_t target, 
                             const int n) {
     for (int i = 0; i < n; i++) { 
@@ -56,7 +62,10 @@ static void store_operation(const uint32_t rt_index, const uint64_t target,
     }
 }
 
-//combination of load and store operations
+/*
+ * (Helper) Performs either a load or store depending on the operation bit.
+ * Example: DT_LOAD_OP calls load_operation; otherwise store_operation.
+ */
 static void perform_load_or_store(const uint32_t rt_index, 
                                   const uint64_t target, const int n, 
                                   const uint32_t operation) {
@@ -68,7 +77,10 @@ static void perform_load_or_store(const uint32_t rt_index,
     }
 }
 
-//memory addressing mode: unsigned immediate offset
+/*
+ * (Helper) Handles unsigned immediate offset addressing.
+ * Example: LDR X0, [X1, #8] loads from address X1 + 8.
+ */
 static void handle_unsigned_offset(const uint32_t instr, uint64_t target, 
                                    const uint32_t rt_index, const int num_bytes,
                                    const uint32_t operation, 
@@ -82,7 +94,11 @@ static void handle_unsigned_offset(const uint32_t instr, uint64_t target,
     perform_load_or_store(rt_index, target, num_bytes, operation);
 }
 
-//memory addressing mode: pre-index and post-index
+/*
+ * (Helper) Handles pre-indexed and post-indexed addressing.
+ * Example: pre-index updates the base before transfer; post-index updates it 
+ * after.
+ */
 static void handle_pre_post_indexed(const uint32_t instr, uint64_t target, 
                                     const uint32_t xn_index, 
                                     const uint32_t rt_index, int num_bytes, 
@@ -99,7 +115,10 @@ static void handle_pre_post_indexed(const uint32_t instr, uint64_t target,
     }
 }
 
-//memory addressing mode: register offset
+/*
+ * (Helper) Handles register offset addressing.
+ * Example: STR X0, [X1, X2] stores to address X1 + X2.
+ */
 static void handle_register_offset(const uint32_t instr, uint64_t target, 
                             const uint32_t rt_index, int num_bytes, 
                             const uint32_t operation) {
@@ -113,7 +132,10 @@ static void handle_register_offset(const uint32_t instr, uint64_t target,
     perform_load_or_store(rt_index, target, num_bytes, operation);
 }
 
-//memory addressing mode: literal (only applicable for load)
+/*
+ * (Helper) Handles load literal instructions using a PC-relative address.
+ * Example: LDR X0, label loads from PC plus the signed literal offset.
+ */
 static void handle_load_literal(const uint32_t instr, const uint32_t rt_index, 
                          int num_bytes) {
     long long offset = get_signed_value(DT_LOAD_HI, DT_LOAD_LO, instr) << 2;
@@ -121,7 +143,11 @@ static void handle_load_literal(const uint32_t instr, const uint32_t rt_index,
     load_operation(rt_index, target, num_bytes);
 }
 
-//overall function for data transfer operations
+/*
+ * Decodes and executes load/store instructions.
+ * Example: dispatches unsigned offset, pre/post-indexed, register offset
+ * and load literal addressing modes.
+ */
 void single_data_transfer(const uint32_t instr) {
     const uint32_t rt_index = extract_bits(DT_RT_HI, DT_RT_LO, instr);
     const uint32_t size     = extract_bits(DT_SIZE_HI, DT_SIZE_LO, instr);
