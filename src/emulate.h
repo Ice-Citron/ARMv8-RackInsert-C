@@ -26,9 +26,20 @@ extern uint64_t registers[REGS];
 extern uint64_t pc;
 extern state pState;
 
-//obtains sign for 32 bit mode
-static inline uint8_t sign32 (uint64_t target) { return (target >> 31) & 1; }
-//obtains sign for 64 bit mode
-static inline uint8_t sign64 (uint64_t target) { return (target >> 63) & 1; }
+/*
+ * Returns the sign bit of a 32-bit value.
+ * Example: sign32(0x80000000) returns 1.
+ */
+static inline uint8_t sign32 (uint64_t target) { 
+    return (target >> 31) & 1; 
+}
+
+/*
+ * Returns the sign bit of a 64-bit value.
+ * Example: sign64(0x8000000000000000) returns 1.
+ */
+static inline uint8_t sign64 (uint64_t target) { 
+    return (target >> 63) & 1; 
+}
 
 #endif
