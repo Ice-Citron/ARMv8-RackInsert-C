@@ -6,8 +6,9 @@
 
 #define ZERO_REGISTER_NUMBER 31u
 
-#define WIDE_MOVE_FIXED_BIT 1u << 28u
+#define DP_FIXED_BIT 1u << 28u
 #define WIDE_MOVE_OPI 5u << 23u
+#define MULTIPLY_FIXED_BITS 27u << 24u
 
 #define SF_SHIFT 31u
 #define DP_OPC_SHIFT 29u
@@ -20,6 +21,10 @@
 #define OPC_MOVN 0u
 #define OPC_MOVZ 2u
 #define OPC_MOVK 3u
+
+#define OPC_MADD 
+
+
 
 
 int assemble_dp(string mnemonic, char *operands[]);
