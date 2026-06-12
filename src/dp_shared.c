@@ -6,7 +6,10 @@
 #define DP_OPC_SUB_NOFLAG     2
 #define DP_OPC_SUB_SETFLAG    3
 
-//setting the flags during addition operations
+/*
+ * Updates PSTATE flags after addition.
+ * Example: 1 + 1 gives result 2, so Z and N are cleared.
+ */
 static inline void set_add_flags(uint64_t rn_value, uint64_t target, 
                                  uint64_t operand2, uint32_t sf) {
     update_zero_flag(target);
@@ -22,7 +25,10 @@ static inline void set_add_flags(uint64_t rn_value, uint64_t target,
     }
 }
 
-//setting the flags during subtraction operations
+/*
+ * Updates PSTATE flags after subtraction.
+ * Example: 5 - 5 gives result 0, so Z is set.
+ */
 static inline void set_sub_flags(uint64_t rn_value, uint64_t target, 
                                  uint64_t operand2, uint32_t sf) {
     update_zero_flag(target);
@@ -38,7 +44,10 @@ static inline void set_sub_flags(uint64_t rn_value, uint64_t target,
     }
 }
 
-//writing the result for data processing
+/*
+ * Writes a data-processing result to a register.
+ * Example: writing to X0 stores the value, while writing to register 31 is ignored.
+ */
 void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
     if (rd == ZERO_REGISTER_INDEX) {
         return;
@@ -50,7 +59,10 @@ void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
     }
 }
 
-//computing the result for addition and subtraction
+/*
+ * Computes ADD, ADDS, SUB or SUBS using already-decoded operands.
+ * Example: ADD with operands 2 and 3 returns 5; ADDS also updates flags.
+ */
 uint64_t compute_add_sub_result(uint32_t opc, uint64_t rn, uint64_t operand2, 
                                 uint64_t mask, uint32_t sf) {
     uint64_t entry;

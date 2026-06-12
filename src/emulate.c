@@ -1,16 +1,17 @@
 #include "emulate.h"
 #include "loader.h"
 
-//memory
-uint8_t memory[MEM_SIZE];
-//registers
-//zero register is registers[31]
-uint64_t registers[REGS];
-//program counter
-uint64_t pc = 0;
-//flag register
-state pState = INITIAL_PSTATE;
 
+uint8_t memory[MEM_SIZE];       // Emulator Main Memory
+uint64_t registers[REGS];       // Registers; zero register is registers[31]
+uint64_t pc = 0;                // Program Counter
+state pState = INITIAL_PSTATE;  // Flag Register
+
+/*
+ * Entry point for emulator (Part I), it parses arguments, loads the binary,
+ * runs the emulator before writing the final state.
+ * Example: ./emulate test.bin out.txt writes the result to out.txt.
+ */
 int main(int argc, char *argv[]) {
     if (argc != 2 && argc != 3) {
         fprintf(stderr, "ERROR: Invalid arguments passed. 'emulate' requires"
