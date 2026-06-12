@@ -38,8 +38,9 @@
 #define OPC_REG_AND        0
 #define OPC_REG_ORR        1
 #define OPC_REG_EOR        2
-#define OPC_REG_ANDS_BICS 3
+#define OPC_REG_ANDS_BICS  3
 
+//helper to handle shifts and right rotate
 static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
                               uint32_t shift_dist, uint32_t sf) {
     uint64_t mask = mask_from_sf(sf);
@@ -71,6 +72,7 @@ static uint64_t shift_operand(uint64_t operand, uint32_t shift_type,
     }
 }
 
+//setting flags during register operations
 static void set_logical_flags(uint64_t entry, uint32_t sf) {
     uint64_t masked = entry & mask_from_sf(sf);
     update_negative_flag(masked, sf);
@@ -79,6 +81,7 @@ static void set_logical_flags(uint64_t entry, uint32_t sf) {
     pState.v = false;
 }
 
+//helper to handle multiplication
 static uint64_t compute_multiply_result(uint32_t instr, uint64_t rn, 
                                         uint64_t rm, uint64_t mask) {
     uint64_t entry = 0;
@@ -97,6 +100,7 @@ static uint64_t compute_multiply_result(uint32_t instr, uint64_t rn,
     return entry;
 }
 
+//helper to handle bitwise logical operations
 static uint64_t compute_logical_result(uint32_t instr, uint32_t opcode, 
                                        uint64_t rn, uint64_t operand2, 
                                        uint32_t sf) {
@@ -128,6 +132,7 @@ static uint64_t compute_logical_result(uint32_t instr, uint32_t opcode,
     return entry;
 }
 
+//overall handling of register data processing instructions
 void dpreg(uint32_t instr) {
     uint32_t sf       = extract_bits(SF_REG_HI , SF_REG_LO , instr);
     uint32_t opcode   = extract_bits(OPC_REG_HI, OPC_REG_LO, instr);

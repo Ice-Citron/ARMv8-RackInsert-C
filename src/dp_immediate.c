@@ -29,6 +29,7 @@
 #define OPC_IMM_MOVZ 2
 #define OPC_IMM_MOVK 3
 
+//obtaining from bits instructions to call compute_add_sub_result
 static uint64_t compute_arithmetic_result(uint32_t instr, uint32_t opcode, 
                                           uint64_t mask, uint32_t sf) {
     uint32_t rn_arith    = extract_bits(RN_IMM_ARITH_HI, RN_IMM_ARITH_LO, 
@@ -45,6 +46,7 @@ static uint64_t compute_arithmetic_result(uint32_t instr, uint32_t opcode,
     return compute_add_sub_result(opcode, rn_value, operand2, mask, sf);
 }
 
+//obtaining from bits instructions to call compute_wide_move_result
 static uint64_t compute_wide_move_result(uint32_t instr, uint32_t opcode, 
                                          uint32_t rd, uint64_t mask) {
     uint32_t hw_wm    = extract_bits(SH_IMM_WM_HI, SH_IMM_WM_LO, instr);
@@ -67,6 +69,7 @@ static uint64_t compute_wide_move_result(uint32_t instr, uint32_t opcode,
     }
 }
 
+//overall handling of immediate data processing instructions
 void dpimm(uint32_t instr) {
     uint32_t sf     = extract_bits(SF_IMM_HI , SF_IMM_LO , instr);
     uint32_t opcode = extract_bits(OPC_IMM_HI, OPC_IMM_LO, instr);

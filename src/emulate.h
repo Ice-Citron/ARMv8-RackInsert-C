@@ -18,6 +18,7 @@ typedef struct {
     bool v;
 } state;
 
+//initial flags
 #define INITIAL_PSTATE ((state){ .n = false, .z = true, .c = false, .v = false})
 
 extern uint8_t memory[MEM_SIZE];
@@ -25,7 +26,9 @@ extern uint64_t registers[REGS];
 extern uint64_t pc;
 extern state pState;
 
+//obtains sign for 32 bit mode
 static inline uint8_t sign32 (uint64_t target) { return (target >> 31) & 1; }
+//obtains sign for 64 bit mode
 static inline uint8_t sign64 (uint64_t target) { return (target >> 63) & 1; }
 
 #endif

@@ -3,6 +3,7 @@
 #include "data_transfer.h"
 #include "branch.h"
 
+//loading the program from binary
 bool load_program(const char *path, size_t *bytes_loaded) {
     FILE* file = fopen(path, "rb");
     if (file == NULL) {
@@ -27,6 +28,7 @@ bool load_program(const char *path, size_t *bytes_loaded) {
     return true;
 }
 
+//fetching the instructions in from 4 contiguous blocks of memory in address
 uint32_t fetch_u32_le(uint64_t address) {
     // Since instructions are stored in little-endian format.
     return ((uint32_t)memory[address + 3] << 24)
@@ -35,6 +37,7 @@ uint32_t fetch_u32_le(uint64_t address) {
          | ((uint32_t)memory[address + 0] << 0);
 }
 
+//decoding and executing instructions
 static bool decode_and_execute(uint32_t instr) {
     switch (extract_bits(OP0_HI, OP0_LO, instr)) {
         case OP0_DP_IMM_1000:
@@ -60,6 +63,7 @@ static bool decode_and_execute(uint32_t instr) {
     }
 }
 
+//running the emulator until termination 
 void run_emulator(void) {
     while (true) {
         uint32_t curr_instruction = fetch_u32_le(pc);
@@ -73,6 +77,7 @@ void run_emulator(void) {
     }
 }
 
+//printing the register for inspection 
 void write_final_state(FILE *file) {
     fprintf(file, "Registers:\n");
     for (int i = 0; i < REGS - 1; i++) {

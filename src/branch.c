@@ -29,11 +29,13 @@
 #define BR_COND_CODE_LO 0
 #define BR_OFFSET_SHIFT 2
 
+//unconditional branch helper, moves program counter to address
 static bool unconditional_branch(long long simm26) {
     pc = (uint64_t)((long long)pc + simm26);
     return true;
 }
 
+// register branch helper, moves pc to address in the given register index
 static bool register_branch(uint32_t xn) {
     if (xn == ZERO_REGISTER_INDEX) {
         fprintf(stderr, "ERROR: Branching with zero-register is invalid.\n");
@@ -43,6 +45,7 @@ static bool register_branch(uint32_t xn) {
     return true;
 }
 
+//condition logic helper
 static bool condition_holds(uint32_t cond) {
     switch (cond) {
         case EQ_COND:
@@ -66,6 +69,7 @@ static bool condition_holds(uint32_t cond) {
     }
 }
 
+//conditional branch helper using above logic
 static bool conditional_branch(long long simm19, uint32_t cond) {
     bool condition = condition_holds(cond);
     if (condition) {
@@ -75,6 +79,8 @@ static bool conditional_branch(long long simm19, uint32_t cond) {
     return false;
 }
 
+//overall branch handling function
+//decides which helper to use 
 bool execute_branch(uint32_t instr) {
     if (extract_bits(BR_UNCOND_HI, BR_UNCOND_LO, instr) == BR_TYPE_UNCOND) {
         long long simm26 = get_signed_value(BR_SIMM26_HI, BR_SIMM26_LO, instr) 

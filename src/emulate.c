@@ -1,9 +1,14 @@
 #include "emulate.h"
 #include "loader.h"
 
+//memory
 uint8_t memory[MEM_SIZE];
+//registers
+//zero register is registers[31]
 uint64_t registers[REGS];
+//program counter
 uint64_t pc = 0;
+//flag register
 state pState = INITIAL_PSTATE;
 
 int main(int argc, char *argv[]) {

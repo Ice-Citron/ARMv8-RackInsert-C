@@ -6,6 +6,7 @@
 #define DP_OPC_SUB_NOFLAG     2
 #define DP_OPC_SUB_SETFLAG    3
 
+//setting the flags during addition operations
 static inline void set_add_flags(uint64_t rn_value, uint64_t target, 
                                  uint64_t operand2, uint32_t sf) {
     update_zero_flag(target);
@@ -21,6 +22,7 @@ static inline void set_add_flags(uint64_t rn_value, uint64_t target,
     }
 }
 
+//setting the flags during subtraction operations
 static inline void set_sub_flags(uint64_t rn_value, uint64_t target, 
                                  uint64_t operand2, uint32_t sf) {
     update_zero_flag(target);
@@ -36,6 +38,7 @@ static inline void set_sub_flags(uint64_t rn_value, uint64_t target,
     }
 }
 
+//writing the result for data processing
 void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
     if (rd == ZERO_REGISTER_INDEX) {
         return;
@@ -47,6 +50,7 @@ void write_dp_result(uint32_t rd, uint32_t sf, uint64_t entry) {
     }
 }
 
+//computing the result for addition and subtraction
 uint64_t compute_add_sub_result(uint32_t opc, uint64_t rn, uint64_t operand2, 
                                 uint64_t mask, uint32_t sf) {
     uint64_t entry;

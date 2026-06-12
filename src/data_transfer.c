@@ -37,6 +37,7 @@
 #define DT_LOAD_HI   23
 #define DT_LOAD_LO   5
 
+//helper for loading from memory
 static void load_operation(const uint32_t rt_index, const uint64_t target, 
                            const int n) {
     registers[rt_index] = 0;
@@ -46,6 +47,7 @@ static void load_operation(const uint32_t rt_index, const uint64_t target,
     }
 }
 
+//helper for storing from memory
 static void store_operation(const uint32_t rt_index, const uint64_t target, 
                             const int n) {
     for (int i = 0; i < n; i++) { 
@@ -54,6 +56,7 @@ static void store_operation(const uint32_t rt_index, const uint64_t target,
     }
 }
 
+//combination of load and store operations
 static void perform_load_or_store(const uint32_t rt_index, 
                                   const uint64_t target, const int n, 
                                   const uint32_t operation) {
@@ -65,6 +68,7 @@ static void perform_load_or_store(const uint32_t rt_index,
     }
 }
 
+//memory addressing mode: unsigned immediate offset
 static void handle_unsigned_offset(const uint32_t instr, uint64_t target, 
                                    const uint32_t rt_index, const int num_bytes,
                                    const uint32_t operation, 
@@ -78,6 +82,7 @@ static void handle_unsigned_offset(const uint32_t instr, uint64_t target,
     perform_load_or_store(rt_index, target, num_bytes, operation);
 }
 
+//memory addressing mode: pre-index and post-index
 static void handle_pre_post_indexed(const uint32_t instr, uint64_t target, 
                                     const uint32_t xn_index, 
                                     const uint32_t rt_index, int num_bytes, 
@@ -94,6 +99,7 @@ static void handle_pre_post_indexed(const uint32_t instr, uint64_t target,
     }
 }
 
+//memory addressing mode: register offset
 static void handle_register_offset(const uint32_t instr, uint64_t target, 
                             const uint32_t rt_index, int num_bytes, 
                             const uint32_t operation) {
@@ -107,6 +113,7 @@ static void handle_register_offset(const uint32_t instr, uint64_t target,
     perform_load_or_store(rt_index, target, num_bytes, operation);
 }
 
+//memory addressing mode: literal (only applicable for load)
 static void handle_load_literal(const uint32_t instr, const uint32_t rt_index, 
                          int num_bytes) {
     long long offset = get_signed_value(DT_LOAD_HI, DT_LOAD_LO, instr) << 2;
@@ -114,6 +121,7 @@ static void handle_load_literal(const uint32_t instr, const uint32_t rt_index,
     load_operation(rt_index, target, num_bytes);
 }
 
+//overall function for data transfer operations
 void single_data_transfer(const uint32_t instr) {
     const uint32_t rt_index = extract_bits(DT_RT_HI, DT_RT_LO, instr);
     const uint32_t size     = extract_bits(DT_SIZE_HI, DT_SIZE_LO, instr);
