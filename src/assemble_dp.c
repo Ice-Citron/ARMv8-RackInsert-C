@@ -29,4 +29,5 @@ uint32_t assemble_dp(string mnemonic, char *operands[], size_t operand_count) {
             return assemble_logical_register(mnemomic, operands, operand_count);
         }
 
-    }
+}
+

@@ -1,5 +1,5 @@
 #include <assemble_wide_move.h>
-
+#include <assemble_dp.h>
 
 #define DP_REG_FIXED_BITS (10u << 24u) 
 
