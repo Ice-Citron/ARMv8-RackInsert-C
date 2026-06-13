@@ -23,7 +23,7 @@ bool assemble_file(char *infile, char *outfile) {
 
 	// FIRST PASS:
 
-	int pc = 0;
+	uint32_t pc = 0;
 
 	char full_line_buffer[512];
 	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
