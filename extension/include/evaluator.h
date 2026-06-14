@@ -32,6 +32,6 @@ typedef struct {
 
 void eval_compute_geometry(const EvalGeometry *geom, TrailScore *score);
 void eval_score_trial(const EvalConfig *config, double socket_depth, 
-                      TrailScore *score);
+                      TrialScore *score);
 
 #endif
