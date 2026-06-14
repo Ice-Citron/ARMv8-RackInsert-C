@@ -114,7 +114,7 @@ void eval_score_trial(const EvalConfig *config, double socket_depth,
     score->total = 0.0;
 
     int laterally_aligned = (score->lateral_error <= config->lateral_tol_m);
-    // `socket_depth - config->depth_tol_m` is the finish line.
+                    // `socket_depth - config->depth_tol_m` is the finish line.
     if (score->axial_depth >= socket_depth - config->depth_tol_m 
         && laterally_aligned) {
         score->full_insertion = 1;
@@ -130,6 +130,52 @@ void eval_score_trial(const EvalConfig *config, double socket_depth,
         score->partial_insertion = 1;
         score->tier3 = 38.0 + 12.0 * depth_fraction;
     } else {
-
+        // CASE: No insertion. Proximity Scoring, awards up to 25 pts.
+            // TODO: Currently do not store initial plug-port distance, using 
+            // socket_depth for now, will use `0.5 * initial_plug_distance` 
+            // later.
+        double max_distance = socket_depth;
+        double proximity = 1.0 - (score->plug_port_distance / max_distance);
+        proximity = clamp(proximity, 0.0, 1.0);
+        
+        score->tier3 = 25.0 * proximity;
     }
+
+    // If robot achieves certain tasks, and didn't fail completely.
+    // Tier 2 scores are awardede which rewards based on motion quality (
+    // smoothness, path efficiency) and retry-penalties.
+    if (score->tier3 > 0.0) {
+        double duration_score = descending_linear_score(
+            score->duration, 
+            config->min_duration_full_score_s,
+            config->max_duration_s,
+            12.0
+        );
+
+        // TODO: Currently do not track jerk, gives smoothness credit by default
+        // Later please replace 0.0 with `score->average_jerk`
+        double smoothness_score = descending_linear_score(
+            0.0,
+            config->max_jerk_full_score,
+            config->max_jerk_zero_score,
+            6.0
+        );
+
+        // TODO: Currently TrialScore do not store initial plug-port distance.
+        // socket_depth is the baseline for now.
+        double best_path = socket_depth;
+        double worst_path = socket_depth + 1.0;
+        double efficiency_score = descending_linear_score(
+            score->path_length,
+            best_path,
+            worst_path,
+            6.0
+        );
+
+        score->tier2 = duration_score + smoothness_score + efficiency_score;
+        
+        // Subtract from retry-penalties
+        score->tier2 -= config->retry_penalty * (double)score->retries;
+    }
+    score->total = score->tier1 + score->tier2 + score->tier3;
 }
