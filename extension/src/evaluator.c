@@ -31,5 +31,17 @@ void eval_compute_geometry(const EvalGeometry *geom, TrialScore *score) {
     score->axial_depth = (plug_reg[0] * norm_axis[0]) +
                          (plug_reg[1] * norm_axis[1]) +
                          (plug_reg[2] * norm_axis[2]);
+
+    // Lateral error: Calculating how far off-center the plug tip is from the
+    // socket axis.
+    double lateral_vec[3];
+    for (int i = 0; i < 3; i++) {
+        // Vector pointing to "center" of hole at the plug's current position
+        double center_point_at_depth = score->axial_depth * norm_axis[i];
+        lateral_vec[i] = plug_rel[i] - center_point_at_depth;
+    }
+    score->lateral_error = sqrt(lateral_vec[0]*lateral_vec[0] +
+                                lateral_vec[1]*lateral_vec[1] +
+                                lateral_vec[2]*lateral_vec[2] +);
 }
 
