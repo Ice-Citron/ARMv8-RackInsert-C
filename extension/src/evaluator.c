@@ -29,8 +29,24 @@ static double clamp(double x, double lo, double hi) {
     return x;
 }
 
+static double descending_linear_score(double value, double full_score_value,
+                                      double zero_score_value, 
+                                      double max_points) {
+    if (value <= full_score_value) {
+        return max_points;
+    }
+    if (value <= zero_score_value) {
+        return 0.0;
+    }
+    double span = zero_score_value - full_score_value;
+    if (span <= 0.0) {
+        return 0.0;
+    }
 
-
+    // Penalty Slope: "less is more". We want the robot to complete the task
+    // with less duration, with lower path length, and less jerkiness.
+    return max_points * (zero_score_value - value) / span;
+}
 
 
 EvalConfig eval_default_config(void) {
