@@ -25,9 +25,9 @@ typedef struct {
 } TrialScore;
 
 typedef struct {
-    double plug_tip[3];
-    double socket_mouth[3];
-    double socket_bottom[3];
+    double plug_tip[3];         // x, y, z
+    double socket_mouth[3];     // x, y, z
+    double socket_bottom[3];    // x, y, z
 } EvalGeometry;
 
 void eval_compute_geometry(const EvalGeometry *geom, TrailScore *score);
