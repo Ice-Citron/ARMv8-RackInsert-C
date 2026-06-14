@@ -2,7 +2,24 @@
 #define EXTENSION_EVALUATOR_H
 
 typedef struct {
-    
+    double lateral_tol_m;
+    double depth_tol_m;
+    double force_threshold_n;
+    double force_duration_s;
+    double max_duration_s;
 } EvalConfig;
+
+typedef struct {
+    double lateral_error;
+    double axial_depth;
+    double duration;
+    int    retries;
+    int    full_insertion;
+    int    partial_insertion;
+    double tier1;
+    double tier2;
+    double tier3;
+    double total;
+} TrailScore;
 
 #endif
