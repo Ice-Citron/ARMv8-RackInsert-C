@@ -23,9 +23,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         int target_addr = 0;
         if (operands[1][0] == '#') // literal
         {
-            int literal = atoi(&operands[1][1]);
-            mem_addr += (literal >> 2);
-            load_operation(reg_t, mem_addr, num_bytes);
+            target_addr = atoi(&operands[1][1]);
         }
         else // label
         {
