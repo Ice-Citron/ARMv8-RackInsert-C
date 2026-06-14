@@ -100,8 +100,36 @@ void eval_compute_geometry(const EvalGeometry *geom, TrialScore *score) {
 
 void eval_score_trial(const EvalConfig *config, double socket_depth, 
                       TrialScore *score) {
-    // 
+    assert(config != NULL);
+    assert(score != NULL);
+    assert(socket_depth > 0.0);
+    
+    score->full_insertion = 0;
+    score->partial_insertion = 0;
 
+    // Auto-grants 1.0 pts for trail running to completion without seg-faults
+    score->tier1 = 1.0; 
+    score->tier2 = 0.0;
+    score->tier3 = 0.0;
+    score->total = 0.0;
 
+    int laterally_aligned = (score->lateral_error <= config->lateral_tol_m);
+    // `socket_depth - config->depth_tol_m` is the finish line.
+    if (score->axial_depth >= socket_depth - config->depth_tol_m 
+        && laterally_aligned) {
+        score->full_insertion = 1;
+        // CASE: Full Insertion. Awards full 75 pts.
+        score->tier3 = 75.0;
+    } else if (laterally_aligned 
+               && score->axial_depth > 0.0 
+               && score->axial_depth < socket_depth - config->depth_tol_m) {
+        // CASE: Partial insertion. Awards base 12 pts, and up to 12 extra pts.
+        double depth_fraction = score->axial_depth / socket_depth;
+        depth_fraction = clamp(depth_fraction, 0.0, 1.0);
 
+        score->partial_insertion = 1;
+        score->tier3 = 38.0 + 12.0 * depth_fraction;
+    } else {
+
+    }
 }
