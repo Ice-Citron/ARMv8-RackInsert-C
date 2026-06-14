@@ -19,7 +19,7 @@ void init_symbol_table()
     symbol_table_capacity = INITIAL_SYMTABLE_CAP;
 }
 
-void resize_symbol_table()
+static void resize_symbol_table()
 {
     symbol_table = (symbol_pair *) realloc(symbol_table,
         sizeof(symbol_pair) * SYMTABLE_RESIZE_FACTOR * symbol_table_size);
