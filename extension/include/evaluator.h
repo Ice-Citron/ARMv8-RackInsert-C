@@ -4,9 +4,14 @@
 typedef struct {
     double lateral_tol_m;
     double depth_tol_m;
-    double force_threshold_n;
-    double force_duration_s;
+    double min_duration_full_score_s;
     double max_duration_s;
+    double max_jerk_full_score;
+    double max_jerk_zero_score;
+    double force_threshold_n;
+    double force_duration_threshold_s;
+    double retry_penalty;
+    double offlimit_contact_penalty;
 } EvalConfig;
 
 typedef struct {
