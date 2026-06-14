@@ -1,4 +1,4 @@
-#ifndef EXTENSION_EVALAUTOR_H
+#ifndef EXTENSION_EVALUATOR_H
 #define EXTENSION_EVALUATOR_H
 
 typedef struct {
@@ -12,6 +12,8 @@ typedef struct {
 typedef struct {
     double lateral_error;
     double axial_depth;
+    double plug_port_length;
+    double path_length;
     double duration;
     int    retries;
     int    full_insertion;
@@ -20,6 +22,16 @@ typedef struct {
     double tier2;
     double tier3;
     double total;
-} TrailScore;
+} TrialScore;
+
+typedef struct {
+    double plug_tip[3];
+    double socket_mouth[3];
+    double socket_bottom[3];
+} EvalGeometry;
+
+void eval_compute_geometry(const EvalGeometry *geom, TrailScore *score);
+void eval_score_trial(const EvalConfig *config, double socket_depth, 
+                      TrailScore *score);
 
 #endif
