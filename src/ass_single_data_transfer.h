@@ -1,8 +1,12 @@
-//
-// Created by Rayan Abdallah on 14/06/2026.
-//
 
 #ifndef ARMV8_64_ASS_SINGLE_DATA_TRANSFER_H
 #define ARMV8_64_ASS_SINGLE_DATA_TRANSFER_H
+#include "bit_manipulation.h"
+#define MOST_SIG_BIT 31
+#define L_BIT 22
+#define SF_BIT 30
+#define LOAD_LITERAL_BITS 24
+#define LOAD_LITERAL_BITS_POS 24
+#
 
 #endif //ARMV8_64_ASS_SINGLE_DATA_TRANSFER_H
