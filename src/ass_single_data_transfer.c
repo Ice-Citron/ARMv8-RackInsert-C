@@ -35,19 +35,21 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         res |= (reg_t & NUM_OF_REGISTERS);
         return res;
     }
-    if (strcmp(mnemonic, "ldr") == 0)
+    // single data transfer
+    int xn_addr = atoi(&operands[1][1]);
+    res |= 1 << MOST_SIG_BIT;
+    if (strcmp(mnemonic, "ldr") == 0) // ldr
     {
-        res |= 1 << MOST_SIG_BIT;
         res |= 1 << L_BIT;
     }
-    else if (strcmp(mnemonic, "str") == 0)
-    {
-        res = 1 << MOST_SIG_BIT;
-    }
-    else
+    else if (strcmp(mnemonic, "str") != 0) // not ldr and not str
     {
         fprintf(stderr, "wrong mnemonic");
         exit(1);
         return 0;
     }
+    char *addr_of_hash = strchr(mnemonic, '#');
+    addr_of_hash++;
+    int imm_val = atoi(addr_of_hash);
+
 }
