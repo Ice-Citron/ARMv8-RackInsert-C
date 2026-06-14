@@ -12,7 +12,7 @@ typedef struct {
 typedef struct {
     double lateral_error;
     double axial_depth;
-    double plug_port_length;
+    double plug_port_distance;
     double path_length;
     double duration;
     int    retries;
