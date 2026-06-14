@@ -30,7 +30,7 @@ typedef struct {
     double socket_bottom[3];    // x, y, z
 } EvalGeometry;
 
-void eval_compute_geometry(const EvalGeometry *geom, TrailScore *score);
+void eval_compute_geometry(const EvalGeometry *geom, TrialScore *score);
 void eval_score_trial(const EvalConfig *config, double socket_depth, 
                       TrialScore *score);
 
