@@ -11,10 +11,10 @@ int main(int argc, char **argv) {
 
     EvalConfig config = eval_default_config();
     TrialScore score = {
-        .inital_plug_port_distance = 0.10;
-        .duration = 10.0;
-        .path_length = 0.10;
-        .average_jerk = 1.0;
+        .initial_plug_port_distance = 0.10,
+        .duration = 10.0,
+        .path_length = 0.10,
+        .average_jerk = 1.0,
     };
 
     eval_compute_geometry(&geom, &score);
