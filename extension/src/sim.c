@@ -11,9 +11,28 @@ static void sim_clear (Sim *sim) {
     sim->mjData = NULL;
 }
 
-// 
+// (Helper): Print MuJoCo's XML loading errors.
+static void print_load_error(const char *scene_path, const char *error) {
+    assert(scene_path != NULL && error != NULL);
+    fprintf(stderr, "ERROR: Failed to load MuJoCo's scene: %s\n", scene_path);
+    if (error[0] != '\0') {
+        fprintf(stderr, "ERROR: [MuJoCo] %s\n", error);
+    }
+}
 
+int sim_load(Sim *sim, const char *scene_path) {
+    assert(sim != NULL && scene_path != NULL);
+    sim_clear(sim);
 
+    char error[1024];
+    error[0] = '\0';
+
+    sim->model = mj_loadXML();
+    if (sim->model == NULL) {
+        print_load_error(scene_path, error);
+        return 0;
+    }
+}
 
 void sim_free(Sim *sim) {
     if (sim == NULL)        { return; }
