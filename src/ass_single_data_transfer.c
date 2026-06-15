@@ -11,6 +11,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     }
     uint32_t res = 0;
     uint8_t reg_t = atoi(&operands[0][1]);
+    res |= (reg_t & NUM_OF_REGISTERS);
     int num_bytes = 4;
     if (operands[0][0] == 'X')
     {
@@ -32,12 +33,13 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         int64_t offset = offset = (int64_t)target_addr - (int64_t)pc;
         int64_t simm19 = (offset >> 2) & SIM_19_BIT_MASK;
         res |= simm19 << SIM_19_POS;
-        res |= (reg_t & NUM_OF_REGISTERS);
         return res;
     }
     // single data transfer
-    int xn_addr = atoi(&operands[1][1]);
     res |= 1 << MOST_SIG_BIT;
+    res |= SINGLE_DATA_TRANSFER_BITS << SINGLE_DATA_TRANSFER_BITS_POS;
+    int xn_addr = atoi(&operands[1][1]);
+    res |= (xn_addr & NUM_OF_MEMORY) << POS_OF_MEMORY;
     if (strcmp(mnemonic, "ldr") == 0) // ldr
     {
         res |= 1 << L_BIT;
@@ -51,5 +53,18 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     char *addr_of_hash = strchr(mnemonic, '#');
     addr_of_hash++;
     int imm_val = atoi(addr_of_hash);
-
+    if (strchr(mnemonic, '{') != NULL) //unsigned imm offset
+    {
+        res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
+        if (num_bytes == 4) // 32 bit
+        {
+            imm_val >>= 2; // divide by 4
+        }
+        else
+        {
+            imm_val >>= 3; // divide by 8
+        }
+        res |= (imm_val  << UNSIGNED_IMM_OFFSET_POS);
+        return res;
+    }
 }
