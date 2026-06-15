@@ -1,6 +1,6 @@
 CC      = gcc
 CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
-			-Wall -Wextra -pedantic -Wshadow -Wconversion -g
+			-Wall -Wextra -pedantic -Wshadow -Wconversion -g -Iinclude
 LDFLAGS	=
 LDLIBS  = -lm
 
@@ -10,7 +10,7 @@ RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 TEST_SRCS = tests/test_evaluator.c src/evaluator.c
 TEST_OBJS = build/test_evaluator.o build/evaluator.o
 
-.PHONY: all clean run tests asan
+.PHONY: all clean run test asan
 
 all: rack_insert
 
@@ -19,3 +19,26 @@ rack_insert: $(RACK_OBJS)
 
 test_evaluator: $(TEST_OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+
+run: rack_insert
+	./rack_insert
+
+test: test_evaluator
+	./test_evaluator
+
+# For debugging with AddressSanitizer
+asan: CFLAGS += -fsanitize=address,undefined -fno-omit-frame-pointer
+asan: LDFLAGS += -fsanitize=address,undefined
+asan: clean all test_evaluator
+
+build:
+	mkdir -p build
+
+build/%.o: src/%.c | build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+build/test_%.o: tests/test_%.c | build
+	$(CC) $(CFLAGS) -c $< -o $@
+
+clean:
+	rm -rf build rack_insert test_evaluator
