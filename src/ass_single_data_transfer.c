@@ -77,4 +77,12 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         res |= (imm_val  << UNSIGNED_IMM_OFFSET_POS);
         return res;
     }
+    // PRE AND POST INDEX
+    res |= 1 << PRE_POST_INDEX_BIT_POS;
+    res |= (imm_val & PRE_POST_INDEX_SIMM9_BITMASK) << PRE_POST_INDEX_SIMM9_POS;
+    if (strchr(mnemonic, '!') != NULL) // PRE INDEX
+    {
+        res |= 1 << PRE_INDEX_BIT_POS;
+    }
+    return res;
 }
