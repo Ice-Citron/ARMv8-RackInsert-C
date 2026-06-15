@@ -51,6 +51,16 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         return 0;
     }
     char *addr_of_hash = strchr(mnemonic, '#');
+    if (addr_of_hash == NULL) // register offset
+    {
+        char *addr_of_space = strchr(mnemonic, ' ');
+        addr_of_space++;
+        int xm_addr = atoi(addr_of_space);
+        res |= REGISTER_OFFSET_BITS << REGISTER_OFFSET_POS;
+        res |= (xm_addr & NUM_OF_MEMORY) << REGISTER_OFFSET_XM_POS;
+        res |= 1 << REGISTER_OFFSET_BIT_POS;
+        return res;
+    }
     addr_of_hash++;
     int imm_val = atoi(addr_of_hash);
     if (strchr(mnemonic, '{') != NULL) //unsigned imm offset
