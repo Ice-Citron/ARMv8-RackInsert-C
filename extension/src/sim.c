@@ -1,6 +1,18 @@
+#include <sim.h>
+
 #include <mujoco/mujoco.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
+
+// (Helper): Reset the wrapper so cleanup is always safe to call.
+static void sim_clear (Sim *sim) {
+    sim->mjModel = NULL;
+    sim->mjData = NULL;
+}
+
+// 
+
 
 
 mjModel *load_model_or_die(const char *path) {
@@ -24,30 +36,21 @@ int lookup_int_id(const char *name) {
     return plug_tip_id;
 }
 
-void get_site_pos(const mjData *data, int site_id, double out[3]) {
-    out[0] = data->site_xpos[3 * site_id + 0];
-    out[1] = data->site_xpos[3 * site_id + 1];
-    out[2] = data->site_xpos[3 * site_id + 2];
+int sim_find_site_id(const Sim *sim, const char *site_name) {
+    assert();
+
+    int site_id = mj_name2id(sim->model, mjOBJ_SITE, site_name);
+    if (site_id < 0) {
+        fprintf(stderr, "ERROR: Failed to find integer ID for %s\n", site_name);
+    }
+    return site_id;
 }
 
-
-void set_actuator(const mjModel *model, mjData *data, const char *name, 
-                  double target) {
-    int id = mj_name2id(model, mjOBJ_ACTUATOR, name);
-    if (id < 0) {
-        fprintf(stderr, "ERROR: Missing actuator %s\n", name);
-        exit(EXIT_FAILURE);
-    }
-
-    data->ctrl[id] = target;
-}
-
-void step_for_seconds(const mjModel *model, mjData *data, double duration_s) {
-    int steps = (int)(duration_s / model->opt.timestep);
-
-    for (int i = 0; i < steps; i++) {
-        mj_step(model, data);
-    }
+void sim_get_site_pos(const Sim *sim, const char *site_name, double out[3]) {
+    int site_id = sim_find_site_id(sim, site_name);
+    out[0] = sim->data->site_xpos[3 * site_id + 0];
+    out[1] = sim->data->site_xpos[3 * site_id + 1];
+    out[2] = sim->data->site_xpos[3 * site_id + 2];
 }
 
 int main(int argc, char **argv) {
