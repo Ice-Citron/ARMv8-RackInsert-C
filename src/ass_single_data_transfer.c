@@ -50,12 +50,10 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         exit(1);
         return 0;
     }
-    char *addr_of_hash = strchr(mnemonic, '#');
+    char *addr_of_hash = strchr(operands[2], '#');
     if (addr_of_hash == NULL) // register offset
     {
-        char *addr_of_space = strchr(mnemonic, ' ');
-        addr_of_space++;
-        int xm_addr = atoi(addr_of_space);
+        int xm_addr = atoi(operands[2]);
         res |= REGISTER_OFFSET_BITS << REGISTER_OFFSET_POS;
         res |= (xm_addr & NUM_OF_MEMORY) << REGISTER_OFFSET_XM_POS;
         res |= 1 << REGISTER_OFFSET_BIT_POS;
