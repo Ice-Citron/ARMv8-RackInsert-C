@@ -18,6 +18,8 @@
 *.o
 emulate
 assemble
+extension/rack_insert
+extension/test_evaluator
 
 #ignore junk files from compiling Haskell code
 *.hi
