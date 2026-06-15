@@ -35,7 +35,7 @@ static double descending_linear_score(double value, double full_score_value,
     if (value <= full_score_value) {
         return max_points;
     }
-    if (value <= zero_score_value) {
+    if (value >= zero_score_value) {
         return 0.0;
     }
     double span = zero_score_value - full_score_value;
@@ -123,7 +123,7 @@ void eval_score_trial(const EvalConfig *config, double socket_depth,
     } else if (laterally_aligned 
                && score->axial_depth > 0.0 
                && score->axial_depth < socket_depth - config->depth_tol_m) {
-        // CASE: Partial insertion. Awards base 12 pts, and up to 12 extra pts.
+        // CASE: Partial insertion. Awards base 38 pts, and up to 12 extra pts.
         double depth_fraction = score->axial_depth / socket_depth;
         depth_fraction = clamp(depth_fraction, 0.0, 1.0);
 
@@ -131,10 +131,10 @@ void eval_score_trial(const EvalConfig *config, double socket_depth,
         score->tier3 = 38.0 + 12.0 * depth_fraction;
     } else {
         // CASE: No insertion. Proximity Scoring, awards up to 25 pts.
-            // TODO: Currently do not store initial plug-port distance, using 
-            // socket_depth for now, will use `0.5 * initial_plug_distance` 
-            // later.
-        double max_distance = socket_depth;
+        double max_distance = 0.5 * score->initial_plug_port_distance;
+        if (max_distance <= 0.0) { // prevent division by zero for `proximity`
+            max_distance = socket_depth;
+        }
         double proximity = 1.0 - (score->plug_port_distance / max_distance);
         proximity = clamp(proximity, 0.0, 1.0);
         
@@ -152,10 +152,8 @@ void eval_score_trial(const EvalConfig *config, double socket_depth,
             12.0
         );
 
-        // TODO: Currently do not track jerk, gives smoothness credit by default
-        // Later please replace 0.0 with `score->average_jerk`
         double smoothness_score = descending_linear_score(
-            0.0,
+            score->average_jerk,
             config->max_jerk_full_score,
             config->max_jerk_zero_score,
             6.0
@@ -163,8 +161,11 @@ void eval_score_trial(const EvalConfig *config, double socket_depth,
 
         // TODO: Currently TrialScore do not store initial plug-port distance.
         // socket_depth is the baseline for now.
-        double best_path = socket_depth;
-        double worst_path = socket_depth + 1.0;
+        double best_path = score->initial_plug_port_distance;
+        if (best_path <= 0.0) {
+            best_path = socket_depth;
+        }
+        double worst_path = best_path + 1.0;
         double efficiency_score = descending_linear_score(
             score->path_length,
             best_path,

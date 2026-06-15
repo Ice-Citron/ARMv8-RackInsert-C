@@ -17,7 +17,9 @@ typedef struct {
 typedef struct {
     double lateral_error;
     double axial_depth;
+    double initial_plug_port_distance;
     double plug_port_distance;
+    double average_jerk;
     double path_length;
     double duration;
     int    retries;
