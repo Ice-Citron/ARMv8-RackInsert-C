@@ -9,8 +9,9 @@
 #define MULTIPLY_X_SHIFT 15u
 #define MULTIPLY_RA_SHIFT 10u
 #define MULTIPLY_RN_SHIFT 5u
+#define MAX_REGISTER_NUMBER 31u
 
-uint32_t assemble_multiply(string mnemonic, char *operands[], size_t operand_count) {
+uint32_t assemble_multiply(char* mnemonic, char *operands[], size_t operand_count) {
 
     uint32_t sf = 0u << SF_SHIFT;
     uint32_t rm = 0u;
@@ -19,7 +20,7 @@ uint32_t assemble_multiply(string mnemonic, char *operands[], size_t operand_cou
     uint32_t rn = 0u;
     uint32_t rd = 0u;
 
-    bool is_mul_or_mneg = (strcmp(mnemonic, "mul") == 0 || strcmp(mnemonic, "mneg") == 0)
+    bool is_mul_or_mneg = (strcmp(mnemonic, "mul") == 0 || strcmp(mnemonic, "mneg") == 0);
 
     if ( is_mul_or_mneg && (operand_count != 3 || operand_count != 4) ) {
         fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);

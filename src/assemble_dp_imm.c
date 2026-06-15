@@ -15,7 +15,7 @@
 #define OPC_SUB 2u
 #define OPC_SUBS 3u
 
-uint32_t assemble_dp_imm(string mnemonic, char *operands[], size_t operand_count) {
+uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count) {
     uint32_t sf = 0u << SF_SHIFT;
     uint32_t opc = 0u;
     uint32_t rd = 0u;
@@ -43,13 +43,13 @@ uint32_t assemble_dp_imm(string mnemonic, char *operands[], size_t operand_count
     }
 
     if (strcmp(mnemonic, "add") == 0) {
-        opc = OPC_ADD << OPC_SHIFT;
+        opc = OPC_ADD << DP_OPC_SHIFT;
     } else if (strcmp(mnemonic, "adds") == 0 || strcmp(mnemonic, "cmn") == 0) {
-        opc = OPC_ADDS << OPC_SHIFT;
+        opc = OPC_ADDS << DP_OPC_SHIFT;
     } else if (strcmp(mnemonic, "sub") == 0 || strcmp(mnemonic, "neg") == 0) {
-        opc = OPC_SUB << OPC_SHIFT;
+        opc = OPC_SUB << DP_OPC_SHIFT;
     } else if (strcmp(mnemonic, "subs") == 0 || strcmp(mnemonic, "cmp") == 0) {
-        opc = OPC_SUBS << OPC_SHIFT;
+        opc = OPC_SUBS << DP_OPC_SHIFT;
     }
 
     if (operands[0][0] == 'x') {
@@ -73,13 +73,13 @@ uint32_t assemble_dp_imm(string mnemonic, char *operands[], size_t operand_count
         end = NULL;
         rn = (uint32_t) strtoul(operands[rn_index] + 1, &end, 10);
         if (*end != '\0' || rn > ZERO_REGISTER_NUMBER) {
-            fprintf(stderr, "ERROR: Invalid source register %s\n", operands[rn_index])
+            fprintf(stderr, "ERROR: Invalid source register %s\n", operands[rn_index]);
             exit(1);
         }
     }
 
     if (operands[imm_index][0] != '#') {
-        fprtinf(stderr, "ERROR: Invalid immediate addressing format, must begin with # %s\n", operands[imm_index])
+        fprtinf(stderr, "ERROR: Invalid immediate addressing format, must begin with # %s\n", operands[imm_index]);
     }
 
     end = NULL;

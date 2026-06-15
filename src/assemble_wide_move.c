@@ -1,4 +1,4 @@
-#include <asssemble_wide_move.h>
+#include "assemble_wide_move.h"
 #include <assemble_dp.h>
 
 #define WIDE_MOVE_OPI (5u << 23u)
@@ -12,7 +12,7 @@
 #define OPC_MOVZ 2u
 #define OPC_MOVK 3u
 
-uint32_t assemble_wide_move(string mnemonic,char *operands, size_t operand_count) {
+uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_count) {
     uint32_t rd;
     uint32_t sf;
     uint32_t imm16;
@@ -89,22 +89,18 @@ uint32_t assemble_wide_move(string mnemonic,char *operands, size_t operand_count
 
     }
 
-    switch (mnemonic) {
-            case "movn":
-                opc = OPC_MOVN << DP_OPC_SHIFT;
-                break;
-            case  "movk":
-                opc = OPC_MOVK << DP_OPC_SHIFT;
-                break;
-            case "movz":
-                opc = OPC_MOVZ << DP_OPC_SHIFT;
-                break;
-            default:
-                fprintf(stderr, "ERROR: Unknown wide move instruction %s",mnemonic)
-        }
+    if (strcmp(mnemonic, "movn") == 0) {
+        opc = OPC_MOVN << DP_OPC_SHIFT;
+    } else if (strcmp(mnemonic, "movk") == 0) {
+        opc = OPC_MOVK << DP_OPC_SHIFT;
+    } else if (strcmp(mnemonic, "movz") == 0) {
+        opc = OPC_MOVZ << DP_OPC_SHIFT;
+    } else {
+        fprintf(stderr, "ERROR: Unknown wide move instruction %s",mnemonic);
+    }
 
     uint32_t hw = (shift/WIDE_MOVE_SHIFT_UNIT ) << WIDE_MOVE_HW_SHIFT;
-    imm16 = imm16 << WIDE_MOVE_IMM16_SHIFT
+    imm16 = imm16 << WIDE_MOVE_IMM16_SHIFT;
 
     return sf | opc | DP_FIXED_BIT | WIDE_MOVE_OPI | hw | imm16 | rd;
 

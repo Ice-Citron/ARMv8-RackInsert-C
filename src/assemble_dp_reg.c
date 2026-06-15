@@ -22,7 +22,7 @@
 #define OPC_SUB 2u
 #define OPC_SUBS 3u
 
-uint32_t assemble_dp_reg(string mnemonic, char *operands[], size_t mnemonic) {
+uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count) {
 
     uint32_t sf = 0u;
     uint32_t opc = 0u;
