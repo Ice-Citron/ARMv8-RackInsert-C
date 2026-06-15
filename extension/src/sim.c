@@ -15,6 +15,13 @@ static void sim_clear (Sim *sim) {
 
 
 
+void sim_free(Sim *sim) {
+    if (sim == NULL)        { return; }
+    if (sim->data != NULL)  { mj_deleteData(sim->data); }
+    if (sim->model != NULL) { mj_deleteModel(sim->model); }
+    sim_clear(sim);
+}
+
 mjModel *load_model_or_die(const char *path) {
     char error[1024];
     
@@ -27,17 +34,9 @@ mjModel *load_model_or_die(const char *path) {
     return model;
 }
 
-int lookup_int_id(const char *name) {
-    int plug_tip_id = mj_name2id(model, mjOBJ_SITE, "plug_tip");
-    if (plug_tip_id < 0) {  // Returns -1 if not found
-        fprintf(stderr, "ERROR: Failed to find integer ID of plug tip.\n");
-        exit(EXIT_FAILURE);
-    }
-    return plug_tip_id;
-}
-
 int sim_find_site_id(const Sim *sim, const char *site_name) {
-    assert();
+    assert(sim != NULL && site_name != NULL);
+    assert(sim->model != NULL);
 
     int site_id = mj_name2id(sim->model, mjOBJ_SITE, site_name);
     if (site_id < 0) {
