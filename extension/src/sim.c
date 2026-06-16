@@ -89,11 +89,21 @@ void sim_get_site_pos(const Sim *sim, const char *site_name, double out[3]) {
 }
 
 void sim_step(Sim *sim) {
-
+    assert(sim != NULL);
+    assert(sim->model != NULL && sim->data != NULL);
+    
+    mj_step(sim->model, sim->data);
 }
 
 void sim_step_seconds(Sim *sim, double seconds) {
-    
+    assert(sim != NULL);
+    assert(sim->data != NULL);
+    assert(seconds >= 0.0);
+
+    double end_time = sim->data->time + seconds;
+    while (sim->data->time < end_time) {
+        sim_step(sim);
+    }
 }
 
 void sim_set_ctrl(Sim *sim, int actuator_id, double value) {
