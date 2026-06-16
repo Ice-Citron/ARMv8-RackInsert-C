@@ -12,7 +12,7 @@ bool assemble_file(char *infile, char *outfile) {
 		exit(1);
 	}
     // open the output file
-    FILE *out = fopen(outfile, "w" );
+    FILE *out = fopen(outfile, "wb" );
 	if( out == NULL )
 	{
 		fprintf( stderr, "ass: can't create %s\n", outfile );

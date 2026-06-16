@@ -11,7 +11,7 @@
 #define OUTPUT_BYTES_PER_LINE 4
 #define BITS_IN_A_BYTE 8
 
-#define MAIN_NUMBEROF_ARGUMENTS 2
+#define MAIN_NUMBEROF_ARGUMENTS 3
 
 typedef struct {
     const char* instrname;
