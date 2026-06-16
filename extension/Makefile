@@ -1,14 +1,22 @@
-CC      = gcc
+CC     =  gcc
+PYTHON ?= python3 
+VENV   ?= .venv
+
 CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
 			-Wall -Wextra -pedantic -Wshadow -Wconversion -g -Iinclude
 LDFLAGS	=
 LDLIBS  = -lm
 
-RACK_SRCS = src/main.c src/evaluator.c
+RACK_SRCS = src/main.c src/evaluator.c src/sim.c
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 
 TEST_SRCS = tests/test_evaluator.c src/evaluator.c
 TEST_OBJS = build/test_evaluator.o build/evaluator.o
+
+MUJOCO_DIR ?= $(shell $(PYTHON) -c \
+			  'import mujoco, pathlib; \
+			  print(pathlib.Path(mujo.__file__).resolve().parent)' \
+			  2>/dev/null)
 
 .PHONY: all clean run test asan
 
