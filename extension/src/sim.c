@@ -107,9 +107,22 @@ void sim_step_seconds(Sim *sim, double seconds) {
 }
 
 void sim_set_ctrl(Sim *sim, int actuator_id, double value) {
-
+    assert(sim != NULL);
+    assert(sim->data != NULL && sim->model != NULL);
+    assert(actuator_id >= 0 && actuator_id < sim->model->nu);
+    
+    sim->data->ctrl[actuator_id] = value;   
 }
 
+// Finds integer ID of actuator of robotic arm based on `actuator_name`.
 int sim_find_actuator_id(const Sim *sim, const char *actuator_name) {
+    assert(sim != NULL && actuator_name != NULL);
+    assert(sim->model != NULL);
 
+    int actuator_id = mj_name2id(sim->model, mjOBJ_ACTUATOR, actuator_name);
+    if (actuator_id < 0) {
+        fprintf(stderr, "ERROR: Failed to find ID for %s.\n", actuator_name);
+        exit(EXIT_FAILURE);
+    }
+    return actuator_id;
 }
