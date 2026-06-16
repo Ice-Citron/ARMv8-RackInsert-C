@@ -19,6 +19,16 @@ static void print_load_error(const char *scene_path, const char *error) {
     }
 }
 
+// (Helper): Loads MuJoCo plugins, since C/MuJoCo doesn't auto-handle this.
+static void load_mujoco_plugins(void) {
+    static int plugins_loaded = 0;
+
+    if (!plugins_loaded) {
+        plugins_loaded = 1;
+        mj_loadAllPluginLibraries(MUJOCO_PLUGIN_DIR, NULL);    
+    }
+}
+
 void sim_load(Sim *sim, const char *scene_path) {
     assert(sim != NULL && scene_path != NULL);
     sim_clear(sim);
@@ -26,6 +36,7 @@ void sim_load(Sim *sim, const char *scene_path) {
     char error[1024];
     error[0] = '\0';
 
+    load_mujoco_plugins();
     sim->model = mj_loadXML(scene_path, NULL, error, sizeof(error));
     if (sim->model == NULL) {
         print_load_error(scene_path, error);

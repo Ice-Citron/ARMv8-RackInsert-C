@@ -12,7 +12,8 @@ MUJOCO_LIB ?= $(notdir $(firstword $(wildcard $(MUJOCO_DIR)/libmujoco.so*)))
 
 CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
 		  	-Wall -Wextra -pedantic -Wshadow -Wconversion -g \
-			-Iinclude -I$(MUJOCO_DIR)/include
+			-Iinclude -I$(MUJOCO_DIR)/include \
+			-DMUJOCO_PLUGIN_DIR=\"$(MUJOCO_DIR)/plugin\" # defines preprocessor macro of `MUJOCO_PLUGIN_DIR`
 LDFLAGS	= -L$(MUJOCO_DIR) -Wl,-rpath,$(MUJOCO_DIR)
 LDLIBS  = -l:$(MUJOCO_LIB) -lm
 
@@ -35,8 +36,8 @@ check-mujoco:
 	@test -n "$(MUJOCO_LIB)" || \
 		{ echo "ERROR: libmujoco.so not found in $(MUJOCO_DIR)."; exit 1; }
 
-rack_insert: check-mujoco $(RACK_OBJS)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+rack_insert: $(RACK_OBJS) | check-mujoco
+	$(CC) $(CFLAGS) $(RACK_OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
 
 test_evaluator: $(TEST_OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
