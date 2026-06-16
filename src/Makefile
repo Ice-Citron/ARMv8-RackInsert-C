@@ -13,7 +13,6 @@ ASSEMBLE_SRCS = assemble.c \
 	ass_single_data_transfer.c \
 	dotint.c \
 	symbol_table.c \
-	assemble_dp.c \
 	assemble_dp_imm.c \
 	assemble_dp_reg.c \
 	assemble_dp_logical_reg.c \
