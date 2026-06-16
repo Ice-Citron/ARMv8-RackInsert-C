@@ -105,7 +105,7 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count)
         unsigned long parsed_shift = strtoul(shift_amount + 1, &end, 10);
 
         if (*end != '\0' || parsed_shift != DP_IMM_LSL_AMOUNT) {
-            fprtinf(stderr, "ERROR: Arithmetic immediate shift must be lsl #12\n");
+            fprintf(stderr, "ERROR: Arithmetic immediate shift must be lsl #12\n");
             exit(1);
         }
 

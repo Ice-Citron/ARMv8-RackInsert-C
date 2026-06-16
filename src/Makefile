@@ -18,7 +18,7 @@ ASSEMBLE_SRCS = assemble.c \
 	assemble_dp_reg.c \
 	assemble_dp_logical_reg.c \
 	assemble_multiply.c \
-	assemble_wide_move.c \ 
+	assemble_wide_move.c 
 ASSEMBLE_OBJS = $(ASSEMBLE_SRCS:%.c=build/%.o)
 
 .PHONY: all clean asan

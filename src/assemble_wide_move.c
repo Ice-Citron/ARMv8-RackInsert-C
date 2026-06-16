@@ -1,5 +1,5 @@
 #include "assemble_wide_move.h"
-#include <assemble_dp.h>
+#include "assemble_dp.h"
 
 #define WIDE_MOVE_OPI (5u << 23u)
 #define WIDE_MOVE_HW_SHIFT 21u
@@ -50,8 +50,6 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
     }
 
     rd = (uint32_t) reg;
-
-    char* end = NULL;
     unsigned long value = strtoul(operands[1] + 1, &end, 0);
 
     if (*end != '\0') {
@@ -70,7 +68,7 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
 
     if (operand_count == 3u) {
         if (strncmp(operands[3], "lsl", 3) != 0) {
-            frprintf(stderr, "Wide move only allows left shift");
+            fprintf(stderr, "Wide move only allows left shift");
             exit(1); 
         }
 

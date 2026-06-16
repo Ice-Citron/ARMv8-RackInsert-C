@@ -1,5 +1,5 @@
-#include <assemble_dp_reg.h>
-#include <assemble_dp.h>
+#include "assemble_dp_reg.h"
+#include "assemble_dp.h"
 
 #define DP_REG_ARITHMETIC_OPR (8u << 21u)
 
@@ -91,7 +91,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count)
     if (rd != ZERO_REGISTER_NUMBER) {
         rd = (uint32_t) strtoul(rd_text + 1, &end, 10);
         if (*end != '\0' || rd > ZERO_REGISTER_NUMBER) {
-            fprtinf(stderr, "ERROR: Invalid destination register %s\n", rd_text);
+            fprintf(stderr, "ERROR: Invalid destination register %s\n", rd_text);
             exit(1);
         }
     }
@@ -159,8 +159,9 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count)
             fprintf(stderr, "ERROR: Shift amount too large for 64 bit register\n");
             exit(1);
         }
-        shift_amount << DP_REG_SHIFT_AMOUNT_SHIFT;
+        //this statement sus too
+        shift_amount = DP_REG_SHIFT_AMOUNT_SHIFT;
     }
-
+    //THIS STATEMENT LOOKS MFING SUS ESPECIALLY BIT ALIGNMENT
     return sf | opc | DP_REG_FIXED_BITS | DP_REG_ARITHMETIC_OPR | shift_type | rm | shift_amount | rn | rd ;
 }

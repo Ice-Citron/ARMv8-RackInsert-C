@@ -1,5 +1,5 @@
-#include <assemble_wide_move.h>
-#include <assemble_dp.h>
+#include "assemble_wide_move.h"
+#include "assemble_dp.h"
 
 #define DP_REG_FIXED_BITS (10u << 24u) 
 
@@ -72,7 +72,7 @@ uint32_t assemble_multiply(char* mnemonic, char *operands[], size_t operand_coun
         end = NULL;
         ra = (uint32_t) strtoul(operands[3] + 1, &end, 10);
         if (*end != '\0' || ra > MAX_REGISTER_NUMBER) {
-            fprintf(stderr, "ERROR: Invalid format for ra%s\n, mnemonic");
+            fprintf(stderr, "ERROR: Invalid format for ra%s\n", mnemonic);
             exit(1);
         }
         ra = ra << MULTIPLY_RA_SHIFT;

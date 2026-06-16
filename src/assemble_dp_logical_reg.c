@@ -1,5 +1,5 @@
-#include <assemble_dp_logical_reg.h>
-#include <assemble_dp.h>
+#include "assemble_dp_logical_reg.h"
+#include "assemble_dp.h"
 
 #define LOGICAL_NBIT_SHIFT 21u
 #define LOGICAL_SHIFT_TYPE_SHIFT 22u
@@ -63,7 +63,8 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             exit(1);
         }
     }
-
+    //TODO: MAKE THIS A DISPATCH TABLE
+    //WHAT IS THIS FIRE TRUCK
     if (strcmp(mnemonic, "and") == 0 || strcmp(mnemonic, "bic") == 0) {
         opc = OPC_AND;
     } else if (
@@ -102,7 +103,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     if (rd != ZERO_REGISTER_NUMBER) {
         rd = (uint32_t) strtoul(rd_text + 1, &end, 10);
         if (*end != '\0' || rd > ZERO_REGISTER_NUMBER) {
-            fprtinf(stderr, "ERROR: Invalid destination register %s\n", rd_text);
+            fprintf(stderr, "ERROR: Invalid destination register %s\n", rd_text);
             exit(1);
         }
     }
@@ -178,6 +179,11 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
         shift_amount = LOGICAL_SHIFT_AMOUNT_SHIFT;
 
         return sf | opc | DP_REG_FIXED_BITS | shift_type | n_bit | rm | shift_amount | rn | rd;
+    } else {
+        //TODO: IDK WHY THE CONTROL REACHES TO THE END
+        //CLEARLY SOMEONE DIDNT CHECK LOGIC BEFORE PUSHING
+        fprintf(stderr, "imma check this later");
+        exit(1);
     }
     
 }
