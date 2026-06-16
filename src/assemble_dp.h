@@ -10,8 +10,16 @@
 #define SF_SHIFT 31u
 #define DP_OPC_SHIFT 29u
 
-uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count);
+#define INSTR_COUNT 25
+#define IMMREG_INSTR_COUNT 8
+#define IMMEDIATE_CHARACTER '#'
 
+typedef struct {
+    char* instrname;
+    int index;
+} idx_operand_no;
+
+uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count);
 extern uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count);
 extern uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count);
 extern uint32_t assemble_multiply(char* mnemonic, char *operands[], size_t operand_count);
