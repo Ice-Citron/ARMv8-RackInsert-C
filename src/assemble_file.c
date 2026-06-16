@@ -77,7 +77,7 @@ bool assemble_file(char *infile, char *outfile) {
 			args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
 		}
 		uint32_t instruction = 0;
-		instruction = assemble_dp(mnemonic, operands, operand_count);
+		instruction = assemble_dp(mnemonic, operands, operand_count, pc);
 		fwrite(&instruction, sizeof(uint32_t), 1, out);
 		pc += 4;
 	}

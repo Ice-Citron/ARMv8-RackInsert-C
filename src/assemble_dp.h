@@ -19,11 +19,11 @@ typedef struct {
     int index;
 } idx_operand_no;
 
-uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count);
-extern uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count);
-extern uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count);
-extern uint32_t assemble_multiply(char* mnemonic, char *operands[], size_t operand_count);
-extern uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count);
-extern uint32_t assemble_wide_move(char* mnemonic, char *operands[], size_t operand_count);
+uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
+extern uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
+extern uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
+extern uint32_t assemble_multiply(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
+extern uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
+extern uint32_t assemble_wide_move(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
 
 #endif

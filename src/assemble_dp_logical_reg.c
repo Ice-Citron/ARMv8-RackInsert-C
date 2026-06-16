@@ -20,7 +20,7 @@
 #define MAX_32BIT_SHIFT_AMOUNT 31u
 #define MAX_64BIT_SHIFT_AMOUNT 63u
 
-uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count) {
+uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
 
     uint32_t sf = 0u;
     uint32_t opc = 0u;

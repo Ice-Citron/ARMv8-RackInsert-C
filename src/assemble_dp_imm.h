@@ -3,6 +3,6 @@
 
 #include "assemble.h"
 
-uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count);
+uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
 
 #endif

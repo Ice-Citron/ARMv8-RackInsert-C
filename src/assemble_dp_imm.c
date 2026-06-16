@@ -15,7 +15,7 @@
 #define OPC_SUB 2u
 #define OPC_SUBS 3u
 
-uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count) {
+uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
     uint32_t sf = 0u << SF_SHIFT;
     uint32_t opc = 0u;
     uint32_t rd = 0u;

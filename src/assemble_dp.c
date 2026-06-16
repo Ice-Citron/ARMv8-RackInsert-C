@@ -18,17 +18,17 @@ static idx_operand_no immreg_instrs[] = {
 };
 
 //function handling decision whether immediate or register for dpimm and dpreg instrs
-static uint32_t decide_imm_or_reg(char* mnemonic, char *operands[], size_t operand_count) {
+static uint32_t decide_imm_or_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
     size_t operand_2_idx;
     for (int i = 0; i < IMMREG_INSTR_COUNT; i++) {
         if (strcmp(mnemonic, immreg_instrs[i].instrname) == 0) {
             operand_2_idx = immreg_instrs[i].index;
         }
         if (operands[operand_2_idx] [0] == IMMEDIATE_CHARACTER) {
-            return assemble_dp_imm(mnemonic, operands, operand_count);
+            return assemble_dp_imm(mnemonic, operands, operand_count, pc);
         }
         else {
-            return assemble_dp_reg(mnemonic, operands, operand_count);
+            return assemble_dp_reg(mnemonic, operands, operand_count, pc);
         }
     }
     fprintf(stderr, "function name doesnt exist");
@@ -69,10 +69,10 @@ static instr_dispatch dp_instrs[] = {
 };
 
 //main dp assembling function
-uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count) {
+uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
     for (int i = 0; i < INSTR_COUNT; i++) {
         if (strcmp(mnemonic, dp_instrs[i].instrname) == 0) {
-            return dp_instrs[i].handler(mnemonic, operands, operand_count);
+            return dp_instrs[i].handler(mnemonic, operands, operand_count, pc);
         }
     }
     fprintf(stderr, "function name doesnt exist");

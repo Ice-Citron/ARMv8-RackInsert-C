@@ -12,7 +12,7 @@
 #define OPC_MOVZ 2u
 #define OPC_MOVK 3u
 
-uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_count) {
+uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_count, uint32_t pc) {
     uint32_t rd;
     uint32_t sf;
     uint32_t imm16;
