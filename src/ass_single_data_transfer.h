@@ -1,6 +1,6 @@
-
 #ifndef ARMV8_64_ASS_SINGLE_DATA_TRANSFER_H
 #define ARMV8_64_ASS_SINGLE_DATA_TRANSFER_H
+
 #include "bit_manipulation.h"
 #define MOST_SIG_BIT 31
 #define L_BIT 22

@@ -1,3 +1,6 @@
+#ifndef DOT_INT_H
+#define DOT_INT_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
@@ -7,3 +10,4 @@
 #define HEX_BASE 16
 #define DECI_BASE 10
 
+#endif
