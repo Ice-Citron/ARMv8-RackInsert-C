@@ -1,7 +1,6 @@
 #include <assemble_dp_reg.h>
 #include <assemble_dp.h>
 
-#define DP_REG_FIXED_BITS (10u << 24u)
 #define DP_REG_ARITHMETIC_OPR (8u << 21u)
 
 #define DP_REG_RM_SHIFT 16u

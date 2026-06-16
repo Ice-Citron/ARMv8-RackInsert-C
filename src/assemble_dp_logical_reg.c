@@ -2,6 +2,10 @@
 #include <assemble_dp.h>
 
 #define LOGICAL_NBIT_SHIFT 21u
+#define LOGICAL_SHIFT_TYPE_SHIFT 22u
+#define LOGICAL_RM_SHIFT 16u
+#define LOGICAL_SHIFT_AMOUNT_SHIFT 10u
+#define LOGICAL_RN_SHIFT 5u
 
 #define LOGICAL_SHIFT_LSL 0u
 #define LOGICAL_SHIFT_LSR 1u
@@ -24,7 +28,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     uint32_t rd = 0u;
     uint32_t rn = 0u;
     uint32_t rm = 0u;
-    uint32_t shift_type = LOGICAL_SHIFT_LSL;
+    uint32_t shift_type = LOGICAL_SHIFT_LSL << LOGICAL_SHIFT_TYPE_SHIFT;
     uint32_t shift_amount = 0u;
 
     size_t rd_index = 0;
@@ -112,6 +116,8 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
         }
     }
 
+    rn = rn << LOGICAL_RN_SHIFT;
+
     end = NULL;
 
     rm = (uint32_t) strtoul(rm_text + 1, &end, 10);
@@ -119,6 +125,8 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
         fprintf(stderr, "ERROR: Invalid second source register %s\n", rd_text);
         exit(1);
     }
+
+    rm = rm << LOGICAL_RM_SHIFT;
 
     if (operand_count > shift_index) {
         const char *shift_text = operands[shift_text];
@@ -135,6 +143,8 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             fprintf(stderr, "ERROR: Invalid shift type %s\n", shift_text);
             exit(1);
         }
+
+        shift_type = shift_type << LOGICAL_SHIFT_TYPE_SHIFT;
 
         const char *amount_text = shift_text + 3u;
 
@@ -164,6 +174,10 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             fprintf(stderr, "ERROR: 64-bit logical shift amount is too large %s\n", amount_text);
             exit(1);
         }
+
+        shift_amount = LOGICAL_SHIFT_AMOUNT_SHIFT;
+
+        return sf | opc | DP_REG_FIXED_BITS | shift_type | n_bit | rm | shift_amount | rn | rd;
     }
     
 }
