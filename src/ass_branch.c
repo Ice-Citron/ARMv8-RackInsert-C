@@ -40,15 +40,15 @@ uint32_t ass_branch(char* mnemonic, char *operands[],
         exit(1);
     }
     //i know it should be a bitwise op but lets pass tests first
-    //spec says we can assume that literal will be label
+    //target can be label or value
     uint32_t target_memory = read_number_or_label(operands[0]);
     if (strcmp(UNCON_STR_PREFIX, mnemonic) == 0) {
         //uncon branch
         return UNCON_BRANCH_PREFIX + (calc_offset(target_memory, pc, UNCON_BRANCH_ADDR_LENGTH));
 
     } else if (strcmp(REG_BRANCH_STR_PREFIX, mnemonic) == 0) {
-        //branch register
-        return REGISTER_BRANCH_PREFIX + (atoi(operands[1]) << XN_ADDR_SHIFT_LEFT);
+        //branch register - reads from the second character (e.g. register is x0)
+        return REGISTER_BRANCH_PREFIX + (atoi(operands[0] + 1) << XN_ADDR_SHIFT_LEFT);
     } else {
         //branch conditional
         uint32_t opcode = check_mnemonic_if_cond(mnemonic);
