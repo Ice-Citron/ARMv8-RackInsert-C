@@ -2,8 +2,16 @@ CC     =  gcc
 PYTHON ?= python3 
 VENV   ?= .venv
 
+# MuJoCo Library Dependency
+MUJOCO_DIR ?= $(shell $(PYTHON) -c \
+				'import mujoco, pathlib; \
+			  	print(pathlib.Path(mujo.__file__).resolve().parent)' \
+			  	2>/dev/null)
+MUJOCO_LIB ?= $(notdir $(firstword $(wildcard $(MUJOCO_DIR)/libmujoco.so*)))
+
 CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
-			-Wall -Wextra -pedantic -Wshadow -Wconversion -g -Iinclude
+		  	-Wall -Wextra -pedantic -Wshadow -Wconversion -g  \ 
+			-Iinclude -I$(MUJOCO_DIR)/include
 LDFLAGS	=
 LDLIBS  = -lm
 
@@ -13,12 +21,7 @@ RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 TEST_SRCS = tests/test_evaluator.c src/evaluator.c
 TEST_OBJS = build/test_evaluator.o build/evaluator.o
 
-MUJOCO_DIR ?= $(shell $(PYTHON) -c \
-			  'import mujoco, pathlib; \
-			  print(pathlib.Path(mujo.__file__).resolve().parent)' \
-			  2>/dev/null)
-
-.PHONY: all clean run test asan
+.PHONY: all clean run test asan deps
 
 all: rack_insert
 
