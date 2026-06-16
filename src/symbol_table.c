@@ -22,16 +22,21 @@ static void resize_symbol_table()
     symbol_table_capacity = SYMTABLE_RESIZE_FACTOR * symbol_table_size;
 }
 
-uint32_t find_address_from_sym_table(const char *name)
+//changed to boolean to show success
+//the address will be returned as a pointer
+//because ADDRESS_FAIL was -1 which will be casted to 2^31-1
+//creating a potential bug when the label associates with 0xFFFFFFFF in symtable
+bool find_address_from_sym_table(const char *name, uint32_t *address)
 {
     for (int i = 0; i < symbol_table_size; i++)
     {
         if (strcmp(symbol_table[i].name, name) == 0)
         {
-            return symbol_table[i].address;
+            *address = symbol_table[i].address;
+            return true;
         }
     }
-    return ADDRESS_FAIL;
+    return false;
 }
 
 void add_to_symbol_table(const char *name, const uint32_t address)

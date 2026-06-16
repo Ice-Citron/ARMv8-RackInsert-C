@@ -29,7 +29,9 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         }
         else // label
         {
-            target_addr = find_address_from_sym_table(operands[1]);
+            uint32_t *target_temp;
+            find_address_from_sym_table(operands[1], target_temp);
+            target_addr = *target_temp;
         }
         int64_t offset = offset = (int64_t)target_addr - (int64_t)pc;
         int64_t simm19 = (offset >> 2) & SIM_19_BIT_MASK;

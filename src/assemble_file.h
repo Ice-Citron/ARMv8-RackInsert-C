@@ -26,10 +26,11 @@
 uint32_t read_number_or_label (char* string) {
     uint32_t inputint;
     char* endptr;
-    uint32_t maybe_symbol = find_address_from_sym_table(string);
+    uint32_t* symbol_temp; 
+    bool symbol_found = find_address_from_sym_table(string, symbol_temp);
     //check whether label
-    if (maybe_symbol != ADDRESS_FAIL) {
-        return maybe_symbol;
+    if (symbol_found) {
+        return *symbol_temp;
     } else if (strncmp(string, HEX_TYPE_SIGNATURE, LEN_HEX_TYPE_SIGNATURE)) {
         //check whether hexadecimal
         inputint = strtol(string + LEN_HEX_TYPE_SIGNATURE, &endptr, HEX_BASE);
