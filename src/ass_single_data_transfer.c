@@ -1,9 +1,10 @@
 #include "ass_single_data_transfer.h"
 #include "symbol_table.h"
-#include "assemble.h"
+#include <stdio.h>
+#include <stdlib.h>
 
 uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
-                    size_t operand_count, uint32_t pc)
+                                  size_t operand_count, uint32_t pc)
 {
     if (operand_count < 2 || operand_count > 3) {
         fprintf(stderr, "wrong number of operands");
