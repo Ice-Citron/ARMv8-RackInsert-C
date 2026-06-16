@@ -6,3 +6,8 @@
 
 #define OUTPUT_BYTES_PER_LINE 4
 #define BITS_IN_A_BYTE 8
+
+typedef struct {
+    const char* instr;
+    uint32_t (*handler)(char *, char* [], int);
+} instr_dispatch;

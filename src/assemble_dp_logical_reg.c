@@ -109,7 +109,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
 
     if (rn != ZERO_REGISTER_NUMBER) {
         end = NULL;
-        rn = (uint32_t) strtoul(rn_text + 1, &end, 10)
+        rn = (uint32_t) strtoul(rn_text + 1, &end, 10);
         if (*end != '\0' || rn > ZERO_REGISTER_NUMBER) {
             fprintf(stderr, "ERROR: Invalid source register %s\n", rn_text);
             exit(1);
@@ -129,7 +129,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     rm = rm << LOGICAL_RM_SHIFT;
 
     if (operand_count > shift_index) {
-        const char *shift_text = operands[shift_text];
+        const char *shift_text = operands[shift_index];
 
         if (strncmp(shift_text,"lsl",3) == 0) {
             shift_type = LOGICAL_SHIFT_LSL;
