@@ -7,4 +7,6 @@
 #define HEX_BASE 16
 #define DECI_BASE 10
 
+uint32_t int_directive (char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
+
 #endif

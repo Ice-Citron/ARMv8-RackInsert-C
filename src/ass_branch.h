@@ -45,4 +45,7 @@ uint32_t calc_offset(uint32_t label_address, uint32_t caller_address,
     return extract_bits(output_bits - 1, 0, (uint32_t) offset_unmasked);
 }
 
+uint32_t ass_branch(char* mnemonic, char *operands[], 
+                    size_t operand_count, uint32_t pc);
+
 #endif

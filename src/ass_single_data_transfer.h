@@ -26,4 +26,7 @@
 #define NUM_OF_MEMORY 31
 #define POS_OF_MEMORY 5
 
+uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
+                                  size_t operand_count, uint32_t pc);
+
 #endif //ARMV8_64_ASS_SINGLE_DATA_TRANSFER_H
