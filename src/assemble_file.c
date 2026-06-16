@@ -1,6 +1,26 @@
 #include "assemble_file.h"
 #define MAX_OPERANDS 5
 
+//i should really turn this into helpers
+uint32_t read_number_or_label (char* string) {
+    uint32_t inputint;
+    char* endptr;
+    uint32_t symbol_temp; 
+    bool symbol_found = find_address_from_sym_table(string, &symbol_temp);
+    //check whether label
+    if (symbol_found) {
+        return symbol_temp;
+    } else if (strncmp(string, HEX_TYPE_SIGNATURE, LEN_HEX_TYPE_SIGNATURE)) {
+        //check whether hexadecimal
+        inputint = strtol(string + LEN_HEX_TYPE_SIGNATURE, &endptr, HEX_BASE);
+        //pointer arithmetic above
+    } else {
+        //decimal
+        inputint = strtol(string, &endptr, DECI_BASE);
+    }
+    return inputint;
+}
+
 //decides index where we check whether 
 //function is register or immediate
 static idx_operand_no immreg_instrs[] = {

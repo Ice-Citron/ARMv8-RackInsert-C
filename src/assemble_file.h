@@ -23,25 +23,6 @@
 #define HEX_BASE 16
 #define DECI_BASE 10
 
-uint32_t read_number_or_label (char* string) {
-    uint32_t inputint;
-    char* endptr;
-    uint32_t* symbol_temp; 
-    bool symbol_found = find_address_from_sym_table(string, symbol_temp);
-    //check whether label
-    if (symbol_found) {
-        return *symbol_temp;
-    } else if (strncmp(string, HEX_TYPE_SIGNATURE, LEN_HEX_TYPE_SIGNATURE)) {
-        //check whether hexadecimal
-        inputint = strtol(string + LEN_HEX_TYPE_SIGNATURE, &endptr, HEX_BASE);
-        //pointer arithmetic above
-    } else {
-        //decimal
-        inputint = strtol(string, &endptr, DECI_BASE);
-    }
-    return inputint;
-}
-
 typedef struct {
     char* instrname;
     int index;
@@ -52,6 +33,7 @@ typedef struct {
     uint32_t (*handler)(char *, char* [], size_t, uint32_t);
 } instr_dispatch;
 
+uint32_t read_number_or_label (char* string);
 uint32_t assemble_instructions(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
 extern uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
 extern uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
