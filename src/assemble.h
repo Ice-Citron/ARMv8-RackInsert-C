@@ -8,6 +8,6 @@
 #define BITS_IN_A_BYTE 8
 
 typedef struct {
-    const char* instr;
+    const char* instrname;
     uint32_t (*handler)(char *, char* [], int);
 } instr_dispatch;

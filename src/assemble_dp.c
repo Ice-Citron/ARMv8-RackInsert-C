@@ -26,6 +26,10 @@ instr_dispatch dp_instrs[] = {
     {"mvn", assemble_dp_logical_reg}
 };
 
+static uint32_t decide_imm_or_reg(char* mnemonic, char *operands[], size_t operand_count) {
+    
+}
+
 //make dispatch table just for dp
 uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count) {
     if (strcmp(mnemonic , "add") == 0 || strcmp(mnemonic ,"adds") == 0 || strcmp(mnemonic , "sub") == 0
@@ -44,16 +48,11 @@ uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count) {
             return assemble_dp_reg(mnemonic, operands, operand_count);
         }
     }
-    if (strcmp(mnemonic,"movn") == 0 || strcmp(mnemonic,"movz") == 0 || strcmp(mnemonic,"movk") == 0) {
-        return assemble_wide_move(mnemonic, operands, operand_count);
-    } 
-    else if (strcmp(mnemonic , "madd") == 0 || strcmp(mnemonic , "msub") == 0 || strcmp(mnemonic ,"mul") == 0 || strcmp(mnemonic , "mneg") == 0) {
-        return assemble_multiply(mnemonic, operands, operand_count);
-    }
-    else if (strcmp(mnemonic , "and") == 0 || strcmp(mnemonic , "bic") == 0 || strcmp(mnemonic , "orr") == 0 || strcmp(mnemonic , "orn") == 0 || strcmp(mnemonic , "eor") == 0
-        || strcmp(mnemonic ,"eon") == 0 || strcmp(mnemonic ,"ands") == 0 || strcmp(mnemonic , "bics") == 0 || strcmp(mnemonic , "tst") == 0 || strcmp(mnemonic , "mov") == 0 || strcmp(mnemonic , "mvn") == 0) {
-            return assemble_logical_reg(mnemonic, operands, operand_count);
+    for (int i = 0; i < INSTR_COUNT; i++) {
+        if (strcmp(mnemonic, dp_instrs[i].instrname) == 0) {
+            dp_instrs[i].handler(mnemonic, operands, operand_count);
         }
+    }
 
 }
 
