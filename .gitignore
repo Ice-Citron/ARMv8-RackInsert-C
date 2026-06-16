@@ -7,6 +7,13 @@
 #ignore pdf files (just keep source files)
 *.pdf
 
+# Extensions related compilation C code
+extension/rack_insert
+extension/test_evaluator
+
+# Extensions related python dependencies
+extension/.venv
+
 #ignore junk files from latex output
 *.out
 *.log
@@ -18,8 +25,6 @@
 *.o
 emulate
 assemble
-extension/rack_insert
-extension/test_evaluator
 
 #ignore junk files from compiling Haskell code
 *.hi

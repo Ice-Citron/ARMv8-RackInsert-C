@@ -1,19 +1,20 @@
 CC     =  gcc
-PYTHON ?= python3 
 VENV   ?= .venv
+# Use venv Python if exitsts, otherwise fall back to system python3
+PYTHON ?= $(if $(wildcard $(VENV)/bin/python),$(VENV)/bin/python,python3)
 
 # MuJoCo Library Dependency
 MUJOCO_DIR ?= $(shell $(PYTHON) -c \
 				'import mujoco, pathlib; \
-			  	print(pathlib.Path(mujo.__file__).resolve().parent)' \
+			  	print(pathlib.Path(mujoco.__file__).resolve().parent)' \
 			  	2>/dev/null)
 MUJOCO_LIB ?= $(notdir $(firstword $(wildcard $(MUJOCO_DIR)/libmujoco.so*)))
 
 CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
-		  	-Wall -Wextra -pedantic -Wshadow -Wconversion -g  \ 
+		  	-Wall -Wextra -pedantic -Wshadow -Wconversion -g \
 			-Iinclude -I$(MUJOCO_DIR)/include
-LDFLAGS	=
-LDLIBS  = -lm
+LDFLAGS	= -L$(MUJOCO_DIR) -Wl,-rpath,$(MUJOCO_DIR)
+LDLIBS  = -l:$(MUJOCO_LIB) -lm
 
 RACK_SRCS = src/main.c src/evaluator.c src/sim.c
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
@@ -21,11 +22,20 @@ RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 TEST_SRCS = tests/test_evaluator.c src/evaluator.c
 TEST_OBJS = build/test_evaluator.o build/evaluator.o
 
-.PHONY: all clean run test asan deps
+.PHONY: all clean run test asan deps check-mujoco
 
 all: rack_insert
 
-rack_insert: $(RACK_OBJS)
+# Safety Guards: Catch MuJoCo-dependency errors before compiler attempts to 
+# 				 build the full Project.
+check-mujoco:
+	@test -n "$(MUJOCO_DIR)" || \
+		{ echo "ERROR: MuJoCo not found. Run `make deps && \
+		PYTHON=.venv/bin/python`"; exit 1; }
+	@test -n "$(MUJOCO_LIB)" || \
+		{ echo "ERROR: libmujoco.so not found in $(MUJOCO_DIR)."; exit 1; }
+
+rack_insert: check-mujoco $(RACK_OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 test_evaluator: $(TEST_OBJS)
@@ -50,6 +60,12 @@ build/%.o: src/%.c | build
 
 build/test_%.o: tests/test_%.c | build
 	$(CC) $(CFLAGS) -c $< -o $@
+
+# If MuJoCo not previously installed on machine, run `make deps`
+deps:
+	$(PYTHON) -m venv $(VENV)
+	$(VENV)/bin/python -m pip install --upgrade pip
+	$(VENV)/bin/python -m pip install mujoco
 
 clean:
 	rm -rf build rack_insert test_evaluator
