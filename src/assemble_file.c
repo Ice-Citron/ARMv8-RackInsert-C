@@ -48,7 +48,7 @@ bool assemble_file(char *infile, char *outfile) {
 		}
 	}
 
-	bool file_end = false;
+	// bool file_end = false;
 
 	rewind(in);
 	pc = 0;
@@ -58,8 +58,9 @@ bool assemble_file(char *infile, char *outfile) {
 
 	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
 		char* inner_save_ptr = NULL;
-		char* starting_query = strtok_r(full_line_buffer, " \t\n",
-			&inner_save_ptr);
+		// char* starting_query = strtok_r(full_line_buffer, " \t\n",
+		// 	&inner_save_ptr);
+		strtok_r(full_line_buffer, " \t\n", &inner_save_ptr);
 		// dictate what to do from here
 		char* args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
 		while(args_of_query != NULL)

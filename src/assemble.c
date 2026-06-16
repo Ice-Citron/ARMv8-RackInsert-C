@@ -1,4 +1,5 @@
 #include "assemble.h"
+#include "assemble_file.h"
 
 int main(int argc, char **argv) {
   if (argc != MAIN_NUMBEROF_ARGUMENTS) {
