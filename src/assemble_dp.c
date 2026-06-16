@@ -26,7 +26,7 @@ uint32_t assemble_dp(char* mnemonic, char *operands[], size_t operand_count) {
     }
     else if (strcmp(mnemonic , "and") == 0 || strcmp(mnemonic , "bic") == 0 || strcmp(mnemonic , "orr") == 0 || strcmp(mnemonic , "orn") == 0 || strcmp(mnemonic , "eor") == 0
         || strcmp(mnemonic ,"eon") == 0 || strcmp(mnemonic ,"ands") == 0 || strcmp(mnemonic , "bics") == 0 || strcmp(mnemonic , "tst") == 0 || strcmp(mnemonic , "mov") == 0 || strcmp(mnemonic , "mvn") == 0) {
-            return assemble_logical_register(mnemonic, operands, operand_count);
+            return assemble_logical_reg(mnemonic, operands, operand_count);
         }
 
 }
