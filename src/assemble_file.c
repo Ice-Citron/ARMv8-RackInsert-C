@@ -79,6 +79,7 @@ bool assemble_file(char *infile, char *outfile) {
 		uint32_t instruction = 0;
 		instruction = assemble_dp(mnemonic, operands, operand_count);
 		fwrite(&instruction, sizeof(uint32_t), 1, out);
+		pc += 4;
 	}
 	fclose(in);
 	fclose(out);
