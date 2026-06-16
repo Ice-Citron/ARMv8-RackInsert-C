@@ -66,10 +66,17 @@ static instr_dispatch dp_instrs[] = {
 	//2 load/store
 	{"ldr", ass_single_data_transfer}, 
 	{"str", ass_single_data_transfer},
-	//3 branch 
+	//2 branch other
 	{"b", ass_branch}, 
 	{"br", ass_branch},
-	{"b.cond", ass_branch},
+	//7 branch cond
+	{"b.eq", ass_branch},
+	{"b.ne", ass_branch},
+	{"b.ge", ass_branch},
+	{"b.lt", ass_branch},
+	{"b.gt", ass_branch},
+	{"b.le", ass_branch},
+	{"b.al", ass_branch},
 	//1 directive
 	{".int", int_directive}
 };
