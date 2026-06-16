@@ -75,8 +75,46 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     opc = opc << DP_OPC_SHIFT;
     
 
-    if (strcmp(mnemonic, "bic") == 0 || strcmp(mnemonic,"bics") || strcmp(mnemonic,"eon") || strcmp(mnemonic, "mvn") == 0) {
+    if (strcmp(mnemonic, "bic") == 0 || strcmp(mnemonic,"bics") == 0 || strcmp(mnemonic, "orn") == 0 || strcmp(mnemonic,"eon") == 0 || strcmp(mnemonic, "mvn") == 0) {
         n_bit = 1u << LOGICAL_NBIT_SHIFT;
+    }
+
+    const char *rd_text = operands[rd_index];
+    const char *rn_text = operands[rn_index];
+    const char *rm_text = operands[rm_index];
+
+    if (rd_text[0] == 'x') {
+        sf = 1u << SF_SHIFT;
+    } else if (rd_text[0] != 'w') {
+        fprintf(stderr, "ERROR: Invalid register format %s\n", rd_text);
+        exit(1);
+    }
+
+    char *end = NULL;
+
+    if (rd != ZERO_REGISTER_NUMBER) {
+        rd = (uint32_t) strtoul(rd_text + 1, &end, 10);
+        if (*end != '\0' || rd > ZERO_REGISTER_NUMBER) {
+            fprtinf(stderr, "ERROR: Invalid destination register %s\n", rd_text);
+            exit(1);
+        }
+    }
+
+    if (rn != ZERO_REGISTER_NUMBER) {
+        end = NULL;
+        rn = (uint32_t) strtoul(rn_text + 1, &end, 10)
+        if (*end != '\0' || rn > ZERO_REGISTER_NUMBER) {
+            fprintf(stderr, "ERROR: Invalid source register %s\n", rn_text);
+            exit(1);
+        }
+    }
+
+    end = NULL;
+
+    rm = (uint32_t) strtoul(rm_text + 1, &end, 10);
+    if (*end != '\0' || rm > ZERO_REGISTER_NUMBER) {
+        fprintf(stderr, "ERROR: Invalid second source register %s\n", rd_text);
+        exit(1);
     }
     
 }
