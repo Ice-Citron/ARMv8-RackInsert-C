@@ -1,12 +1,14 @@
 #ifndef EXTENSION_SIM_H
 #define EXTENSION_SIM_H
 
+#include <mujoco/mujoco.h>
+
 typedef struct {
     mjModel *model;
     mjData  *data;
 } Sim;
 
-int sim_load(Sim *sim, const char *scene_path);
+void sim_load(Sim *sim, const char *scene_path);
 void sim_free(Sim *sim);
 void sim_forward(Sim *sim);
 
