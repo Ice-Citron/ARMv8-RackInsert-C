@@ -4,6 +4,9 @@
 #define LOGICAL_NBIT_SHIFT 21u
 
 #define LOGICAL_SHIFT_LSL 0u
+#define LOGICAL_SHIFT_LSR 1u
+#define LOGICAL_SHIFT_ASR 2u
+#define LOGICAL_SHIFT_ROR 3u
 
 #define OPC_AND 0u
 #define OPC_ORR 1u
@@ -115,6 +118,52 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     if (*end != '\0' || rm > ZERO_REGISTER_NUMBER) {
         fprintf(stderr, "ERROR: Invalid second source register %s\n", rd_text);
         exit(1);
+    }
+
+    if (operand_count > shift_index) {
+        const char *shift_text = operands[shift_text];
+
+        if (strncmp(shift_text,"lsl",3) == 0) {
+            shift_type = LOGICAL_SHIFT_LSL;
+        } else if (strncmp(shift_text,"lsr",3) == 0) {
+            shift_type = LOGICAL_SHIFT_LSR;
+        } else if (strncmp(shift_text,"asr",3) == 0) {
+            shift_type = LOGICAL_SHIFT_ASR;
+        } else if (strncmp(shift_text, "ror", 3) == 0) {
+            shift_type = LOGICAL_SHIFT_ROR;
+        } else {
+            fprintf(stderr, "ERROR: Invalid shift type %s\n", shift_text);
+            exit(1);
+        }
+
+        const char *amount_text = shift_text + 3u;
+
+        while (*amount_text == ' ') {
+            amount_text++;
+        }
+
+        if (*amount_text != '#') {
+            fprintf(stderr, "ERROR: Logical shift amount must begin with #\n");
+            exit(1);
+        }
+
+        end = NULL;
+        shift_amount = (uint32_t) strtoul(amount_text+1u, &end, 10);
+
+        if (*end != '\0') {
+            fprintf(stderr, "ERROR: Invalid logical shift amount %s\n", amount_text);
+            exit(1);
+        }
+
+        if (sf == 0) {
+            if (shift_amount > MAX_32BIT_SHIFT_AMOUNT) {
+                fprintf(stderr, "ERROR: 32-bit logical shift amount is too large %s\n", amount_text);
+                exit(1);
+            }
+        } else if (shift_amount > MAX_64BIT_SHIFT_AMOUNT) {
+            fprintf(stderr, "ERROR: 64-bit logical shift amount is too large %s\n", amount_text);
+            exit(1);
+        }
     }
     
 }
