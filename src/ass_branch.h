@@ -1,3 +1,6 @@
+#ifndef ASS_BRANCH_H
+#define ASS_BRANCH_H
+
 #include "assemble_file.h"
 #include "bit_manipulation.h"
 
@@ -41,3 +44,5 @@ uint32_t calc_offset(uint32_t label_address, uint32_t caller_address,
     int32_t offset_unmasked = label_address - caller_address;
     return extract_bits(output_bits - 1, 0, (uint32_t) offset_unmasked);
 }
+
+#endif
