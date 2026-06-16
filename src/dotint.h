@@ -1,9 +1,6 @@
 #ifndef DOT_INT_H
 #define DOT_INT_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdint.h>
 #include "assemble.h"
 #define HEX_TYPE_SIGNATURE "0x"
 #define LEN_HEX_TYPE_SIGNATURE 2

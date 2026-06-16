@@ -15,14 +15,17 @@ uint32_t ass_branch(char* mnemonic, char *operands[],
     uint32_t target_memory = find_address_from_sym_table(operands[1]);
     if (strcmp(UNCON_STR_PREFIX, mnemonic) == 0) {
         //uncon branch
-        return UNCON_BRANCH_PREFIX | (calc_offset(target_memory, pc, UNCON_BRANCH_ADDR_LENGTH))
+        return UNCON_BRANCH_PREFIX | (calc_offset(target_memory, pc, UNCON_BRANCH_ADDR_LENGTH));
 
     } else if (strcmp(REG_BRANCH_STR_PREFIX, mnemonic) == 0) {
         //branch register
-        return REGISTER_BRANCH_PREFIX | (atoi(operands[1]) << REG_INDEX_SHIFT_LEFT)
+        return REGISTER_BRANCH_PREFIX | (atoi(operands[1]) << XN_ADDR_SHIFT_LEFT);
     } else {
         //branch conditional
         uint32_t opcode = check_mnemonic_if_cond(mnemonic);
+        return CON_BRANCH_PREFIX  |
+            (calc_offset(target_memory, pc, CON_BRANCH_ADDR_LENGTH) << CON_BRANCH_ADDR_SHIFT_LEFT) |
+            opcode;
         
         
     }
