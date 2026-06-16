@@ -1,6 +1,17 @@
 #include "evaluator.h"
+#include "sim.h"
 
+#include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define DEFAULT_SCENE_PATH "assets/mujoco/rack_insert/rack_insert_scene_eval.xml"
+
+// (TEMP HELPER): Calculates 3D-vector distance. Will move later.
+static double vec3_distance(const double ) {
+    double dx = a[0] - b[0];
+}
 
 int main(int argc, char **argv) {
     EvalGeometry geom = {

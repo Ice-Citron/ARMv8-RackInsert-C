@@ -4,21 +4,6 @@
 #include <assert.h>
 #include <stddef.h>
 
-// (Helper): Calculates dot product of 3D vectors
-static double vec3_dot(const double a[3], const double b[3]) {
-    return a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-}
-
-static void vec3_sub(const double a[3], const double b[3], double out[3]) {
-    out[0] = a[0] - b[0];
-    out[1] = a[1] - b[1];
-    out[2] = a[2] - b[2];
-}
-
-static double vec3_norm(const double v[3]) {
-    return sqrt(vec3_dot(v, v));
-}
-
 static double clamp(double x, double lo, double hi) {
     if (x < lo) {
         return lo;
