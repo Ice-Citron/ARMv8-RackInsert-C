@@ -17,11 +17,11 @@ CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
 LDFLAGS	= -L$(MUJOCO_DIR) -Wl,-rpath,$(MUJOCO_DIR)
 LDLIBS  = -l:$(MUJOCO_LIB) -lm
 
-RACK_SRCS = src/main.c src/evaluator.c src/sim.c
+RACK_SRCS = src/main.c src/evaluator.c src/sim.c src/vec.c
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 
-TEST_SRCS = tests/test_evaluator.c src/evaluator.c
-TEST_OBJS = build/test_evaluator.o build/evaluator.o
+TEST_SRCS = tests/test_evaluator.c src/evaluator.c src/vec.c
+TEST_OBJS = build/test_evaluator.o build/evaluator.o build/vec.o
 
 .PHONY: all clean run test asan deps check-mujoco
 

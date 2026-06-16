@@ -1,4 +1,5 @@
 #include "evaluator.h"
+#include "vec.h"
 
 #include <math.h>
 #include <assert.h>
