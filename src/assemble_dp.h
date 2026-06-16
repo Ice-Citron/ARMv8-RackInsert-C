@@ -1,7 +1,7 @@
 #ifndef ASSEMBLE_DP_H
 #define ASSEMBLE_DP_H
 
-#include <assemble.h>
+#include "assemble.h"
 
 #define ZERO_REGISTER_NUMBER 31u
 #define DP_FIXED_BIT (1u << 28u)

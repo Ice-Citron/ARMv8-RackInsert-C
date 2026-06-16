@@ -1,5 +1,5 @@
-#include <assemble_dp_imm.h>
-#include <assemble_dp.h>
+#include "assemble_dp_imm.h"
+#include "assemble_dp.h"
 
 #define DP_IMM_SH_SHIFT 22u
 #define DP_IMM_IMM12_SHIFT 10u
@@ -37,7 +37,7 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count)
         imm_index = 1u;
     } else {
         if (operand_count != 3u && operand_count != 5u) {
-            fprtinf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
+            fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
         }
     }
@@ -79,7 +79,7 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count)
     }
 
     if (operands[imm_index][0] != '#') {
-        fprtinf(stderr, "ERROR: Invalid immediate addressing format, must begin with # %s\n", operands[imm_index]);
+        fprintf(stderr, "ERROR: Invalid immediate addressing format, must begin with # %s\n", operands[imm_index]);
     }
 
     end = NULL;
@@ -115,8 +115,4 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count)
     rn = rn << DP_IMM_RN_SHIFT;
 
     return sf | opc | DP_FIXED_BIT | DP_IMM_ARITHMETIC_OPI | sh | imm12 | rn | rd ;
-
-
-
-
 }

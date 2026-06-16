@@ -12,7 +12,13 @@ ASSEMBLE_SRCS = assemble.c \
 	ass_branch.c \
 	ass_single_data_transfer.c \
 	dotint.c \
-	symbol_table.c
+	symbol_table.c \
+	assemble_dp.c \
+	assemble_dp_imm.c \
+	assemble_dp_reg.c \
+	assemble_dp_logical_reg.c \
+	assemble_multiply.c \
+	assemble_wide_move.c \ 
 ASSEMBLE_OBJS = $(ASSEMBLE_SRCS:%.c=build/%.o)
 
 .PHONY: all clean asan
