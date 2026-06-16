@@ -1,9 +1,7 @@
 #include "assemble_file.h"
-// bool ok = assemblefile( filename );
-//	Takes the name of a .as file, opens it, assembles it,
-//	producing either one or more error messages (and returning false)
-//	or produces the .em (listing) file, and returns true.
-//
+
+#include "assemble_dp.h"
+#define MAX_OPERANDS 5
 
 bool assemble_file(char *infile, char *outfile) {
     // open the input file
@@ -60,14 +58,27 @@ bool assemble_file(char *infile, char *outfile) {
 		char* inner_save_ptr = NULL;
 		// char* starting_query = strtok_r(full_line_buffer, " \t\n",
 		// 	&inner_save_ptr);
-		strtok_r(full_line_buffer, " \t\n", &inner_save_ptr);
-		// dictate what to do from here
+		char *mnemonic = strtok_r(full_line_buffer, " \t\n", &inner_save_ptr);
+		if (mnemonic == NULL) // empty line
+		{
+			continue;
+		}
+		size_t len = strlen(mnemonic);
+		if (mnemonic[len-1] == ':') // second pass so skip labels
+		{
+			continue;
+		}
+		char *operands[MAX_OPERANDS]; // store arguments here
+		size_t operand_count = 0;
 		char* args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
 		while(args_of_query != NULL)
 		{
-			// do what I must here
+			operands[operand_count++] = args_of_query;
 			args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
 		}
+		uint32_t instruction = 0;
+		instruction = assemble_dp(mnemonic, operands, operand_count);
+		fwrite(&instruction, sizeof(uint32_t), 1, out);
 	}
 	fclose(in);
 	fclose(out);
