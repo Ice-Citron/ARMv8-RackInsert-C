@@ -87,3 +87,19 @@ void sim_get_site_pos(const Sim *sim, const char *site_name, double out[3]) {
     out[1] = sim->data->site_xpos[3 * site_id + 1];
     out[2] = sim->data->site_xpos[3 * site_id + 2];
 }
+
+void sim_step(Sim *sim) {
+
+}
+
+void sim_step_seconds(Sim *sim, double seconds) {
+    
+}
+
+void sim_set_ctrl(Sim *sim, int actuator_id, double value) {
+
+}
+
+int sim_find_actuator_id(const Sim *sim, const char *actuator_name) {
+
+}
