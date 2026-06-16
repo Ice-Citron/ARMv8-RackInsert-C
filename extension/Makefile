@@ -1,6 +1,6 @@
 CC     =  gcc
 VENV   ?= .venv
-# Use venv Python if exitsts, otherwise fall back to system python3
+# Use venv Python if exitsts, otherwise fall back to system python3for rack_insert.xn
 PYTHON ?= $(if $(wildcard $(VENV)/bin/python),$(VENV)/bin/python,python3)
 
 # MuJoCo Library Dependency
