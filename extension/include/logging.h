@@ -1,0 +1,11 @@
+#ifndef EXTENSION_LOGGING_H
+#define EXTENSION_LOGGING_H
+
+#include "evaluator.h"
+
+void print_vec3(const char *label, const double v[3]);
+void print_eval_report(const char *scene_path, const EvalGeometry *geom,
+                       const TrialScore *score, double socket_depth);
+void print_usage_guide(const char *program_name);
+
+#endif
