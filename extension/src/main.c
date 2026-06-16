@@ -41,22 +41,42 @@ static void print_eval_report(const char *scene_path, const EvalGeometry *geom,
 }
 
 int main(int argc, char **argv) {
-    EvalGeometry geom = {
-        .plug_tip = {0.0, 0.0, 0.05},
-        .socket_mouth = {0.0, 0.0, 0.0},
-        .socket_bottom = {0.0, 0.0, 0.10},
-    };
+    assert(argv[0] != NULL && argc > 0);
+    const char *scene_path = DEFAULT_SCENE_PATH;
+
+    if (argc == 3 && strcmp(argv[1], "--scene") == 0) {
+        scene_path = argv[2];
+    } else if (argc != 1) {
+        // Input error
+        const char *program_name = argv[0];
+        fprintf(stderr, "ERROR: See proper usage template below:\n");
+        fprintf(stderr, "   %s\n", program_name);
+        fprintf(stderr, "   %s --scene <path-to-mjcf-scene>\n", program_name);
+        return EXIT_FAILURE;
+    }
+
+    Sim sim;
+    sim_load(&sim, scene_path);
+
+    EvalGeometry geom = {0};
+    sim_get_site_pos(&sim, "plug_tip, geom.plug_tip");
+    sim_get_site_pos(&sim, "socket_mouth, geom.socket_mouth");
+    sim_get_site_pos(&sim, "socket_bottom, geom.socket_bottom");
 
     EvalConfig config = eval_default_config();
-    TrialScore score = {
-        .initial_plug_port_distance = 0.10,
-        .duration = 10.0,
-        .path_length = 0.10,
-        .average_jerk = 1.0,
-    };
+    TrialScore score = {0};
 
     eval_compute_geometry(&geom, &score);
-    eval_score_trial(&config, 0.10, &score);
+
+    double socket_depth = vec3_distance(geom.socket_mouth, geom.socket_bottom);
+    
+    score.initial_plug_port_distance = score.plug_port_distance;
+    score.path_length = score.initial_plug_port_distance;
+    score.duration = config.max_duration_s;
+    score.average_jerk = config.max_jerk_zero_score;
+    score.retries = 0;
+    
+    eval_score_trial(&config, socket_depth, &score);
 
     printf("distance=%.6f lateral=%.6f axial=%.6f total=%.2f\n",
            score.plug_port_distance,
