@@ -1,6 +1,18 @@
 #include <assemble_dp_logical_reg.h>
 #include <assemble_dp.h>
 
+#define LOGICAL_NBIT_SHIFT 21u
+
+#define LOGICAL_SHIFT_LSL 0u
+
+#define OPC_AND 0u
+#define OPC_ORR 1u
+#define OPC_EOR 2u
+#define OPC_ANDS 3u
+
+#define MAX_32BIT_SHIFT_AMOUNT 31u
+#define MAX_64BIT_SHIFT_AMOUNT 63u
+
 uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count) {
 
     uint32_t sf = 0u;
@@ -44,6 +56,27 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             exit(1);
         }
     }
+
+    if (strcmp(mnemonic, "and") == 0 || strcmp(mnemonic, "bic") == 0) {
+        opc = OPC_AND;
+    } else if (
+        strcmp(mnemonic, "orr") == 0 ||
+        strcmp(mnemonic, "orn") == 0 ||
+        strcmp(mnemonic, "mov") == 0 ||
+        strcmp(mnemonic, "mvn") == 0
+    ) {
+        opc = OPC_ORR;
+    } else if (strcmp(mnemonic, "eor") ==0 || strcmp(mnemonic, "eon") == 0) {
+        opc = OPC_EOR;
+    } else if (strcmp(mnemonic, "ands") == 0 || strcmp(mnemonic, "bics") == 0 || strcmp(mnemonic,"tsts") == 0) {
+        opc = OPC_ANDS;
+    }
+
+    opc = opc << DP_OPC_SHIFT;
     
+
+    if (strcmp(mnemonic, "bic") == 0 || strcmp(mnemonic,"bics") || strcmp(mnemonic,"eon") || strcmp(mnemonic, "mvn") == 0) {
+        n_bit = 1u << LOGICAL_NBIT_SHIFT;
+    }
     
 }
