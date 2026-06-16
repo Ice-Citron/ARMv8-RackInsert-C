@@ -1,9 +1,5 @@
 #include "symbol_table.h"
 
-#define INITIAL_SYMTABLE_CAP 5
-#define SYMTABLE_RESIZE_FACTOR 2
-#define ADDRESS_FAIL -1
-
 typedef struct {
     uint32_t address;
     char name[MAX_SYMBOL_LEN];

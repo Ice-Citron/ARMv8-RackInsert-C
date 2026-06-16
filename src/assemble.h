@@ -13,9 +13,4 @@
 
 #define MAIN_NUMBEROF_ARGUMENTS 3
 
-typedef struct {
-    const char* instrname;
-    uint32_t (*handler)(char *, char* [], size_t, uint32_t);
-} instr_dispatch;
-
 #endif

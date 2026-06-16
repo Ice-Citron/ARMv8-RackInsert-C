@@ -8,6 +8,10 @@
 #define MAX_SYMBOL_LEN 64
 #define MAX_SYMBOL_COUNT (1 << 21)
 
+#define INITIAL_SYMTABLE_CAP 5
+#define SYMTABLE_RESIZE_FACTOR 2
+#define ADDRESS_FAIL -1
+
 void init_symbol_table();
 
 uint32_t find_address_from_sym_table(const char *name);

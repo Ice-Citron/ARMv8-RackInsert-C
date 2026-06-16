@@ -18,6 +18,29 @@
 #define IMMREG_INSTR_COUNT 8
 #define IMMEDIATE_CHARACTER '#'
 
+#define HEX_TYPE_SIGNATURE "0x"
+#define LEN_HEX_TYPE_SIGNATURE 2
+#define HEX_BASE 16
+#define DECI_BASE 10
+
+uint32_t read_number_or_label (char* string) {
+    uint32_t inputint;
+    char* endptr;
+    uint32_t maybe_symbol = find_address_from_sym_table(string);
+    //check whether label
+    if (maybe_symbol != ADDRESS_FAIL) {
+        return maybe_symbol;
+    } else if (strncmp(string, HEX_TYPE_SIGNATURE, LEN_HEX_TYPE_SIGNATURE)) {
+        //check whether hexadecimal
+        inputint = strtol(string + LEN_HEX_TYPE_SIGNATURE, &endptr, HEX_BASE);
+        //pointer arithmetic above
+    } else {
+        //decimal
+        inputint = strtol(string, &endptr, DECI_BASE);
+    }
+    return inputint;
+}
+
 typedef struct {
     char* instrname;
     int index;

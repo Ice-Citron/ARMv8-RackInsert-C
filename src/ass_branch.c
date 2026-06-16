@@ -1,5 +1,7 @@
 #include "ass_branch.h"
 
+#define BRANCH_NUMBEROF_OPERANDS 1
+
 //instructions that we must handle
 //b <literal>
 //br xn
@@ -7,12 +9,12 @@
 uint32_t ass_branch(char* mnemonic, char *operands[], 
                     size_t operand_count, uint32_t pc) {
     //check number of operands
-    if (operand_count != 2) {
+    if (operand_count != BRANCH_NUMBEROF_OPERANDS) {
         fprintf(stderr, "wrong number of operands");
         exit(1);
     }
     //spec says we can assume that literal will be label
-    uint32_t target_memory = find_address_from_sym_table(operands[1]);
+    uint32_t target_memory = read_number_or_label(operands[0]);
     if (strcmp(UNCON_STR_PREFIX, mnemonic) == 0) {
         //uncon branch
         return UNCON_BRANCH_PREFIX | (calc_offset(target_memory, pc, UNCON_BRANCH_ADDR_LENGTH));
