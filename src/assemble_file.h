@@ -7,4 +7,6 @@
 #include <string.h>
 #include "symbol_table.h"
 
+bool assemble_file(char *infile, char *outfile);
+
 #endif // ASSEMBLE_FILE_H
