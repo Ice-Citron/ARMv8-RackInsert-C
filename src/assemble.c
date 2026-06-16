@@ -6,6 +6,6 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Syntax error: ./assemble <input file> <output file>");
     exit(1);
   }
-  assemble_file(argv[0], argv[1]);
+  assemble_file(argv[1], argv[2]);
   return EXIT_SUCCESS;
 }
