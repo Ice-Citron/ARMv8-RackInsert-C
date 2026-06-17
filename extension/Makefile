@@ -20,10 +20,8 @@ LDLIBS  = -l:$(MUJOCO_LIB) -lm
 RACK_SRCS = src/main.c src/evaluator.c src/sim.c src/vec.c src/logging.c
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 
-TEST_SRCS = tests/test_evaluator.c src/evaluator.c src/vec.c src/sim.c \
-			tests/smoke_test_actuator.c
-TEST_OBJS = build/test_evaluator.o build/evaluator.o build/vec.o build/sim.c \
-			build/smoke_test_actuator.c
+EVALUATOR_TEST_OBJS = build/test_evaluator.o build/evaluator.o build/vec.o 
+ACTUATOR_TEST_OBJS  = build/sim.o build/test_actuator.o
 
 .PHONY: all clean run test asan deps check-mujoco
 
@@ -41,14 +39,18 @@ check-mujoco:
 rack_insert: $(RACK_OBJS) | check-mujoco
 	$(CC) $(CFLAGS) $(RACK_OBJS) -o $@ $(LDFLAGS) $(LDLIBS)
 
-test_evaluator: $(TEST_OBJS)
+test_evaluator: $(EVALUATOR_TEST_OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+
+test_actuators: $(ACTUATOR_TEST_OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 run: rack_insert
 	./rack_insert
 
-test: test_evaluator
+test: test_evaluator test_actuators
 	./test_evaluator
+	./test_actuators
 
 # For debugging with AddressSanitizer
 asan: CFLAGS += -fsanitize=address,undefined -fno-omit-frame-pointer
