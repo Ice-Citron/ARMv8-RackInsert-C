@@ -17,7 +17,9 @@ CFLAGS  = -std=c17 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE \
 LDFLAGS	= -L$(MUJOCO_DIR) -Wl,-rpath,$(MUJOCO_DIR)
 LDLIBS  = -l:$(MUJOCO_LIB) -lm
 
-RACK_SRCS = src/main.c src/evaluator.c src/sim.c src/vec.c src/logging.c
+RACK_SRCS = src/main.c src/evaluator.c src/sim.c src/vec.c src/logging.c \
+			src/trajectory.c
+
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 
 EVALUATOR_TEST_OBJS = build/test_evaluator.o build/evaluator.o build/vec.o 
@@ -73,4 +75,4 @@ deps:
 	$(VENV)/bin/python -m pip install mujoco
 
 clean:
-	rm -rf build rack_insert test_evaluator
+	rm -rf build rack_insert test_evaluator test_actuators MUJOCO_LOG.TXT
