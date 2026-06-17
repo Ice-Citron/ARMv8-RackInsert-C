@@ -73,7 +73,21 @@ int sim_find_site_id(const Sim *sim, const char *site_name) {
 
     int site_id = mj_name2id(sim->model, mjOBJ_SITE, site_name);
     if (site_id < 0) {
-        fprintf(stderr, "ERROR: Failed to find integer ID for %s\n", site_name);
+        fprintf(stderr, "ERROR: Failed to find integer ID for site %s\n", 
+                site_name);
+        exit(EXIT_FAILURE);
+    }
+    return site_id;
+}
+
+int sim_find_joint_id(const Sim *sim, const char *joint_name) {
+    assert(sim != NULL && joint_name != NULL);
+    assert(sim->model != NULL);
+
+    int site_id = mj_name2id(sim->model, mjOBJ_JOINT, joint_name);
+    if (site_id < 0) {
+        fprintf(stderr, "ERROR: Failed to find integer ID for joint %s\n", 
+                joint_name);
         exit(EXIT_FAILURE);
     }
     return site_id;

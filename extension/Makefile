@@ -20,8 +20,10 @@ LDLIBS  = -l:$(MUJOCO_LIB) -lm
 RACK_SRCS = src/main.c src/evaluator.c src/sim.c src/vec.c src/logging.c
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 
-TEST_SRCS = tests/test_evaluator.c src/evaluator.c src/vec.c
-TEST_OBJS = build/test_evaluator.o build/evaluator.o build/vec.o
+TEST_SRCS = tests/test_evaluator.c src/evaluator.c src/vec.c src/sim.c \
+			tests/smoke_test_actuator.c
+TEST_OBJS = build/test_evaluator.o build/evaluator.o build/vec.o build/sim.c \
+			build/smoke_test_actuator.c
 
 .PHONY: all clean run test asan deps check-mujoco
 

@@ -13,6 +13,7 @@ void sim_free(Sim *sim);
 void sim_forward(Sim *sim);
 
 int sim_find_site_id(const Sim *sim, const char *site_name);
+int sim_find_joint_id(const Sim *sim, const char *joint_name);
 void sim_get_site_pos(const Sim *sim, const char *site_name, double out[3]);
 
 void sim_step(Sim *sim);
