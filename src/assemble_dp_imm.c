@@ -33,7 +33,6 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
         }
-        rd = ZERO_REGISTER_NUMBER;
         use_rd = false;
         rn_index = 0u;
         imm_index = 1u;
@@ -63,7 +62,11 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
         opc = OPC_SUBS << DP_OPC_SHIFT;
     }
 
-    rd = use_rd ? parse_reg(operands[rd_index], &sf) : ZERO_REGISTER_NUMBER;
+    rd = parse_reg(operands[rd_index], &sf);
+    //gets sf
+    if (!use_rd) {
+        rd = ZERO_REGISTER_NUMBER;
+    }
     sf = sf << SF_SHIFT;
     uint32_t dummy_sf;
     rn = use_rn ? parse_reg(operands[rn_index], &dummy_sf) : ZERO_REGISTER_NUMBER;
