@@ -38,7 +38,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
 
     if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0) {
 
-        if (operand_count != 2u && operand_count != 3u) {
+        if (operand_count != 2u && operand_count != 4u) {
             fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
             exit(1);
         }
@@ -48,7 +48,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         rm_index = 1u;
         shift_index = 2u;
     } else if (strcmp(mnemonic, "neg") == 0 || strcmp(mnemonic, "negs") == 0) {
-        if (operand_count != 2u && operand_count != 3u) {
+        if (operand_count != 2u && operand_count != 4u) {
             fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
             exit(1);
         }
@@ -58,7 +58,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         rm_index = 1u;
         shift_index = 2u;
     } else {
-        if (operand_count != 3u && operand_count != 4u) {
+        if (operand_count != 3u && operand_count != 5u) {
             fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
             exit(1);
         }
@@ -92,7 +92,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         const char *shift_text = operands[shift_index];
         if (strncmp(shift_text, "lsl", 3) == 0) {
             shift_type = SHIFT_LSL;
-        } else if (strncmp(shift_text, "lsr",3) == 0) {
+        } else if (strncmp(shift_text, "lsr", 3) == 0) {
             shift_type = SHIFT_LSR;
         } else if (strncmp(shift_text, "asr", 3) == 0) {
             shift_type = SHIFT_ASR;
@@ -102,23 +102,9 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         }
         shift_type = shift_type << SHIFT_TYPE_SHIFT;
 
-        const char *amount_text = shift_text + 3u;
-
-        while (*amount_text == ' ') {
-            amount_text++;
-        }
-        if (*amount_text != '#') {
-            fprintf(stderr, "ERROR: Shift amount must begin with #\n");
-            exit(1);
-        }
-
-        char *end = NULL;
-        shift_amount = (uint32_t) strtoul(amount_text + 1u, &end, 10);
-
-        if (*end != '\0') {
-            fprintf(stderr, "ERROR: Invalid shift amount %s\n",amount_text);
-            exit(1);
-        }
+        const char *amount_text = operands[shift_index + 1];
+        shift_amount = read_number_or_label(amount_text);
+        //this should really be a helper
         if (sf == 0u) {
             if (shift_amount > MAX_32BIT_SHIFT_AMOUNT) {
                 fprintf(stderr, "ERROR: Shift amount too large for 32 bit registers\n");
@@ -130,6 +116,5 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         }
         shift_amount = shift_amount << DP_REG_SHIFT_AMOUNT_SHIFT;
     }
-    //THIS STATEMENT LOOKS MFING SUS ESPECIALLY BIT ALIGNMENT
     return sf | opc | DP_REG_FIXED_BITS | DP_REG_ARITHMETIC_OPR | shift_type | rm | shift_amount | rn | rd ;
 }

@@ -60,7 +60,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
         }
     }
     //TODO: MAKE THIS A DISPATCH TABLE
-    //WHAT IS THIS FIRE TRUCK
+    //WHAT IS THIS FIRE TRUCKING SHOOT
     if (strcmp(mnemonic, "and") == 0 || strcmp(mnemonic, "bic") == 0) {
         opc = OPC_AND;
     } else if (
@@ -72,7 +72,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
         opc = OPC_ORR;
     } else if (strcmp(mnemonic, "eor") ==0 || strcmp(mnemonic, "eon") == 0) {
         opc = OPC_EOR;
-    } else if (strcmp(mnemonic, "ands") == 0 || strcmp(mnemonic, "bics") == 0 || strcmp(mnemonic,"tsts") == 0) {
+    } else if (strcmp(mnemonic, "ands") == 0 || strcmp(mnemonic, "bics") == 0 || strcmp(mnemonic,"tst") == 0) {
         opc = OPC_ANDS;
     }
 
@@ -97,8 +97,8 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     rm = rm << LOGICAL_RM_SHIFT;
 
     if (operand_count > shift_index) {
+        //yes shift
         const char *shift_text = operands[shift_index];
-
         if (strncmp(shift_text,"lsl",3) == 0) {
             shift_type = LOGICAL_SHIFT_LSL;
         } else if (strncmp(shift_text,"lsr",3) == 0) {
@@ -125,14 +125,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             exit(1);
         }
 
-        end = NULL;
-        shift_amount = (uint32_t) strtoul(amount_text+1u, &end, 10);
-
-        if (*end != '\0') {
-            fprintf(stderr, "ERROR: Invalid logical shift amount %s\n", amount_text);
-            exit(1);
-        }
-
+        shift_amount = read_number_or_label(amount_text);
         if (sf == 0) {
             if (shift_amount > MAX_32BIT_SHIFT_AMOUNT) {
                 fprintf(stderr, "ERROR: 32-bit logical shift amount is too large %s\n", amount_text);
