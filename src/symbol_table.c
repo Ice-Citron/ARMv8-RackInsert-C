@@ -9,13 +9,13 @@ static symbol_pair *symbol_table;
 static int symbol_table_size = 0;
 static int symbol_table_capacity = 0;
 
-void init_symbol_table()
+void init_symbol_table(void)
 {
     symbol_table = (symbol_pair *) malloc(sizeof(symbol_pair) * INITIAL_SYMTABLE_CAP);
     symbol_table_capacity = INITIAL_SYMTABLE_CAP;
 }
 
-static void resize_symbol_table()
+static void resize_symbol_table(void)
 {
     symbol_table = (symbol_pair *) realloc(symbol_table,
         sizeof(symbol_pair) * SYMTABLE_RESIZE_FACTOR * symbol_table_size);

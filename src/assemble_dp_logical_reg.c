@@ -1,5 +1,5 @@
 #include "assemble_dp_logical_reg.h"
-#include "assemble_dp.h"
+#include "assemble_file.h"
 
 #define LOGICAL_NBIT_SHIFT 21u
 #define LOGICAL_SHIFT_TYPE_SHIFT 22u

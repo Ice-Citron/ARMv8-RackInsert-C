@@ -39,7 +39,7 @@ static uint32_t decide_imm_or_reg(char* mnemonic, char *operands[], size_t opera
     size_t operand_2_idx = 0;
 	bool found_instruction = false;
 
-    for (int i = 0; i < IMMREG_INSTR_COUNT; i++) {
+    for (size_t i = 0; i < IMMREG_INSTR_COUNT; i++) {
         if (strcmp(mnemonic, immreg_instrs[i].instrname) == 0) {
             operand_2_idx = immreg_instrs[i].index;
 			found_instruction = true;
