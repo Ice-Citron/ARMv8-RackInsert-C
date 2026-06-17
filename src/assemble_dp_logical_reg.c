@@ -40,7 +40,6 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);
             exit(1);
         }
-        rd = ZERO_REGISTER_NUMBER;
         rn_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
@@ -88,6 +87,9 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     const char *rm_text = operands[rm_index];
 
     rd = parse_reg(rd_text, &sf);
+    if (strcmp(mnemonic, "tst") == 0) {
+        rd = ZERO_REGISTER_NUMBER;
+    }
     sf = sf << SF_SHIFT;
     uint32_t dummy_sf;
     rn = parse_reg(rn_text, &dummy_sf);

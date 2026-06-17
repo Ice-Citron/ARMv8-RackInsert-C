@@ -26,8 +26,8 @@
 #define PRE_POST_INDEX_SIMM9_POS 12
 #define PRE_POST_INDEX_SIMM9_BITMASK 0x1FF
 #define NUM_OF_REGISTERS 31
-#define NUM_OF_MEMORY 31
-#define POS_OF_MEMORY 5
+#define XN_XM_BITMASK 31
+#define POS_OF_XN 5
 
 uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
                                   size_t operand_count, uint32_t pc);
