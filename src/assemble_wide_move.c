@@ -20,17 +20,10 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
     uint32_t opc;
 
     //parse rd from operands[0] and imm16 from operands[1]
-
-    if (operands[0][0] != 'x' && operands[0][0] != 'w') {
-        fprintf(stderr, "Invalid register\n");
-        exit(1);
-    }
-
-    if (operand_count != 2u && operand_count != 3u) {
+    if (operand_count != 2u && operand_count != 4u) {
         fprintf(stderr, "Wrong operand count for %s", mnemonic);
         exit(1);
     }
-
     if (operands[0] == NULL || operands[1] == NULL) {
         fprintf(stderr, "Insufficient operands for wide move");
         exit(1);
@@ -38,27 +31,26 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
     rd = parse_reg(operands[0], &sf);
     sf = sf << SF_SHIFT;
 
-    char* end = NULL;
-    imm16 = strtoul(operands[1] + 1, &end, 0);
-    if (*end != '\0') {
-        fprintf(stderr, "Invalid immediate\n");
+    //sanitising imm16
+    if (operands[1][0] != '#') {
+        fprintf(stderr, "wide move immediate must start with #");
         exit(1);
     }
-
+    imm16 = read_number_or_label(operands[1]);
     if ((imm16 & ~WIDE_MOVE_IMM16_MASK) != 0u) {
         fprintf(stderr, "Wide move immediate value is larger than 16 bits\n");
         exit(1);
     }
 
-    //parse shift from operands[3]
-
-    if (operand_count == 3u) {
-        if (strncmp(operands[3], "lsl", 3) != 0) {
+    //parse shift from operands[2]
+    //4 for 4 tokens rd, imm, lsl, #sh
+    if (operand_count == 4u) {
+        if (strncmp(operands[2], "lsl", 3) != 0) {
             fprintf(stderr, "Wide move only allows left shift");
             exit(1); 
         }
 
-        const char *shift_text = operands[3] + 3;
+        const char *shift_text = operands[3]; 
         while (*shift_text == ' ') {
             shift_text++;
         }
@@ -67,10 +59,7 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
             fprintf(stderr, "ERROR: Wide move shift amount must begin with #");
             exit(1);
         }
-
-        char *shift_end = NULL;
-        shift = (uint32_t) strtoul(shift_text + 1, &shift_end, 10);
-
+        shift = read_number_or_label(shift_text);
     }
 
     if (strcmp(mnemonic, "movn") == 0) {

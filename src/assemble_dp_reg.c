@@ -106,7 +106,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         }
         shift_type = shift_type << SHIFT_TYPE_SHIFT;
 
-        const char *amount_text = operands[shift_index + 1];
+        char *amount_text = operands[shift_index + 1];
         shift_amount = read_number_or_label(amount_text);
         //this should really be a helper
         if (sf == 0u) {
