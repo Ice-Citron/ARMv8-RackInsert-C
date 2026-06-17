@@ -45,6 +45,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         res |= simm19 << SIM_19_POS;
         return res;
     }
+    //SO FAR SO GOOD
 
     // single data transfer
     res |= 1 << MOST_SIG_BIT;
@@ -64,10 +65,18 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         exit(1);
         return 0;
     }
+    //REGISTER OFFSET 2 ARGS
+    //WE SHOULD MAKE THIS A DISPATCH TABLE OF CONDITIONS? IDK
+    if (operand_count == 2 && strchr(operands[1], '[') != NULL && strchr(operands[1], ']') != NULL) {
+        fprintf(stderr, "REGISTER OFFSET DOUBLE VAR \n");
+        res |= 1 << REGISTER_OFFSET_BIT_POS;
+        return res;
+    }
+
     char *addr_of_hash = strchr(operands[2], '#');
     if (addr_of_hash == NULL) // register offset
     {
-        fprintf(stderr, "REGISTER OFFSET \n");
+        fprintf(stderr, "REGISTER OFFSET TRIPLE VAR \n");
         int xm_addr = atoi(operands[2] + 1);
         res |= REGISTER_OFFSET_BITS << REGISTER_OFFSET_POS;
         res |= (xm_addr & XN_XM_BITMASK) << REGISTER_OFFSET_XM_POS;
@@ -77,8 +86,10 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     addr_of_hash++;
     int imm_val = atoi(addr_of_hash);
 
+
+
     //the spec lied to us there are no curly braces
-    if (strchr(operands[2], ']') != NULL) //unsigned imm offset
+    if (strchr(operands[2], ']') != NULL && strchr(operands[2], '!') == NULL) //unsigned imm offset
     {
         fprintf(stderr, "UNSIGNED IMMEDIATE OFFSET \n");
         res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
