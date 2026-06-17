@@ -4,7 +4,7 @@
 #define DP_REG_ARITHMETIC_OPR (8u << 21u)
 
 #define DP_REG_RM_SHIFT 16u
-#define DP_REG_SHIFT_AMOUNT_SHIFT 10u
+#define DP_REG_SHIFTAMOUNT_SHIFT 10u
 #define DP_REG_RN_SHIFT 5u
 
 #define SHIFT_LSL 0u
@@ -118,7 +118,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: Shift amount too large for 64 bit register\n");
             exit(1);
         }
-        shift_amount = shift_amount << DP_REG_SHIFT_AMOUNT_SHIFT;
+        shift_amount = shift_amount << DP_REG_SHIFTAMOUNT_SHIFT;
     }
     return sf | opc | DP_REG_FIXED_BITS | DP_REG_ARITHMETIC_OPR | shift_type | rm | shift_amount | rn | rd ;
 }

@@ -86,8 +86,5 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
 
         sh = 1u << DP_IMM_SH_SHIFT;
     }
-
-    rn = rn << DP_IMM_RN_SHIFT;
-
     return sf | opc | DP_FIXED_BIT | DP_IMM_ARITHMETIC_OPI | sh | imm12 | rn | rd ;
 }
