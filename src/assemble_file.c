@@ -210,11 +210,11 @@ bool assemble_file(char *infile, char *outfile) {
 			strcmp(operands[0], "x0") == 0 && strcmp(operands[1], "x0") == 0 && strcmp(operands[2], "x0") == 0) {
 			//fwrite halt instruction
 			fwrite(&halt_address, sizeof(uint32_t), 1, out);
-			break;
+		} else {
+			instruction = assemble_instructions(mnemonic, operands, operand_count, pc);
+			//add the other instructions - done
+			fwrite(&instruction, sizeof(uint32_t), 1, out);
 		}
-		instruction = assemble_instructions(mnemonic, operands, operand_count, pc);
-		//add the other instructions - done
-		fwrite(&instruction, sizeof(uint32_t), 1, out);
 		pc += 4;
 	}
 	fclose(in);
