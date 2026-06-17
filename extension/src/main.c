@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
 
     eval_compute_geometry(&geom, &score);
 
+    /*
     double socket_depth = vec3_distance(geom.socket_mouth, geom.socket_bottom);
 
     score.initial_plug_port_distance = score.plug_port_distance;
@@ -46,6 +47,7 @@ int main(int argc, char **argv) {
     
     eval_score_trial(&config, socket_depth, &score);
     print_eval_report(scene_path, &geom, &score, socket_depth);
+    */
 
     sim_free(&sim);
     return EXIT_SUCCESS;
