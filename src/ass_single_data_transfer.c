@@ -9,11 +9,10 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         fprintf(stderr, "wrong number of operands");
         exit(1);
     }
-    uint32_t res = 0;
-    uint8_t reg_t = atoi(&operands[0][1]);
-    res |= (reg_t & NUM_OF_REGISTERS);
+    uint32_t sf = 0;
+    uint32_t res = parse_reg(operands[0], &sf);
     int num_bytes = 4;
-    if (operands[0][0] == 'X')
+    if (sf)
     {
         res |= 1 << SF_BIT;
         num_bytes = 8;

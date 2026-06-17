@@ -35,29 +35,15 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
         fprintf(stderr, "Insufficient operands for wide move");
         exit(1);
     }
-    
-    sf = (operands[0][0] == 'x' ? 1u: 0u) << SF_SHIFT;
-
-    if (strcmp(operands[0] + 1, "zr")) {
-        rd = ZERO_REGISTER_NUMBER;
-    }
+    rd = parse_reg(operands[0], &sf);
+    sf = sf << SF_SHIFT;
 
     char* end = NULL;
-    unsigned long reg = strtoul(operands[0] + 1, &end, 10);
-
-    if (*end != '\0' || reg > ZERO_REGISTER_NUMBER) {
-        rd = ZERO_REGISTER_NUMBER;
-    }
-
-    rd = (uint32_t) reg;
-    unsigned long value = strtoul(operands[1] + 1, &end, 0);
-
+    imm16 = strtoul(operands[1] + 1, &end, 0);
     if (*end != '\0') {
         fprintf(stderr, "Invalid immediate\n");
         exit(1);
     }
-    
-    imm16 =  (uint32_t) value;
 
     if ((imm16 & ~WIDE_MOVE_IMM16_MASK) != 0u) {
         fprintf(stderr, "Wide move immediate value is larger than 16 bits\n");

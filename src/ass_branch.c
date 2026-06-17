@@ -48,8 +48,9 @@ uint32_t ass_branch(char* mnemonic, char *operands[],
         return UNCON_BRANCH_PREFIX | (calc_offset(target_memory, pc, UNCON_BRANCH_ADDR_LENGTH));
 
     } else if (strcmp(REG_BRANCH_STR_PREFIX, mnemonic) == 0) {
+        uint32_t dummy_sf;
         //branch register - reads from the second character (e.g. register is x0)
-        return REGISTER_BRANCH_PREFIX | (atoi(operands[0] + 1) << XN_ADDR_SHIFT_LEFT);
+        return REGISTER_BRANCH_PREFIX | (parse_reg(operands[0], &dummy_sf) << XN_ADDR_SHIFT_LEFT);
     } else {
         //branch conditional
         uint32_t opcode = check_mnemonic_if_cond(mnemonic);

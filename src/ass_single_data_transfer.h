@@ -3,6 +3,7 @@
 
 #include "bit_manipulation.h"
 #include "assemble_file.h"
+#include "parse_reg.h"
 
 #define MOST_SIG_BIT 31
 #define L_BIT 22
