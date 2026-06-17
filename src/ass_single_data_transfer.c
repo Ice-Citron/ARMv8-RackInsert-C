@@ -83,8 +83,9 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         res |= 1 << REGISTER_OFFSET_BIT_POS;
         return res;
     }
-    addr_of_hash++;
-    int imm_val = atoi(addr_of_hash);
+    addr_of_hash ++;
+    int imm_val = strtol(addr_of_hash, NULL, 0);
+    //binary handling is in general a massive problem
 
 
 
@@ -96,12 +97,12 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
         if (num_bytes == 4) // 32 bit
         {
-            imm_val <<= 2; // divide by 4
-            //maybe it is multiply as said by 1.7.1???
+            imm_val >>= 2; // divide by 4
+            //nvm it is divide
         }
         else
         {
-            imm_val <<= 3; // divide by 8
+            imm_val >>= 3; // divide by 8
         }
         res |= (imm_val  << UNSIGNED_IMM_OFFSET_POS);
         return res;

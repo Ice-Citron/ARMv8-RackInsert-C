@@ -36,7 +36,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     size_t rm_index = 2u;
     size_t shift_index = 3u;
     if (strcmp(mnemonic,"tst") == 0) {
-        if (operand_count != 2u && operand_count != 3u) {
+        if (operand_count != 2u && operand_count != 4u) {
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);
             exit(1);
         }
@@ -44,7 +44,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
         rm_index = 1u;
         shift_index = 2u;
     } else if (strcmp(mnemonic,"mov") == 0 || strcmp(mnemonic, "mvn") == 0) {
-        if (operand_count != 2u && operand_count != 3u) {
+        if (operand_count != 2u && operand_count != 4u) {
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);
             exit(1);
         }
@@ -53,7 +53,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
         rm_index = 1u;
         shift_index = 2u;
     } else {
-        if (operand_count != 3u && operand_count != 4u) {
+        if (operand_count != 3u && operand_count != 5u) {
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);
             exit(1);
         }
