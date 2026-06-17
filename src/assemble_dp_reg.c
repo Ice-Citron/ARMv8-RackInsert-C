@@ -35,6 +35,8 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
     size_t rn_index = 1u;
     size_t rm_index = 2u;
     size_t shift_index = 3u;
+    bool use_rd = true;
+    bool use_rn = true;
 
     if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0) {
 
@@ -42,8 +44,8 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
             exit(1);
         }
-
-        rd_index = ZERO_REGISTER_NUMBER;
+        rd = ZERO_REGISTER_NUMBER;
+        use_rd = false;
         rn_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
@@ -52,7 +54,8 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
             exit(1);
         }
-        rn_index = ZERO_REGISTER_NUMBER;
+        rn = ZERO_REGISTER_NUMBER;
+        use_rn = false;
         rd_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
@@ -78,18 +81,14 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
     }
     opc = opc << DP_OPC_SHIFT;
 
-    const char *rd_text = operands[rd_index];
-    const char *rn_text = operands[rn_index];
-    const char *rm_text = operands[rm_index];
-
-    rd = parse_reg(rd_text, &sf);
+    //should factor this out into function
+    rd = use_rd ? parse_reg(operands[rd_index], &sf) : ZERO_REGISTER_NUMBER;
     sf = sf << SF_SHIFT;
     uint32_t dummy_sf;
-    rn = parse_reg(rn_text, &dummy_sf);
+    rn = use_rn ? parse_reg(operands[rn_index], &dummy_sf) : ZERO_REGISTER_NUMBER;
     rn = rn << DP_REG_RN_SHIFT;
-    rm = parse_reg(rm_text, &dummy_sf);
+    rm = parse_reg(operands[rm_index], &dummy_sf);
     rm = rm << DP_REG_RM_SHIFT;
-
 
     if (operand_count > shift_index) {
         const char *shift_text = operands[shift_index];

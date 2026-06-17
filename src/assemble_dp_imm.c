@@ -16,24 +16,35 @@
 #define OPC_SUBS 3u
 
 uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
-    uint32_t sf = 0u << SF_SHIFT;
+    uint32_t sf = 0u;
     uint32_t opc = 0u;
     uint32_t rd = 0u;
     uint32_t rn = 0u;
     uint32_t imm12 = 0u;
     uint32_t sh = 0u << DP_IMM_SH_SHIFT;
+    size_t rd_index = 0;
+    size_t rn_index = 1;
+    size_t imm_index = 2;
+    bool use_rd = true;
+    bool use_rn = true;
 
-    size_t rn_index = 1u;
-    size_t imm_index = 2u;
-
-    if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0 ||
-        strcmp(mnemonic, "neg") == 0 || strcmp(mnemonic, "negs") == 0) {
+    if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0) {
         if (operand_count != 2u && operand_count != 4u) {
             fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
         }
         rd = ZERO_REGISTER_NUMBER;
+        use_rd = false;
         rn_index = 0u;
+        imm_index = 1u;
+    } else if (strcmp(mnemonic, "neg") == 0 || strcmp(mnemonic, "negs") == 0) {
+        if (operand_count != 2u && operand_count != 4u) {
+            fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
+            exit(1);
+        }
+        rn = ZERO_REGISTER_NUMBER;
+        use_rn = false;
+        rd_index = 0u;
         imm_index = 1u;
     } else {
         if (operand_count != 3u && operand_count != 5u) {
@@ -52,10 +63,10 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
         opc = OPC_SUBS << DP_OPC_SHIFT;
     }
 
-    rd = parse_reg(operands[0], &sf);
+    rd = use_rd ? parse_reg(operands[rd_index], &sf) : ZERO_REGISTER_NUMBER;
     sf = sf << SF_SHIFT;
     uint32_t dummy_sf;
-    rn = parse_reg(operands[rn_index], &dummy_sf);
+    rn = use_rn ? parse_reg(operands[rn_index], &dummy_sf) : ZERO_REGISTER_NUMBER;
     rn = rn << DP_IMM_RN_SHIFT;
 
     //parsing the immediate
