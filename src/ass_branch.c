@@ -24,7 +24,7 @@ static uint32_t check_mnemonic_if_cond(char* mnemonic) {
 //and then sign extend to output number of bits
 static uint32_t calc_offset(uint32_t label_address, uint32_t caller_address, 
                      uint32_t output_bits) {
-    int32_t offset_unmasked = label_address - caller_address;
+    int32_t offset_unmasked = (label_address - caller_address) >> OUTPUT_BYTES_PER_LINE_LOG2;
     return extract_bits(output_bits - 1, 0, (uint32_t) offset_unmasked);
 }
 

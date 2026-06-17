@@ -2,17 +2,24 @@
 #define MAX_OPERANDS 5
 
 //i should really turn this into helpers
-uint32_t read_number_or_label (char* string) {
-	//probably broken, and i'm at my wits end
+static const char *skip_hash(const char *s) {
+    return s[0] == '#' ? s + 1 : s;
+}
+
+uint32_t read_number_or_label(char *string) {
     uint32_t inputint;
-    char* endptr;
-    bool symbol_found = find_address_from_sym_table(string, &inputint);
-    //check whether label
-    if (symbol_found) {
+    if (find_address_from_sym_table(string, &inputint)) {
         return inputint;
     }
-	inputint = strtol(string, &endptr, 0);
-	return inputint;
+    const char *text = skip_hash(string);
+    char *endptr = NULL;
+    unsigned long value = strtoul(text, &endptr, 0);
+    // Check: no digits parsed, not at end, or overflow
+    if (text == endptr || *endptr != '\0' || value > UINT32_MAX) {
+        fprintf(stderr, "ERROR: invalid number or unknown label: %s\n", string);
+        exit(1);
+    }
+    return (uint32_t)value;
 }
 
 //decides index where we check whether 
@@ -145,7 +152,7 @@ bool assemble_file(char *infile, char *outfile) {
 	char full_line_buffer[512];
 	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
 		char* inner_save_ptr = NULL;
-		char* starting_query = strtok_r(full_line_buffer, " \t\n",
+		char* starting_query = strtok_r(full_line_buffer, " \t\n\r",
 			&inner_save_ptr);
 		if (starting_query == NULL) // in case of extra lines
 		{
@@ -177,7 +184,7 @@ bool assemble_file(char *infile, char *outfile) {
 		char* inner_save_ptr = NULL;
 		// char* starting_query = strtok_r(full_line_buffer, " \t\n",
 		// 	&inner_save_ptr);
-		char *mnemonic = strtok_r(full_line_buffer, " \t\n", &inner_save_ptr);
+		char *mnemonic = strtok_r(full_line_buffer, " \t\n\r", &inner_save_ptr);
 		if (mnemonic == NULL) // empty line
 		{
 			continue;
@@ -189,11 +196,11 @@ bool assemble_file(char *infile, char *outfile) {
 		}
 		char *operands[MAX_OPERANDS]; // store arguments here
 		size_t operand_count = 0;
-		char* args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
+		char* args_of_query = strtok_r(NULL, ", \t\n\r", &inner_save_ptr);
 		while(args_of_query != NULL)
 		{
 			operands[operand_count++] = args_of_query;
-			args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
+			args_of_query = strtok_r(NULL, ", \t\n\r", &inner_save_ptr);
 		}
 		uint32_t instruction = 0;
 		//checking if halt instruction 
