@@ -1,5 +1,6 @@
 #include "assemble_file.h"
 #define MAX_OPERANDS 5
+#define HALT_ADDRESS 0x8a000000
 
 //i should really turn this into helpers
 static const char *skip_hash(const char *s) {
@@ -128,6 +129,7 @@ uint32_t assemble_instructions(char* mnemonic, char *operands[], size_t operand_
 }
 
 bool assemble_file(char *infile, char *outfile) {
+	uint32_t halt_address = HALT_ADDRESS;
 	//make symbol table
 	init_symbol_table();
     // open the input file
@@ -206,6 +208,8 @@ bool assemble_file(char *infile, char *outfile) {
 		//checking if halt instruction 
 		if (strcmp(mnemonic, "and") == 0 && operand_count == 3 &&
 			strcmp(operands[0], "x0") == 0 && strcmp(operands[1], "x0") == 0 && strcmp(operands[2], "x0") == 0) {
+			//fwrite halt instruction
+			fwrite(&halt_address, sizeof(uint32_t), 1, out);
 			break;
 		}
 		instruction = assemble_instructions(mnemonic, operands, operand_count, pc);
