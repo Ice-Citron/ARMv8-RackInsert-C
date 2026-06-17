@@ -88,7 +88,13 @@ void sim_step_seconds(Sim *sim, double seconds) {
     assert(seconds >= 0.0);
 
     double end_time = sim->data->time + seconds;
-    while (sim->data->time < end_time) {
+    
+    // Circuit-breaker, prevent program hanging unneccesarilly if MuJoCo resets 
+    // time due to instability
+    int max_steps = (int)(seconds / sim->model->opt.timestep) + 10;
+    max_steps = (max_steps < 1) ? 1 : max_steps;
+    
+    for (int i = 0; i < max_steps && sim->data->time < end_time; i++) {
         sim_step(sim);
     }
 }
@@ -123,7 +129,6 @@ void sim_get_site_pos(const Sim *sim, const char *site_name, double out[3]) {
     int site_id = sim_find_site_id(sim, site_name);
     sim_get_site_pos_by_id(sim, site_id, out);
 }
-
 
 int sim_find_joint_id(const Sim *sim, const char *joint_name) {
     assert(sim != NULL && joint_name != NULL);
@@ -166,4 +171,12 @@ void sim_set_ctrl(Sim *sim, int actuator_id, double value) {
     assert(actuator_id >= 0 && actuator_id < sim->model->nu);
     
     sim->data->ctrl[actuator_id] = value;   
+}
+
+void sim_set_actuator_by_name(Sim *sim, const char *actuator_name, 
+                              double value) {
+    assert(sim != NULL && actuator_name != NULL);
+    
+    int actuator_id = sim_find_actuator_id(sim, actuator_name);
+    sim_set_ctrl(sim, actuator_id, value);
 }
