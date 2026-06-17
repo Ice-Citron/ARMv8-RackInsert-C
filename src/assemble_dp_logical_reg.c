@@ -40,7 +40,6 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);
             exit(1);
         }
-
         rd = ZERO_REGISTER_NUMBER;
         rn_index = 0u;
         rm_index = 1u;
@@ -50,12 +49,10 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);
             exit(1);
         }
-
         rn = ZERO_REGISTER_NUMBER;
         rd_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
-        
     } else {
         if (operand_count != 3u && operand_count != 4u) {
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);
@@ -90,42 +87,13 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     const char *rn_text = operands[rn_index];
     const char *rm_text = operands[rm_index];
 
-    if (rd_text[0] == 'x') {
-        sf = 1u << SF_SHIFT;
-    } else if (rd_text[0] != 'w') {
-        fprintf(stderr, "ERROR: Invalid register format %s\n", rd_text);
-        exit(1);
-    }
-
     char *end = NULL;
-
-    if (rd != ZERO_REGISTER_NUMBER) {
-        rd = (uint32_t) strtoul(rd_text + 1, &end, 10);
-        if (*end != '\0' || rd > ZERO_REGISTER_NUMBER) {
-            fprintf(stderr, "ERROR: Invalid destination register %s\n", rd_text);
-            exit(1);
-        }
-    }
-
-    if (rn != ZERO_REGISTER_NUMBER) {
-        end = NULL;
-        rn = (uint32_t) strtoul(rn_text + 1, &end, 10);
-        if (*end != '\0' || rn > ZERO_REGISTER_NUMBER) {
-            fprintf(stderr, "ERROR: Invalid source register %s\n", rn_text);
-            exit(1);
-        }
-    }
-
+    rd = parse_reg(rd_text, &sf);
+    sf = sf << SF_SHIFT;
+    uint32_t dummy_sf;
+    rn = parse_reg(rn_text, &dummy_sf);
     rn = rn << LOGICAL_RN_SHIFT;
-
-    end = NULL;
-
-    rm = (uint32_t) strtoul(rm_text + 1, &end, 10);
-    if (*end != '\0' || rm > ZERO_REGISTER_NUMBER) {
-        fprintf(stderr, "ERROR: Invalid second source register %s\n", rd_text);
-        exit(1);
-    }
-
+    rm = parse_reg(rm_text, &dummy_sf);
     rm = rm << LOGICAL_RM_SHIFT;
 
     if (operand_count > shift_index) {
@@ -175,14 +143,7 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
             exit(1);
         }
 
-        shift_amount = LOGICAL_SHIFT_AMOUNT_SHIFT;
-
-        return sf | opc | DP_REG_FIXED_BITS | shift_type | n_bit | rm | shift_amount | rn | rd;
-    } else {
-        //TODO: IDK WHY THE CONTROL REACHES TO THE END
-        //CLEARLY SOMEONE DIDNT CHECK LOGIC BEFORE PUSHING
-        fprintf(stderr, "imma check this later");
-        exit(1);
+        shift_amount = shift_amount << LOGICAL_SHIFT_AMOUNT_SHIFT;
     }
-    
+    return sf | opc | DP_REG_FIXED_BITS | shift_type | n_bit | rm | shift_amount | rn | rd;
 }

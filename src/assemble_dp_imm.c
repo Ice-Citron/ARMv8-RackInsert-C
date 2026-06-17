@@ -31,7 +31,6 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
         }
-
         rd = ZERO_REGISTER_NUMBER;
         rn_index = 0u;
         imm_index = 1u;
@@ -52,37 +51,18 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
         opc = OPC_SUBS << DP_OPC_SHIFT;
     }
 
-    if (operands[0][0] == 'x') {
-        sf = 1u << SF_SHIFT;
-    } else if (operands[0][0] != 'w') {
-        fprintf(stderr, "ERROR: invalid register %s\n", operands[0]);
-        exit(1);
-    }
+    rd = parse_reg(operands[0], &sf);
+    sf = sf << SF_SHIFT;
+    uint32_t dummy_sf;
+    rn = parse_reg(operands[rn_index], &dummy_sf);
+    rn = rn << DP_IMM_RN_SHIFT;
 
     char *end = NULL;
-
-    if (rd != ZERO_REGISTER_NUMBER) {
-        rd = (uint32_t) strtoul(operands[0] + 1, &end, 10);
-        if (*end != '\0' || rd > ZERO_REGISTER_NUMBER) {
-            fprintf(stderr, "ERROR: Invalid destination register %s\n", operands[0]);
-            exit(1);
-        }
-    }
-
-    if (rn != ZERO_REGISTER_NUMBER) {
-        end = NULL;
-        rn = (uint32_t) strtoul(operands[rn_index] + 1, &end, 10);
-        if (*end != '\0' || rn > ZERO_REGISTER_NUMBER) {
-            fprintf(stderr, "ERROR: Invalid source register %s\n", operands[rn_index]);
-            exit(1);
-        }
-    }
 
     if (operands[imm_index][0] != '#') {
         fprintf(stderr, "ERROR: Invalid immediate addressing format, must begin with # %s\n", operands[imm_index]);
     }
 
-    end = NULL;
     unsigned long parsed_imm = strtoul(operands[imm_index] + 1, &end, 10);
 
     if (*end != '\0' || parsed_imm > DP_IMM_IMM12_MASK) {

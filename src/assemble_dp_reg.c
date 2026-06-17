@@ -79,8 +79,6 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
     const char *rn_text = operands[rn_index];
     const char *rm_text = operands[rm_index];
 
-    char *end = NULL;
-
     rd = parse_reg(rd_text, &sf);
     sf = sf << SF_SHIFT;
     uint32_t dummy_sf;
@@ -92,7 +90,6 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
 
     if (operand_count > shift_index) {
         const char *shift_text = operands[shift_index];
-
         if (strncmp(shift_text, "lsl", 3) == 0) {
             shift_type = SHIFT_LSL;
         } else if (strncmp(shift_text, "lsr",3) == 0) {
@@ -115,7 +112,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
             exit(1);
         }
 
-        end = NULL;
+        char *end = NULL;
         shift_amount = (uint32_t) strtoul(amount_text + 1u, &end, 10);
 
         if (*end != '\0') {
