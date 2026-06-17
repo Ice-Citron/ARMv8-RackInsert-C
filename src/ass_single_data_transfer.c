@@ -57,19 +57,19 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     //say for unsigned immediate offset
     if (strcmp(mnemonic, "ldr") == 0) // ldr
     {
+        fprintf(stderr, "LDR INSTRUCTION \n");
         res |= 1 << L_BIT;
     }
     else if (strcmp(mnemonic, "str") != 0) // not ldr and not str
     {
-        fprintf(stderr, "wrong mnemonic");
+        fprintf(stderr, "mnemonic neither ldr nor str");
         exit(1);
         return 0;
     }
-    //REGISTER OFFSET 2 ARGS
     //WE SHOULD MAKE THIS A DISPATCH TABLE OF CONDITIONS? IDK
     if (operand_count == 2 && strchr(operands[1], '[') != NULL && strchr(operands[1], ']') != NULL) {
-        fprintf(stderr, "REGISTER OFFSET DOUBLE VAR \n");
-        res |= 1 << REGISTER_OFFSET_BIT_POS;
+        fprintf(stderr, "LOAD LITERAL WITH BRACKETS \n");
+        res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
         return res;
     }
 
@@ -92,20 +92,23 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     if (strchr(operands[2], ']') != NULL && strchr(operands[2], '!') == NULL) //unsigned imm offset
     {
         fprintf(stderr, "UNSIGNED IMMEDIATE OFFSET \n");
+        fprintf(stderr, "imm_val %d\n", imm_val);
         res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
         if (num_bytes == 4) // 32 bit
         {
-            imm_val >>= 2; // divide by 4
+            imm_val <<= 2; // divide by 4
+            //maybe it is multiply as said by 1.7.1???
         }
         else
         {
-            imm_val >>= 3; // divide by 8
+            imm_val <<= 3; // divide by 8
         }
         res |= (imm_val  << UNSIGNED_IMM_OFFSET_POS);
         return res;
     }
     // PRE AND POST INDEX
     res |= 1 << PRE_POST_INDEX_BIT_POS;
+    fprintf(stderr, "imm_val %d\n", imm_val);
     res |= (imm_val & PRE_POST_INDEX_SIMM9_BITMASK) << PRE_POST_INDEX_SIMM9_POS;
     if (strchr(operands[2], '!') != NULL) // PRE INDEX
     {
