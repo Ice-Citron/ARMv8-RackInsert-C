@@ -49,8 +49,7 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
             fprintf(stderr, "Wide move only allows left shift");
             exit(1); 
         }
-
-        const char *shift_text = operands[3]; 
+        char *shift_text = operands[3]; 
         while (*shift_text == ' ') {
             shift_text++;
         }

@@ -87,7 +87,6 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     const char *rn_text = operands[rn_index];
     const char *rm_text = operands[rm_index];
 
-    char *end = NULL;
     rd = parse_reg(rd_text, &sf);
     sf = sf << SF_SHIFT;
     uint32_t dummy_sf;
@@ -114,25 +113,18 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
 
         shift_type = shift_type << LOGICAL_SHIFT_TYPE_SHIFT;
 
-        const char *amount_text = shift_text + 3u;
-
-        while (*amount_text == ' ') {
-            amount_text++;
-        }
-
-        if (*amount_text != '#') {
+        if (operands[shift_index + 1][0] != '#') {
             fprintf(stderr, "ERROR: Logical shift amount must begin with #\n");
             exit(1);
         }
-
-        shift_amount = read_number_or_label(amount_text);
+        shift_amount = read_number_or_label(operands[shift_index + 1]);
         if (sf == 0) {
             if (shift_amount > MAX_32BIT_SHIFT_AMOUNT) {
-                fprintf(stderr, "ERROR: 32-bit logical shift amount is too large %s\n", amount_text);
+                fprintf(stderr, "ERROR: 32-bit logical shift amount is too large %d\n", shift_amount);
                 exit(1);
             }
         } else if (shift_amount > MAX_64BIT_SHIFT_AMOUNT) {
-            fprintf(stderr, "ERROR: 64-bit logical shift amount is too large %s\n", amount_text);
+            fprintf(stderr, "ERROR: 64-bit logical shift amount is too large %d\n", shift_amount);
             exit(1);
         }
 
