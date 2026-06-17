@@ -93,6 +93,9 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     sf = sf << SF_SHIFT;
     uint32_t dummy_sf;
     rn = parse_reg(rn_text, &dummy_sf);
+    if (strcmp(mnemonic, "mov") == 0 || strcmp(mnemonic, "mvn") == 0) {
+        rn = ZERO_REGISTER_NUMBER;
+    }
     rn = rn << LOGICAL_RN_SHIFT;
     rm = parse_reg(rm_text, &dummy_sf);
     rm = rm << LOGICAL_RM_SHIFT;
