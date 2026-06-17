@@ -20,15 +20,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     if (operands[1][0] != '[') // LOAD LITERAL
     {
         res |= LOAD_LITERAL_BITS << LOAD_LITERAL_BITS_POS;
-        uint32_t target_addr = 0;
-        if (operands[1][0] == '#') // literal
-        {
-            target_addr = atoi(&operands[1][1]);
-        }
-        else // label
-        {
-            find_address_from_sym_table(operands[1], &target_addr);
-        }
+        uint32_t target_addr = read_number_or_label(operands[1]);
         int64_t offset = offset = (int64_t)target_addr - (int64_t)pc;
         int64_t simm19 = (offset >> 2) & SIM_19_BIT_MASK;
         res |= simm19 << SIM_19_POS;
