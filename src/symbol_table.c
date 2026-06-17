@@ -41,6 +41,11 @@ bool find_address_from_sym_table(const char *name, uint32_t *address)
 
 void add_to_symbol_table(const char *name, const uint32_t address)
 {
+    uint32_t dummy_address;
+    if ((find_address_from_sym_table(name, &dummy_address))) {
+        fprintf(stderr, "duplicate function");
+        exit(1);
+    }
     if (symbol_table_size == symbol_table_capacity)
     {
         resize_symbol_table();

@@ -14,7 +14,7 @@
 #define SF_SHIFT 31u
 #define DP_OPC_SHIFT 29u
 
-#define INSTR_COUNT 37
+#define INSTR_COUNT 38
 #define IMMREG_INSTR_COUNT 8
 #define IMMEDIATE_CHARACTER '#'
 

@@ -3,22 +3,16 @@
 
 //i should really turn this into helpers
 uint32_t read_number_or_label (char* string) {
+	//probably broken, and i'm at my wits end
     uint32_t inputint;
     char* endptr;
-    uint32_t symbol_temp; 
-    bool symbol_found = find_address_from_sym_table(string, &symbol_temp);
+    bool symbol_found = find_address_from_sym_table(string, &inputint);
     //check whether label
     if (symbol_found) {
-        return symbol_temp;
-    } else if (strncmp(string, HEX_TYPE_SIGNATURE, LEN_HEX_TYPE_SIGNATURE)) {
-        //check whether hexadecimal
-        inputint = strtol(string + LEN_HEX_TYPE_SIGNATURE, &endptr, HEX_BASE);
-        //pointer arithmetic above
-    } else {
-        //decimal
-        inputint = strtol(string, &endptr, DECI_BASE);
+        return inputint;
     }
-    return inputint;
+	inputint = strtol(string, &endptr, 0);
+	return inputint;
 }
 
 //decides index where we check whether 
@@ -76,12 +70,13 @@ static instr_dispatch dp_instrs[] = {
     {"msub", assemble_multiply},
     {"mul", assemble_multiply},
     {"mneg", assemble_multiply},
-    //10 logical reg
+    //11 logical reg
     {"and", assemble_dp_logical_reg},
     {"bic", assemble_dp_logical_reg},
-    {"orr", assemble_dp_logical_reg},
     {"eor", assemble_dp_logical_reg},
     {"eon", assemble_dp_logical_reg},
+	{"orr", assemble_dp_logical_reg},
+	{"orn", assemble_dp_logical_reg},
     {"ands", assemble_dp_logical_reg},
     {"bics", assemble_dp_logical_reg},
     {"tst", assemble_dp_logical_reg},
@@ -126,6 +121,8 @@ uint32_t assemble_instructions(char* mnemonic, char *operands[], size_t operand_
 }
 
 bool assemble_file(char *infile, char *outfile) {
+	//make symbol table
+	init_symbol_table();
     // open the input file
 	FILE *in = fopen(infile, "r" );
 	if( in == NULL )

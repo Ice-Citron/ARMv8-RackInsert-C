@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 #define MAX_SYMBOL_LEN 64
 #define MAX_SYMBOL_COUNT (1 << 21)
