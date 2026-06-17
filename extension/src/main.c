@@ -9,7 +9,7 @@
 #include <string.h>
 #include <assert.h>
 
-#define DEFAULT_SCENE_PATH "assets/mujoco/rack_insert/rack_insert_scene_eval.xml"
+#define DEFAULT_SCENE_PATH "assets/mujoco/rack_insert/rack_insert_scene_rollout.xml"
 
 int main(int argc, char **argv) {
     assert(argv[0] != NULL && argc > 0);

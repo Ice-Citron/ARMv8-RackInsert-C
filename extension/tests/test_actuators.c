@@ -7,7 +7,7 @@
 #include <assert.h>
 #include <mujoco/mujoco.h>
 
-#define DEFAULT_SCENE_PATH "assets/mujoco/rack_insert/rack_insert_scene_eval.xml"
+#define DEFAULT_SCENE_PATH "assets/mujoco/rack_insert/rack_insert_scene_rollout.xml"
 
 typedef struct {
     const char *actuator_name;
@@ -73,12 +73,15 @@ int main(void) {
     printf("    scene    = %s\n", DEFAULT_SCENE_PATH);
     printf("    model.nu = %ld\n\n", sim.model->nu);
 
+    /*
+    // Instabilities are happening to the scene currently. [PROBLEM SOLVED!]
     printf("PASSIVE STEP TEST\n");
     for (int i = 0; i < 10; i++) {
         sim_step(&sim);
         printf("step=%d time=%.6f\n", i + 1, sim.data->time);
     }
     printf("PASSIVE STEP TEST COMPLETE\n");
+    */
 
     int moved_count = 0;
     for (int i = 0; i < probe_count; i++) {
