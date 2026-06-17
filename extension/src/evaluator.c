@@ -1,19 +1,10 @@
 #include "evaluator.h"
 #include "vec.h"
+#include "utils.h"
 
 #include <math.h>
 #include <assert.h>
 #include <stddef.h>
-
-static double clamp(double x, double lo, double hi) {
-    if (x < lo) {
-        return lo;
-    } 
-    if (x > hi) {
-        return hi;
-    }
-    return x;
-}
 
 static double descending_linear_score(double value, double full_score_value,
                                       double zero_score_value, 
