@@ -15,27 +15,18 @@ typedef struct {
     double ctrl_value;
 } ActuatorProbe;
 
-static double get_joint_qpos(const Sim *sim, const char *joint_name) {
-    assert(sim != NULL && joint_name != NULL);
-    assert(sim->data != NULL && sim->model != NULL);
-
-    int joint_id = sim_find_joint_id(sim, joint_name);
-    int qpos_addr = sim->model->jnt_qposadr[joint_id];
-    return sim->data->qpos[qpos_addr];
-}
-
 static int probe_one_actuator(Sim *sim, const ActuatorProbe *probe) {
     assert(sim != NULL && probe != NULL);
     assert(sim->data != NULL && sim->model != NULL);
 
     int actuator_id = sim_find_actuator_id(sim, probe->actuator_name);
 
-    double before = get_joint_qpos(sim, probe->joint_name);
+    double before = sim_get_joint_qpos(sim, probe->joint_name);
 
     sim_set_ctrl(sim, actuator_id, probe->ctrl_value);
     sim_step(sim);
 
-    double after = get_joint_qpos(sim, probe->joint_name);
+    double after = sim_get_joint_qpos(sim, probe->joint_name);
     double delta = after - before;
 
     sim_set_ctrl(sim, actuator_id, 0.0);
