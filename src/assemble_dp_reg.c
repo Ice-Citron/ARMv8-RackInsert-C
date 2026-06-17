@@ -62,6 +62,10 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
             exit(1);
         }
+        shift_index = 3u;
+        rd_index = 0u;
+        rn_index = 1u;
+        rm_index = 2u;
     }
 
     if (strcmp(mnemonic,"add") == 0) {
