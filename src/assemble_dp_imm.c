@@ -26,7 +26,8 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
     size_t rn_index = 1u;
     size_t imm_index = 2u;
 
-    if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0) {
+    if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0 ||
+        strcmp(mnemonic, "neg") == 0 || strcmp(mnemonic, "negs") == 0) {
         if (operand_count != 2u && operand_count != 4u) {
             fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
@@ -57,15 +58,13 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
     rn = parse_reg(operands[rn_index], &dummy_sf);
     rn = rn << DP_IMM_RN_SHIFT;
 
-    char *end = NULL;
-
+    //parsing the immediate
     if (operands[imm_index][0] != '#') {
-        fprintf(stderr, "ERROR: Invalid immediate addressing format, must begin with # %s\n", operands[imm_index]);
+        fprintf(stderr, "ERROR: immediate must begin with # %s\n", operands[imm_index]);
     }
 
-    unsigned long parsed_imm = strtoul(operands[imm_index] + 1, &end, 10);
-
-    if (*end != '\0' || parsed_imm > DP_IMM_IMM12_MASK) {
+    uint32_t parsed_imm = read_number_or_label(operands[imm_index]);
+    if (parsed_imm > DP_IMM_IMM12_MASK) {
         fprintf(stderr, "ERROR: Invalid 12-bit imm%s\n", operands[imm_index]);
         exit(1);
     }
@@ -74,17 +73,13 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
 
     if (operand_count == imm_index + 3u) {
         const char *shift_name = operands[imm_index + 1u];
-        const char *shift_amount = operands[imm_index + 2u];
-
         if (strcmp(shift_name,"lsl") != 0) {
             fprintf(stderr, "ERROR: Arithmetic immediate instruction only supports lsl shift\n");
             exit(1);
         }
 
-        end = NULL;
-        unsigned long parsed_shift = strtoul(shift_amount + 1, &end, 10);
-
-        if (*end != '\0' || parsed_shift != DP_IMM_LSL_AMOUNT) {
+        uint32_t parsed_shift = read_number_or_label(operands[imm_index + 2u]);
+        if (parsed_shift != 0 && parsed_shift != DP_IMM_LSL_AMOUNT) {
             fprintf(stderr, "ERROR: Arithmetic immediate shift must be lsl #12\n");
             exit(1);
         }
