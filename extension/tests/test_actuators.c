@@ -25,15 +25,15 @@ static double get_joint_qpos(const Sim *sim, const char *joint_name) {
 }
 
 static int probe_one_actuator(Sim *sim, const ActuatorProbe *probe) {
-    assert(sim != NULL && probe != NULL;);
+    assert(sim != NULL && probe != NULL);
     assert(sim->data != NULL && sim->model != NULL);
 
-    int actuator_id = sim_find_actuaror_id(sim, probe->actuator_name);
+    int actuator_id = sim_find_actuator_id(sim, probe->actuator_name);
 
     double before = get_joint_qpos(sim, probe->joint_name);
 
     sim_set_ctrl(sim, actuator_id, probe->ctrl_value);
-    sim_step_seconds(sim, 0.5);
+    sim_step_seconds(sim, 0.02);
 
     double after = get_joint_qpos(sim, probe->joint_name);
     double delta = after - before;
@@ -59,8 +59,8 @@ int main(void) {
         {"shoulder_lift_joint_motor",       "shoulder_lift_joint",       1.0},
         {"elbow_joint_motor",               "elbow_joint",               1.0},
         {"wrist_1_joint_motor",             "wrist_1_joint",             1.0},
-        {"wrist_1_joint_motor",             "wrist_1_joint",             1.0},
-        {"wrist_1_joint_motor",             "wrist_1_joint",             1.0},
+        {"wrist_2_joint_motor",             "wrist_2_joint",             1.0},
+        {"wrist_3_joint_motor",             "wrist_3_joint",             1.0},
         {"gripper/left_finger_joint_motor", "gripper/left_finger_joint", 1.0},
     };
 
@@ -75,7 +75,7 @@ int main(void) {
 
     int moved_count = 0;
     for (int i = 0; i < probe_count; i++) {
-        moved_count += probe_one_actuator(&sim, &probes[1]);
+        moved_count += probe_one_actuator(&sim, &probes[i]);
     }
     printf("\nActuators Moved: %d out of %d\n", moved_count, probe_count);
 

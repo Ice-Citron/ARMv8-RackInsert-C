@@ -10,6 +10,8 @@
 # Extensions related compilation C code
 extension/rack_insert
 extension/test_evaluator
+extension/test_actuators
+extension/MUJOCO_LOG.TXT
 
 # Extensions related python dependencies
 extension/.venv
