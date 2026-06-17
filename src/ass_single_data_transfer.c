@@ -30,6 +30,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     if (operands[1][0] != '[') // to not start with '['
     //necessarily a load literal
     {
+        fprintf(stderr, "LOAD LITERAL \n");
         if (strcmp(mnemonic, "ldr") != 0) {
             fprintf(stderr, "only ldr supports literal addressing");
             exit(1);
@@ -66,6 +67,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     char *addr_of_hash = strchr(operands[2], '#');
     if (addr_of_hash == NULL) // register offset
     {
+        fprintf(stderr, "REGISTER OFFSET \n");
         int xm_addr = atoi(operands[2] + 1);
         res |= REGISTER_OFFSET_BITS << REGISTER_OFFSET_POS;
         res |= (xm_addr & XN_XM_BITMASK) << REGISTER_OFFSET_XM_POS;
@@ -76,8 +78,9 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     int imm_val = atoi(addr_of_hash);
 
     //the spec lied to us there are no curly braces
-    if (strchr(operands[2], '#') != NULL) //unsigned imm offset
+    if (strchr(operands[2], ']') != NULL) //unsigned imm offset
     {
+        fprintf(stderr, "UNSIGNED IMMEDIATE OFFSET \n");
         res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
         if (num_bytes == 4) // 32 bit
         {
@@ -95,7 +98,9 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     res |= (imm_val & PRE_POST_INDEX_SIMM9_BITMASK) << PRE_POST_INDEX_SIMM9_POS;
     if (strchr(operands[2], '!') != NULL) // PRE INDEX
     {
+        fprintf(stderr, "PRE INDEX \n");
         res |= 1 << PRE_INDEX_BIT_POS;
     }
+    fprintf(stderr, "POST INDEX \n");
     return res;
 }
