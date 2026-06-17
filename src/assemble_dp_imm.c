@@ -97,8 +97,10 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: Arithmetic immediate shift must be lsl #12\n");
             exit(1);
         }
-
-        sh = 1u << DP_IMM_SH_SHIFT;
+        //shifting by zero is not a shift lmaooo
+        if (parsed_shift != 0) {
+            sh = 1u << DP_IMM_SH_SHIFT;
+        }
     }
     return sf | opc | DP_FIXED_BIT | DP_IMM_ARITHMETIC_OPI | sh | imm12 | rn | rd ;
 }
