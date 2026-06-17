@@ -29,6 +29,6 @@ void traj_lerp_array(const double *start, const double *goal, double *out,
 
     double s = traj_smoothstep(t);
     for (int i = 0; i < count; i++) {
-        out[i] = traj_lerp(start[i], end[i], s);
+        out[i] = traj_lerp(start[i], goal[i], s);
     }
 }
