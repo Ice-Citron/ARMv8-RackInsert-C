@@ -43,7 +43,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
             exit(1);
         }
 
-        rd = ZERO_REGISTER_NUMBER;
+        rd_index = ZERO_REGISTER_NUMBER;
         rn_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
@@ -52,8 +52,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
             fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
             exit(1);
         }
-
-        rn = ZERO_REGISTER_NUMBER;
+        rn_index = ZERO_REGISTER_NUMBER;
         rd_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
