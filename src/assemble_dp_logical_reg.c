@@ -35,7 +35,6 @@ uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operan
     size_t rn_index = 1u;
     size_t rm_index = 2u;
     size_t shift_index = 3u;
-
     if (strcmp(mnemonic,"tst") == 0) {
         if (operand_count != 2u && operand_count != 3u) {
             fprintf(stderr, "ERROR: Invalid operand count for %s\n", mnemonic);

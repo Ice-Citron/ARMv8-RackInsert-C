@@ -196,6 +196,11 @@ bool assemble_file(char *infile, char *outfile) {
 			args_of_query = strtok_r(NULL, ", \t\n", &inner_save_ptr);
 		}
 		uint32_t instruction = 0;
+		//checking if halt instruction 
+		if (strcmp(mnemonic, "and") == 0 && operand_count == 3 &&
+			strcmp(operands[0], "x0") == 0 && strcmp(operands[1], "x0") == 0 && strcmp(operands[2], "x0") == 0) {
+			break;
+		}
 		instruction = assemble_instructions(mnemonic, operands, operand_count, pc);
 		//add the other instructions - done
 		fwrite(&instruction, sizeof(uint32_t), 1, out);
