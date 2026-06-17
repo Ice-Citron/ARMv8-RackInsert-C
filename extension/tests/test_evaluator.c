@@ -62,6 +62,6 @@ int main(void) {
     test_geometry_lateral_error();
     test_full_insertion_score();
 
-    puts("TEST: all tests passed for evaluator.");
+    puts("\n\nTEST: all tests passed for evaluator.\n\n");
     return 0;
 }

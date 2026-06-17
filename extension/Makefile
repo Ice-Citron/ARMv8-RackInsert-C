@@ -44,13 +44,13 @@ test_evaluator: $(EVALUATOR_TEST_OBJS)
 
 test_actuators: $(ACTUATOR_TEST_OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
-	./test_actuators
 
 run: rack_insert
 	./rack_insert
 
-test: test_evaluator
+test: test_evaluator test_actuators
 	./test_evaluator
+	./test_actuators
 
 # For debugging with AddressSanitizer
 asan: CFLAGS += -fsanitize=address,undefined -fno-omit-frame-pointer

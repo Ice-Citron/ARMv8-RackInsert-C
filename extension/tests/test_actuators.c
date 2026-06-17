@@ -33,7 +33,7 @@ static int probe_one_actuator(Sim *sim, const ActuatorProbe *probe) {
     double before = get_joint_qpos(sim, probe->joint_name);
 
     sim_set_ctrl(sim, actuator_id, probe->ctrl_value);
-    sim_step_seconds(sim, 0.02);
+    sim_step(sim);
 
     double after = get_joint_qpos(sim, probe->joint_name);
     double delta = after - before;
@@ -69,9 +69,16 @@ int main(void) {
     Sim sim;
     sim_load(&sim, DEFAULT_SCENE_PATH);
 
-    printf("ACTUATOR SMOKE TEST");
+    printf("\n\nACTUATOR SMOKE TEST\n");
     printf("    scene    = %s\n", DEFAULT_SCENE_PATH);
-    printf("    model.nu = %ld\n", sim.model->nu);
+    printf("    model.nu = %ld\n\n", sim.model->nu);
+
+    printf("PASSIVE STEP TEST\n");
+    for (int i = 0; i < 10; i++) {
+        sim_step(&sim);
+        printf("step=%d time=%.6f\n", i + 1, sim.data->time);
+    }
+    printf("PASSIVE STEP TEST COMPLETE\n");
 
     int moved_count = 0;
     for (int i = 0; i < probe_count; i++) {
@@ -83,11 +90,11 @@ int main(void) {
 
     if (moved_count == 0) {
         fprintf(stderr, "SMOKE TEST FAILED: no actuators incurred joint "
-                "motion\n");
+                "motion\n\n\n");
         return EXIT_FAILURE;
     } else {
         printf("SMOKE TEST PASSED: at least one actuator incurred joint "
-               "motion\n");
+               "motion\n\n\n");
         return EXIT_SUCCESS;
     }
 }
