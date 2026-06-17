@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdint.h>
 #include "symbol_table.h"
 
 #define ZERO_REGISTER_NUMBER 31u
