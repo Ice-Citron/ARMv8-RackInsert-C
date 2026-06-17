@@ -95,6 +95,7 @@ uint32_t assemble_wide_move(char* mnemonic,char *operands[], size_t operand_coun
         opc = OPC_MOVZ << DP_OPC_SHIFT;
     } else {
         fprintf(stderr, "ERROR: Unknown wide move instruction %s",mnemonic);
+        exit(1);
     }
 
     uint32_t hw = (shift/WIDE_MOVE_SHIFT_UNIT ) << WIDE_MOVE_HW_SHIFT;
