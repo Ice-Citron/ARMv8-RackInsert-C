@@ -16,7 +16,7 @@ uint32_t parse_reg(const char *text, uint32_t *sf) {
     } else if (text[0] == 'w') {
         *sf = REG_W_SF;
     } else {
-        fprintf(stderr, "invalid register: %s\n", text);
+        fprintf(stderr, "invalid register: %s\n text[0] = %c\n", text, text[0]);
         exit(1);
     }
 

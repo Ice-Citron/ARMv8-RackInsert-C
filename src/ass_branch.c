@@ -40,7 +40,7 @@ uint32_t ass_branch(char* mnemonic, char *operands[],
         exit(1);
     }
     //target can be label or value
-    uint32_t target_memory = read_number_or_label(operands[0]);
+    uint32_t target_memory;
     if (strcmp(REG_BRANCH_STR_PREFIX, mnemonic) == 0) {
         uint32_t dummy_sf;
         //branch register - reads from the second character (e.g. register is x0)
@@ -48,10 +48,11 @@ uint32_t ass_branch(char* mnemonic, char *operands[],
     } else if (strcmp(UNCON_STR_PREFIX, mnemonic) == 0) {
         //uncon branch
         //printf("uncon: target memory %d", target_memory);
+        target_memory = read_number_or_label(operands[0]);
         return UNCON_BRANCH_PREFIX | (calc_offset(target_memory, pc, UNCON_BRANCH_ADDR_LENGTH));
-
     } else {
         //branch conditional
+        target_memory = read_number_or_label(operands[0]);
         uint32_t opcode = check_mnemonic_if_cond(mnemonic);
         return CON_BRANCH_PREFIX |
             (calc_offset(target_memory, pc, CON_BRANCH_ADDR_LENGTH) << CON_BRANCH_ADDR_SHIFT_LEFT) |
