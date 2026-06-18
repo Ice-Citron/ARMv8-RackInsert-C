@@ -43,7 +43,7 @@ void vec3_normalize(const double v[3], double out[3]) {
     }
 }
 
-void copy_vec3(const double src[3], const double dst[3]) {
+void copy_vec3(const double src[3], double dst[3]) {
     for (int i = 0; i < 3; i++) {
         dst[i] = src[i];
     }
