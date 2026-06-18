@@ -22,6 +22,7 @@ typedef struct {
     double home_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
     double start_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
     double target_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
+    // Live, instantaneous insruction sent to motors at this exact millisecond.
     double command_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
 
     double state_start_time;
