@@ -22,8 +22,10 @@ RACK_SRCS = src/main.c src/evaluator.c src/sim.c src/vec.c src/logging.c \
 
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 
-EVALUATOR_TEST_OBJS = build/test_evaluator.o build/evaluator.o build/vec.o 
-ACTUATOR_TEST_OBJS  = build/sim.o build/test_actuators.o
+EVALUATOR_TEST_OBJS 	  = build/test_evaluator.o build/evaluator.o build/vec.o 
+ACTUATOR_TEST_OBJS   	  = build/sim.o build/test_actuators.o
+SCRIPTED_POLICY_TEST_OBJS = build/evaluator.o build/scripted_policy.o \
+							build/sim.o build/vec.o build/test_scripted_policy.o
 
 .PHONY: all clean run test asan deps check-mujoco
 
@@ -47,12 +49,16 @@ test_evaluator: $(EVALUATOR_TEST_OBJS)
 test_actuators: $(ACTUATOR_TEST_OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
+test_scripted_policy: $(SCRIPTED_POLICY_TEST_OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS) $(LDLIBS)
+
 run: rack_insert
 	./rack_insert
 
-test: test_evaluator test_actuators
+test: test_evaluator test_actuators test_scripted_policy
 	./test_evaluator
 	./test_actuators
+	./test_scripted_policy
 
 # For debugging with AddressSanitizer
 asan: CFLAGS += -fsanitize=address,undefined -fno-omit-frame-pointer

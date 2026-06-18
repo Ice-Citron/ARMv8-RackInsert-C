@@ -39,3 +39,16 @@ void print_usage_guide(const char *program_name) {
     fprintf(stderr, "   %s\n", program_name);
     fprintf(stderr, "   %s --scene <path-to-mjcf-scene>\n", program_name);
 }
+
+void print_trial_summary(const char *title, const TrialScore *initial, 
+                         const TrialScore *final, double plug_motion, 
+                         double duration) {
+    printf("\n\n%s\n", title);
+    printf("    duration                = %.6f\n", duration);
+    printf("    plug_motion             = %.6f\n", plug_motion);
+    printf("    initial_plug_port_dist  = %.6f\n", initial->plug_port_distance);
+    printf("    final_plug_port_dist    = %.6f\n", final->plug_port_distance);
+    printf("    final_lateral_error     = %.6f\n", final->lateral_error);
+    printf("    final_axial_depth       = %.6f\n", final->axial_depth);
+    printf("    final_total_score       = %.6f\n", final->total);
+}
