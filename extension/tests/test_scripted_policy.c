@@ -1,5 +1,8 @@
 #include "sim.h"
 #include "vec.h"
+#include "evaluator.h"
+#include "logging.h"
+#include "scripted_policy.h"
 
 #include <math.h>
 #include <stdlib.h>
@@ -9,6 +12,12 @@
     "assets/mujoco/rack_insert/rack_insert_scene_cable_softplugin_rollout.xml"
 #define MAX_TESTING_SECONDS 8.0     // Timeout Guard for while-loop
 #define MIN_PLUG_MOTION_M   1e-5
+
+static void read_geometry(const Sim *sim, EvalGeometry *geom) {
+    sim_get_site_pos(sim, "plug_tip"     , geom->plug_tip);
+    sim_get_site_pos(sim, "socket_mouth" , geom->socket_mouth);
+    sim_get_site_pos(sim, "socket_bottom", geom->socket_bottom);
+}
 
 int main(void) {
     Sim sim;
@@ -42,7 +51,7 @@ int main(void) {
     
     // Heartbeat of smoke test benchmark. 
     while (!scripted_policy_is_done(&policy) 
-           && sim.data.time < MAX_TESTING_SECONDS) {
+           && sim.data->time < MAX_TESTING_SECONDS) {
         // Policy calculates exact motor angles for each ms and sends commands
         scripted_policy_update(&policy, &sim);
         // MuJoCo physics engine ticks forward based on policy's commands
@@ -72,7 +81,7 @@ int main(void) {
 
     eval_score_trial(&config, socket_depth, &final_score);
 
-    const char *title = "SCRIPTED POLICY ROLLOUT SMOKE TEST"
+    const char *title = "SCRIPTED POLICY ROLLOUT SMOKE TEST";
     double plug_motion = vec3_distance(initial_geom.plug_tip, 
                                        final_geom.plug_tip);
     print_trial_summary(title, &initial_score, &final_score, plug_motion, 

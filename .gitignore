@@ -11,6 +11,7 @@
 extension/rack_insert
 extension/test_evaluator
 extension/test_actuators
+extension/test_scripted_policy
 extension/MUJOCO_LOG.TXT
 
 # Extensions related python dependencies

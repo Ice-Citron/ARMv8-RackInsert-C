@@ -25,7 +25,8 @@ RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 EVALUATOR_TEST_OBJS 	  = build/test_evaluator.o build/evaluator.o build/vec.o 
 ACTUATOR_TEST_OBJS   	  = build/sim.o build/test_actuators.o
 SCRIPTED_POLICY_TEST_OBJS = build/evaluator.o build/scripted_policy.o \
-							build/sim.o build/vec.o build/test_scripted_policy.o
+							build/sim.o build/vec.o build/logging.o \
+							build/trajectory.o build/test_scripted_policy.o 
 
 .PHONY: all clean run test asan deps check-mujoco
 
@@ -81,4 +82,5 @@ deps:
 	$(VENV)/bin/python -m pip install mujoco
 
 clean:
-	rm -rf build rack_insert test_evaluator test_actuators MUJOCO_LOG.TXT
+	rm -rf build rack_insert test_evaluator test_actuators MUJOCO_LOG.TXT \
+		test_scripted_policy
