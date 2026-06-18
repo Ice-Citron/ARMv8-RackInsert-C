@@ -7,7 +7,7 @@
  * (Helper) Creates a mask covering bits start down to end.
  * Example: bitmask(3, 1) returns 0b1110.
  */
-static inline uint32_t bitmask (const uint8_t start, const uint8_t end) {
+static inline uint32_t bitmask(const uint8_t start, const uint8_t end) {
     const uint8_t width = start - end + 1;
     if (width == 32) {
         return UINT32_MAX;
@@ -19,8 +19,8 @@ static inline uint32_t bitmask (const uint8_t start, const uint8_t end) {
  * (Helper) Extracts bits start down to end from a value.
  * Example: extract_bits(3, 1, 0b10110) returns 0b011.
  */
-static inline uint32_t extract_bits (const uint8_t start, const uint8_t end, 
-                                     const uint64_t target) {
+static inline uint32_t extract_bits(const uint8_t start, const uint8_t end, 
+                                    const uint64_t target) {
     return (bitmask(start, end) & target) >> end;
 }
 
