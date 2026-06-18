@@ -22,9 +22,16 @@ uint32_t assemble_multiply(char* mnemonic, char *operands[], size_t operand_coun
 
     bool is_mul_or_mneg = (strcmp(mnemonic, "mul") == 0 || strcmp(mnemonic, "mneg") == 0);
 
-    if ( is_mul_or_mneg && (operand_count != 3 && operand_count != 4) ) {
-        fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
-        exit(1);
+    if (is_mul_or_mneg) {
+        if (operand_count != 3) {
+            fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
+            exit(1);
+        }
+    } else {
+        if (operand_count != 4) {
+            fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
+            exit(1);
+        }
     }
 
     if (operands[0] == NULL || operands[1] == NULL || operands[2] == NULL) {

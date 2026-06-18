@@ -39,7 +39,6 @@ uint32_t ass_branch(char* mnemonic, char *operands[],
         fprintf(stderr, "wrong number of operands");
         exit(1);
     }
-    //i know it should be a bitwise op but lets pass tests first
     //target can be label or value
     uint32_t target_memory = read_number_or_label(operands[0]);
     if (strcmp(REG_BRANCH_STR_PREFIX, mnemonic) == 0) {
