@@ -34,7 +34,9 @@ uint32_t assemble_multiply(char* mnemonic, char *operands[], size_t operand_coun
 
     if (operands[0][0] == 'x') {
         sf = 1u << SF_SHIFT;
-    } else if (operands[0][1] != 'w') {
+    } else if (operands[0][0] == 'w') {
+        sf = 0u;
+    } else {
         fprintf(stderr, "ERROR: Invalid format for destination register\n");
         exit(1);
     }
