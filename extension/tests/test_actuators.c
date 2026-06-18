@@ -7,7 +7,8 @@
 #include <assert.h>
 #include <mujoco/mujoco.h>
 
-#define DEFAULT_SCENE_PATH "assets/mujoco/rack_insert/rack_insert_scene_cable_softplugin_rollout.xml"
+#define DEFAULT_SCENE_PATH \
+    "assets/mujoco/rack_insert/rack_insert_scene_cable_softplugin_rollout.xml"
 
 typedef struct {
     const char *actuator_name;

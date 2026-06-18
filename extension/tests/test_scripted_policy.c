@@ -6,11 +6,59 @@
 #include <stdio.h>
 
 #define DEFAULT_SCENE_PATH \
-    ""
-#define MAX_ROLLOUT_SECONDS 8.0
+    "assets/mujoco/rack_insert/rack_insert_scene_cable_softplugin_rollout.xml"
+#define MAX_TESTING_SECONDS 8.0     // Timeout Guard for while-loop
 #define MIN_PLUG_MOTION_M   1e-5
 
-int main() {
+int main(void) {
+    Sim sim;
+    sim_load(&sim, DEFAULT_SCENE_PATH);
+
+    EvalConfig config = eval_default_config();
+
+    EvalGeometry initial_geom = {0};
+    EvalGeometry final_geom = {0};
+
+    TrialScore initial_score = {0};
+    TrialScore final_score = {0};
+
+    read_geometry(&sim, &initial_geom);
+    eval_compute_geometry(&initial_geom, &initial_score);
+
+    double socket_depth = vec3_distance(initial_geom.socket_mouth, 
+                                        initial_geom.socket_bottom); 
+    
+    ScriptedPolicy policy;
+    scripted_policy_init(&policy, &sim);
+    scripted_policy_start(&policy, &sim);
+
+    double previous_tip[3] = {
+        initial_geom.plug_tip[0],
+        initial_geom.plug_tip[1],
+        initial_geom.plug_tip[2],
+    };
+
+    double path_length = 0.0;
+    
+    // Heartbeat of smoke test benchmark. 
+    while (!scripted_policy_is_done(&policy) 
+           && sim.data.time < MAX_TESTING_SECONDS) {
+        // Policy calculates exact motor angles for each ms and sends commands
+        scripted_policy_update(&policy, &sim);
+        // MuJoCo physics engine ticks forward based on policy's commands
+        sim_step(&sim);
+
+        double current_tip[3];
+        sim_get_site_pos(&sim, "plug_tip", current_tip);
+        
+        // For Tier 2 Motion Quality Scoring, to determine path efficiency
+        // (lower path length is better, more efficient, don't want arm 
+        // zig-zagging unneccesarily).
+        path_length += vec3_distance(previous_tip, current_tip);
+    }
+
+    
+
     print_trial_summary();
     return EXIT_SUCCESS;
 }
