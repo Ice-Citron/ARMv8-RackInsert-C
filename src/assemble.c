@@ -9,4 +9,3 @@ int main(int argc, char **argv) {
   assemble_file(argv[1], argv[2]);
   return EXIT_SUCCESS;
 }
-
