@@ -25,6 +25,6 @@ io_0to9: .int 0x3f200004
 set_0: .int 0x3f20001c
 clr_0: .int 0x3f200028
 timing: .int 0xffff
-gpio17_set_hilo: .int 0x00200000
+gpio17_set_hilo: .int 0x000200000
 gpio17_clear_bitmask: .int 0xff1fffff
-gpio17_output_set: .int 0x00020000
+gpio17_output_set: .int 0x0020000
