@@ -9,22 +9,18 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
                                   size_t operand_count, uint32_t pc)
 {
     //checking # operands
-    if (operand_count < 2 || operand_count > 3) {
+    if (operand_count < DATATRANSFER_MINOPS || operand_count > DATATRANSFER_MAXOPS) {
         fprintf(stderr, "wrong number of operands");
         exit(1);
     } 
-    //diagnostic tool 
-    for (size_t i = 0; i < operand_count; i++) {
-        fprintf(stderr, "Operand %ld: %s\n", i, operands[i]);
-    }
     uint32_t sf = 0;
     //taking in the first varianble - target register
     uint32_t res = parse_reg(operands[0], &sf);
-    int num_bytes = 4;
+    int num_bytes = BYTES_IN_32_BITS;
     if (sf)
     {
         res |= 1 << SF_BIT;
-        num_bytes = 8;
+        num_bytes = BYTES_IN_64_BITS;
     }
     //LOAD LITERAL CASE
     if (operands[1][0] != '[') // to not start with '['
@@ -45,8 +41,6 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         res |= simm19 << SIM_19_POS;
         return res;
     }
-    //SO FAR SO GOOD
-
     // single data transfer
     res |= 1 << MOST_SIG_BIT;
     res |= SINGLE_DATA_TRANSFER_BITS << SINGLE_DATA_TRANSFER_BITS_POS;
@@ -57,7 +51,6 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     //say for unsigned immediate offset
     if (strcmp(mnemonic, "ldr") == 0) // ldr
     {
-        fprintf(stderr, "LDR INSTRUCTION \n");
         res |= 1 << L_BIT;
     }
     else if (strcmp(mnemonic, "str") != 0) // not ldr and not str
@@ -67,17 +60,16 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
         return 0;
     }
     //WE SHOULD MAKE THIS A DISPATCH TABLE OF CONDITIONS? IDK
-    if (operand_count == 2 && strchr(operands[1], '[') != NULL && strchr(operands[1], ']') != NULL) {
-        fprintf(stderr, "LOAD LITERAL WITH BRACKETS \n");
+    if (LOAD_LITERAL_2OPS_COND) {
         res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
         return res;
     }
 
-    char *addr_of_hash = strchr(operands[2], '#');
+    char *addr_of_hash = HASHTAG_ADDRESS_3OPS_LOAD_LITERAL;
     if (addr_of_hash == NULL) // register offset
     {
-        fprintf(stderr, "REGISTER OFFSET TRIPLE VAR \n");
         int xm_addr = atoi(operands[2] + 1);
+        //skip the hash
         res |= REGISTER_OFFSET_BITS << REGISTER_OFFSET_POS;
         res |= (xm_addr & XN_XM_BITMASK) << REGISTER_OFFSET_XM_POS;
         res |= 1 << REGISTER_OFFSET_BIT_POS;
@@ -85,33 +77,25 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     }
     addr_of_hash ++;
     int imm_val = strtol(addr_of_hash, NULL, 0);
-    //binary handling is in general a massive problem
 
-
-
-    //the spec lied to us there are no curly braces
-    if (strchr(operands[2], ']') != NULL && strchr(operands[2], '!') == NULL) //unsigned imm offset
+    if (UNSIGNED_IMM_OFFSET_COND) //unsigned imm offset
     {
-        fprintf(stderr, "UNSIGNED IMMEDIATE OFFSET \n");
-        fprintf(stderr, "imm_val %d\n", imm_val);
         res |= 1 << UNSIGNED_IMM_OFFSET_U_BIT;
-        if (num_bytes == 4) // 32 bit
+        if (num_bytes == BYTES_IN_32_BITS) // 32 bit
         {
-            imm_val >>= 2; // divide by 4
-            //nvm it is divide
+            imm_val >>= LOG2_BYTES_IN_32_BITS; // divide by 4
         }
         else
         {
-            imm_val >>= 3; // divide by 8
+            imm_val >>= LOG2_BYTES_IN_64_BITS; // divide by 8
         }
         res |= (imm_val  << UNSIGNED_IMM_OFFSET_POS);
         return res;
     }
     // PRE AND POST INDEX
     res |= 1 << PRE_POST_INDEX_BIT_POS;
-    fprintf(stderr, "imm_val %d\n", imm_val);
     res |= (imm_val & PRE_POST_INDEX_SIMM9_BITMASK) << PRE_POST_INDEX_SIMM9_POS;
-    if (strchr(operands[2], '!') != NULL) // PRE INDEX
+    if (PRE_INDEX_COND) // PRE INDEX
     {
         fprintf(stderr, "PRE INDEX \n");
         res |= 1 << PRE_INDEX_BIT_POS;

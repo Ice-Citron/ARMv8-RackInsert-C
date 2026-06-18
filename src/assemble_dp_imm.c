@@ -1,20 +1,6 @@
 #include "assemble_dp_imm.h"
 #include "assemble_file.h"
 
-#define DP_IMM_SH_SHIFT 22u
-#define DP_IMM_IMM12_SHIFT 10u
-#define DP_IMM_RN_SHIFT 5u
-
-#define DP_IMM_ARITHMETIC_OPI (2u << 23u)
-
-#define DP_IMM_IMM12_MASK 0xfffu
-#define DP_IMM_LSL_AMOUNT 12u
-
-#define OPC_ADD 0u
-#define OPC_ADDS 1u
-#define OPC_SUB 2u
-#define OPC_SUBS 3u
-
 uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
     uint32_t sf = 0u;
     uint32_t opc = 0u;
@@ -29,7 +15,7 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
     bool use_rn = true;
 
     if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0) {
-        if (operand_count != 2u && operand_count != 4u) {
+        if (operand_count != CMPCMN_OPCOUNT_NOSHIFT && operand_count != CMPCMN_OPCOUNT_SHIFT) {
             fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
         }
@@ -37,7 +23,7 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
         rn_index = 0u;
         imm_index = 1u;
     } else if (strcmp(mnemonic, "neg") == 0 || strcmp(mnemonic, "negs") == 0) {
-        if (operand_count != 2u && operand_count != 4u) {
+        if (operand_count != OTHER_DPIMM_OPCOUNT_NOSHIFT && operand_count != OTHER_DPIMM_OPCOUNT_SHIFT) {
             fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
         }
@@ -46,7 +32,7 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
         rd_index = 0u;
         imm_index = 1u;
     } else {
-        if (operand_count != 3u && operand_count != 5u) {
+        if (operand_count != OTHER_DPIMM_OPCOUNT_NOSHIFT && operand_count != OTHER_DPIMM_OPCOUNT_SHIFT) {
             fprintf(stderr, "ERROR: wrong operand count for %s\n", mnemonic);
             exit(1);
         }

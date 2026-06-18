@@ -3,6 +3,7 @@
 
 #include "assemble.h"
 #include "parse_reg.h"
+#include "ass_helpers.h"
 
 uint32_t assemble_dp_logical_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
 

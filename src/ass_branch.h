@@ -4,6 +4,7 @@
 #include "assemble_file.h"
 #include "bit_manipulation.h"
 #include "parse_reg.h"
+#include "ass_helpers.h"
 
 //uncon
 #define UNCON_BRANCH_PREFIX    0x14000000

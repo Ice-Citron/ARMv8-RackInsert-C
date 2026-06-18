@@ -1,13 +1,13 @@
 #include "ass_branch.h"
 
 #define BRANCH_NUMBEROF_OPERANDS 1
-
+#define NUMBER_OF_LOGICAL_OPS 7
 //endianness might be sus
 
-const char *bc_strs[7] = {"eq", "ne", "ge", "lt", "gt", "le", "al"};
-const int bc_values[7] = {0, 1, 10, 11, 12, 13, 14};
+const char *bc_strs[NUMBER_OF_LOGICAL_OPS] = {"eq", "ne", "ge", "lt", "gt", "le", "al"};
+const int bc_values[NUMBER_OF_LOGICAL_OPS] = {0, 1, 10, 11, 12, 13, 14};
 
-//check mnemonic and corresponding value
+//check mnemonic and return the corresponding value (opcode)
 static uint32_t check_mnemonic_if_cond(char* mnemonic) {
     for (int i = 0; i < NO_OF_BRANCH_CONDS; i++) {
         char inst_buffer[LENGTH_OF_COND_MNEMONIC];
@@ -20,6 +20,7 @@ static uint32_t check_mnemonic_if_cond(char* mnemonic) {
     fprintf(stderr, "Invalid Cond Branch Function");
     exit(1);
 }
+
 //calculate OFFSET = label_address - caller_address
 //and then sign extend to output number of bits
 static uint32_t calc_offset(uint32_t label_address, uint32_t caller_address, 

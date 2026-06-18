@@ -8,6 +8,4 @@ uint32_t int_directive (char* mnemonic, char *operands[], size_t operand_count, 
     }
     return read_number_or_label(operands[0]);
 }
-
-//post: the value will be returned as a uint32_t 
-//standardise over all dispatches
+//post: save the operand into the position at the program counter

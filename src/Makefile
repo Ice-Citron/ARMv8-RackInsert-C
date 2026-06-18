@@ -6,11 +6,11 @@ CFLAGS  ?= -std=c17 -g \
 	-Wextra -Wshadow -Wno-unused-parameter
 LDFLAGS ?=
 
-
 ASSEMBLE_SRCS = assemble.c \
-	assemble_file.c \
 	symbol_table.c \
-	parse_reg.c \
+	ass_helpers.c \
+	ass_immreg.c \
+	assemble_file.c \
 	ass_branch.c \
 	ass_single_data_transfer.c \
 	dotint.c \
@@ -60,4 +60,3 @@ build/%.o: %.c | build
 
 clean:
 	$(RM) -r build assemble emulate
-	

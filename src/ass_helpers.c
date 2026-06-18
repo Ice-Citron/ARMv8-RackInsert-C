@@ -1,4 +1,24 @@
-#include "parse_reg.h"
+#include "ass_helpers.h"
+
+static const char *skip_hash(const char *s) {
+    return s[0] == '#' ? s + 1 : s;
+}
+
+uint32_t read_number_or_label(char *string) {
+    uint32_t inputint;
+    if (find_address_from_sym_table(string, &inputint)) {
+        return inputint;
+    }
+    const char *text = skip_hash(string);
+    char *endptr = NULL;
+    unsigned long value = strtoul(text, &endptr, 0);
+    // Check: no digits parsed, not at end, or overflow
+    if (text == endptr || *endptr != '\0' || value > UINT32_MAX) {
+        fprintf(stderr, "ERROR: invalid number or unknown label: %s\n", string);
+        exit(1);
+    }
+    return (uint32_t)value;
+}
 
 uint32_t parse_reg(const char *text, uint32_t *sf) {
     if (strcmp(text, "xzr") == 0) {
