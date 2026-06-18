@@ -18,7 +18,7 @@ LDFLAGS	= -L$(MUJOCO_DIR) -Wl,-rpath,$(MUJOCO_DIR)
 LDLIBS  = -l:$(MUJOCO_LIB) -lm
 
 RACK_SRCS = src/main.c src/evaluator.c src/sim.c src/vec.c src/logging.c \
-			src/trajectory.c src/scripted_policy.
+			src/trajectory.c src/scripted_policy.c
 
 RACK_OBJS = $(RACK_SRCS:src/%.c=build/%.o)
 

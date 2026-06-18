@@ -1,11 +1,13 @@
 #include "scripted_policy.h"
+#include "trajectory.h"
+#include "utils.h"
 
-#include <assert.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <assert.h>
 
 static const char *ACTUATOR_NAMES[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
-    "shoulder_pan_joint",
+    "shoulder_pan_joint_motor",
     "shoulder_lift_joint_motor",
     "elbow_joint_motor",
     "wrist_1_joint_motor",
@@ -18,9 +20,9 @@ static const char *JOINT_NAMES[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
     "shoulder_pan_joint",
     "shoulder_lift_joint",
     "elbow_joint",
-    "wrist_1_joint_motor",
-    "wrist_2_joint_motor",
-    "wrist_3_joint_motor",
+    "wrist_1_joint",
+    "wrist_2_joint",
+    "wrist_3_joint",
     "gripper/left_finger_joint",
 };
 
@@ -52,7 +54,7 @@ static double state_duration(ScriptedPolicyState state) {
     }
 }
 
-static double *state_offset(ScriptedPolicyState state) {
+static const double *state_offset(ScriptedPolicyState state) {
     switch (state) {
         case SP_APPROACH: return APPROACH_OFFSET;
         case SP_HOVER:    return HOVER_OFFSET;
@@ -91,7 +93,7 @@ static double clamp_actuator_ctrl(const Sim *sim, int actuator_id,
     assert(sim->model != NULL);
     assert(actuator_id >= 0 && actuator_id < sim->model->nu);
 
-    if (sim->model->actuatorctrllimited[actuator_id]) {
+    if (sim->model->actuator_ctrllimited[actuator_id]) {
         // Physical limit of actuation range of requested motor.
         double lo = sim->model->actuator_ctrlrange[2 * actuator_id + 0];
         double hi = sim->model->actuator_ctrlrange[2 * actuator_id + 1];
@@ -101,9 +103,33 @@ static double clamp_actuator_ctrl(const Sim *sim, int actuator_id,
     return value;
 }
 
-static double enter_state(ScritedPolicy *Policy, const Sim *sim, 
+// (Helper): The Gear Shifter. Handles robot's transition from one FSM state
+//      to the next.
+static void enter_state(ScriptedPolicy *policy, const Sim *sim, 
                           ScriptedPolicyState state) {
+    assert(policy != NULL && sim != NULL);
 
+    // Hand-tweaked relative offset for robot's TCP to go to.
+    const double *offset = state_offset(state);
+
+    // Updates state in `policy` to keep track
+    policy->state = state;
+    policy->state_start_time = sim->data->time;
+
+    if (state == SP_SUCCESS || state == SP_FAIL) {
+        policy->done = 1;
+    } else {
+        assert(offset != NULL);
+        read_current_qpos(sim, policy->start_qpos);
+
+        for (int i = 0; i < SCRIPTED_POLICY_ACTUATOR_COUNT; i++) {
+            // Calculates absolute destination (angle) for this new FSM state
+            policy->target_qpos[i] = policy->home_qpos[i] + offset[i];
+        }
+    }
+
+    printf("LOGGING: Scripted Policy is now entering [%s] state\n",
+           scripted_policy_state_name(state));
 }
 
 // Constructor: Runs exactly once when program boots. Sets up initial state for
@@ -131,7 +157,7 @@ void scripted_policy_init(ScriptedPolicy *policy, const Sim *sim) {
 
 // Starter: RUns at the start of evey single insertion trial.
 void scripted_policy_start(ScriptedPolicy *policy, const Sim *sim) {
-    assert(policy != NULL, sim != NULL);
+    assert(policy != NULL && sim != NULL);
     assert(sim->data != NULL);
 
     read_current_qpos(sim, policy->home_qpos);
@@ -160,7 +186,7 @@ void scripted_policy_update(ScriptedPolicy *policy, Sim *sim) {
 
     // Uses Lerp to understand what angles should each actuators hold at current
     // the millisecond.
-    traj_lerp_array(policy->start_qpos, policy->target->target_qpos,
+    traj_lerp_array(policy->start_qpos, policy->target_qpos,
                     policy->command_qpos, SCRIPTED_POLICY_ACTUATOR_COUNT, t);
     
     for (int i = 0; i < SCRIPTED_POLICY_ACTUATOR_COUNT; i++) {
