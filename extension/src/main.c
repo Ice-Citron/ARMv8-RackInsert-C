@@ -9,7 +9,7 @@
 #include <assert.h>
 
 #define DEFAULT_SCENE_PATH \
-    "assets/mujoco/rack_insert/rack_insert_scene_rollout.xml"
+    "assets/mujoco/rack_insert/rack_insert_scene_cable_softplugin_rollout.xml"
 #define DEFAULT_MAX_SECONDS 8.0
 
 int main(int argc, char **argv) {
@@ -21,7 +21,7 @@ int main(int argc, char **argv) {
     // Dynamic CLI parser which allows user to set --scene and --trials
     //    - Starts from i=1 because i=0 is char *program_name
     for (int i = 1; i < argc; i++) {
-        if (strcmp(argv[i], "--scene")) {
+        if (strcmp(argv[i], "--scene") == 0) {
             if (i + 1 >= argc) {
                 print_usage_guide(argv[0]);
                 return EXIT_FAILURE;
@@ -40,6 +40,35 @@ int main(int argc, char **argv) {
         }
     }
 
-    sim_free(&sim);
+    double total_score = 0.0;
+    int completed_trials = 0;
+
+    printf("\n\nRACK INSERT BENCHMARK\n");
+    printf("\tscene  = %s\n", scene_path);
+    printf("\ttrials = %d\n", trials);
+
+    for (int trial = 0; trial < trials; trial++) {
+        Sim sim;
+        sim_load (&sim, scene_path);
+
+        BenchmarkResult result;
+        benchmark_run_scripted_policy_trial(&sim, DEFAULT_MAX_SECONDS, &result);
+
+        const char *title = "SCRIPTED POLICY BENCHMARK";
+        printf("\nTRIAL %d/%d\n", trial + 1, trials);
+        print_trial_summary(title, &result.initial_score, &result.final_score,
+                            result.plug_motion, result.duration);
+
+        if (result.policy_finished) { completed_trials++; }
+        
+        total_score += result.final_score.total;
+        sim_free(&sim);
+    }
+
+    printf("\nBENCHMARK SUMMARY\n");
+    printf("\tcompleted_trials = %d/%d\n", completed_trials, trials);
+    printf("\ttotal_score      = %.2f\n",  total_score);
+    printf("\tmean_score       = %.2f\n",  total_score / (double)trials);
+
     return EXIT_SUCCESS;
 }

@@ -37,7 +37,8 @@ void print_eval_report(const char *scene_path, const EvalGeometry *geom,
 void print_usage_guide(const char *program_name) {
     fprintf(stderr, "ERROR: See proper usage template below:\n");
     fprintf(stderr, "   %s\n", program_name);
-    fprintf(stderr, "   %s --scene <path-to-mjcf-scene>\n", program_name);
+    fprintf(stderr, "   %s --scene <path-to-mjcf-scene> --trials <N>\n", 
+            program_name);
 }
 
 void print_trial_summary(const char *title, const TrialScore *initial, 
