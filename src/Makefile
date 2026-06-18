@@ -23,12 +23,27 @@ ASSEMBLE_OBJS = $(ASSEMBLE_SRCS:%.c=build/%.o)
 
 .PHONY: all clean asan
 
-all: assemble
+
+EMULATE_SRCS = emulate.c \
+	loader.c \
+	dp_shared.c \
+	dp_immediate.c \
+	dp_register.c \
+	data_transfer.c \
+	branch.c
+EMULATE_OBJS = $(EMULATE_SRCS:%.c=build/%.o)
+
+.PHONY: all clean asan
+
+all: assemble emulate
 
 
 assemble: $(ASSEMBLE_OBJS)
 	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
+
+emulate: $(EMULATE_OBJS)
+	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
 
 asan: CFLAGS  += -fsanitize=address,undefined -fno-omit-frame-pointer
 asan: LDFLAGS += -fsanitize=address,undefined
@@ -44,5 +59,5 @@ build/%.o: %.c | build
 
 
 clean:
-	$(RM) -r build assemble
+	$(RM) -r build assemble emulate
 	

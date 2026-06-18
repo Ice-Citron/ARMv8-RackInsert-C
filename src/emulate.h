@@ -19,7 +19,7 @@ typedef struct {
 } state;
 
 //initial flags
-#define INITIAL_PSTATE ((state){ .n = false, .z = true, .c = false, .v = false})
+#define INITIAL_PSTATE { .n = false, .z = true, .c = false, .v = false}
 
 extern uint8_t memory[MEM_SIZE];
 extern uint64_t registers[REGS];
