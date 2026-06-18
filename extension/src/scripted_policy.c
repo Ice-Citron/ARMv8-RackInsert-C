@@ -80,7 +80,11 @@ static void read_current_qpos(const Sim *sim,
     }
 }
 
-// (Helper): ... 
+// (Helper): Checks the MuJoCO model to see if the requested motor has physical
+//      control limits (e.g. motor A might only be able to rotate between -0.5r
+//      and 1.0r, hence, `ctrlrange=-0.5 1.0`). If limits exist, it clamps the
+//      requested actuation value to ensure the motors are never commanded to
+//      exceed its safe operating range.
 static double clamp_actuator_ctrl(const Sim *sim, int actuator_id, 
                                   double value) {
     assert(sim != NULL);
@@ -88,8 +92,13 @@ static double clamp_actuator_ctrl(const Sim *sim, int actuator_id,
     assert(actuator_id >= 0 && actuator_id < sim->model->nu);
 
     if (sim->model->actuatorctrllimited[actuator_id]) {
-
+        // Physical limit of actuation range of requested motor.
+        double lo = sim->model->actuator_ctrlrange[2 * actuator_id + 0];
+        double hi = sim->model->actuator_ctrlrange[2 * actuator_id + 1];
+        return clamp(value, lo, hi);
     }
+    // Returns unchanged actuation value if ctrlrange not found
+    return value;
 }
 
 static double enter_state(ScritedPolicy *Policy, const Sim *sim, 
@@ -120,6 +129,7 @@ void scripted_policy_init(ScriptedPolicy *policy, const Sim *sim) {
     }
 }
 
+// Starter: RUns at the start of evey single insertion trial.
 void scripted_policy_start(ScriptedPolicy *policy, const Sim *sim) {
     assert(policy != NULL, sim != NULL);
     assert(sim->data != NULL);
@@ -134,33 +144,58 @@ void scripted_policy_start(ScriptedPolicy *policy, const Sim *sim) {
     enter_state(policy, sim, SP_APPROACH);  
 }
 
+// Heartbeat: This function is called every single time in  `for` loop
+//      when `mj_step` is called.
 void scripted_policy_update(ScriptedPolicy *policy, Sim *sim) {
     assert(policy != NULL && sim != NULL);
     assert(policy->started);
 
     if (policy->done) return;
 
+    // To check how much longer will policy spend in current FSM state
     double duration = state_duration(policy->state);
     assert(duration > 0.0);
-
     double elapsed = sim->data->time - policy->state_start_time;
     double t = elapsed / duration;
 
+    // Uses Lerp to understand what angles should each actuators hold at current
+    // the millisecond.
     traj_lerp_array(policy->start_qpos, policy->target->target_qpos,
                     policy->command_qpos, SCRIPTED_POLICY_ACTUATOR_COUNT, t);
     
     for (int i = 0; i < SCRIPTED_POLICY_ACTUATOR_COUNT; i++) {
         int actuator_id = policy-> actuator_ids[i];
-        double command = 
+        double command = clamp_actuator_ctrl(sim, actuator_id, 
+                                             policy->command_qpos[i]);
+        sim_set_ctrl(sim, actuator_id, command);
     }
 
+    if (t >= 1.0) {
+        // If designated state duration exceeded, FSM switches over to the next
+        // movement phase. 
+        enter_state(policy, sim, next_state(policy->state));
+    }
 }
 
+// (Utility): Returns `1` or `0` so main `while` loop knows if robot has 
+//      finished the entire insertion attempt.
 int scripted_policy_is_done(const ScriptedPolicy *policy) {
     assert(policy != NULL);
     return policy->done;
 }
 
+// (Utility): Translates int-state FSM enums into human-readable strings for 
+//      debug print logs.
 const char *scripted_policy_state_name(ScriptedPolicyState state) {
-    
+    switch (state) {
+        case SP_APPROACH:   return "APPROACH";
+        case SP_HOVER:      return "HOVER";
+        case SP_ALIGN:      return "ALIGN";
+        case SP_INSERT:     return "INSERT";
+        case SP_SUCCESS:    return "SUCCESS";
+        case SP_FAIL:       return "FAIL";
+        default:
+            fprintf(stderr, "ERROR: Invalid ScriptedPolicyState (FSM) state\n");
+            exit(EXIT_FAILURE);
+;    }   
 }

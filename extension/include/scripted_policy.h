@@ -5,6 +5,7 @@
 
 #define SCRIPTED_POLICY_ACTUATOR_COUNT 7
 
+// Finite State Machine (FSM) states to handle cable insertion task.
 typedef enum {
     SP_APPROACH = 0,
     SP_HOVER,
