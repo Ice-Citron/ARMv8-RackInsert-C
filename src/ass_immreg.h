@@ -19,11 +19,6 @@
 #define OTHER_DPIMM_OPCOUNT_NOSHIFT 3
 #define OTHER_DPIMM_OPCOUNT_SHIFT 5
 
-typedef struct {
-    char* instrname;
-    int index;
-} idx_operand_no;
-
 uint32_t decide_imm_or_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
 
 #endif

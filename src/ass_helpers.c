@@ -5,6 +5,17 @@ void print_error_and_exit(const char *complaint) {
     exit(1);
 }
 
+void check_opcount(opcount_checker *opcount_table, int opct_length, char* target, int opcount) {
+    for (int i = 0; i < opct_length; i++) {
+        if (strcmp(opcount_table[i].instrname, target) == 0) {
+            if (opcount != opcount_table[i].lesser_ops && opcount != opcount_table[i].greater_ops) {
+                print_error_and_exit("WRONG NUMBER OF OPERANDS");
+            }
+        }
+    }
+    return;
+}
+
 static const char *skip_hash(const char *s) {
     return s[0] == '#' ? s + 1 : s;
 }
