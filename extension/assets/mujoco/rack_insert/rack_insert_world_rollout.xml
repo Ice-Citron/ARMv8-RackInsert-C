@@ -1,0 +1,108 @@
+<mujoco model="rack_insert_world">
+  <compiler angle="radian" />
+  <option gravity="0 0 -9.8" magnetic="5.5645e-06 2.28758e-05 -4.23884e-05" />
+  <visual>
+    <headlight ambient="0 0 0" diffuse="0 0 0" specular="0 0 0" />
+  </visual>
+  <default>
+    <default class="world_default" />
+    <default class="cable_default">
+      <joint damping="0.2" />
+    </default>
+    <default class="sc_port_default">
+      <geom friction="0.5 0.5" />
+    </default>
+    <default class="nic_card_default">
+      <geom friction="0.1 0.005 0.1" />
+    </default>
+  </default>
+  <asset>
+    <texture type="2d" colorspace="linear" name="texture_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_Plane" file="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_b3a94635-54d6beff6424435d3828cb4c8a1278d9ea3964b0.png" />
+    <texture type="2d" colorspace="linear" name="texture_905de86c942092710a3b3b7c801a4a971c55ce1db8e8e66de2d222bccbf68920_sc_plug_visual_merged_0" file="905de86c942092710a3b3b7c801a4a971c55ce1db8e8e66de2d222bccbf68920_sc_plug_visual_5875f865-48f62b2f4840d852c7f39a01e6c183037dc1485b.png" />
+    <texture type="2d" colorspace="linear" name="texture_98c00f0bc914fd28942a5b5b497872ae817e62fdc7c7810ecaa8069a9692ceaf_lc_plug_visual_merged_0" file="98c00f0bc914fd28942a5b5b497872ae817e62fdc7c7810ecaa8069a9692ceaf_lc_plug_visual_03dabf32-0905e8a8aa368516e682f6ec84258100cdb4efef.png" />
+    <texture type="2d" colorspace="linear" name="texture_bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005" file="bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_8fc63b58-7471eafc55dcb668ae68adfe70a147b363ba3be9.png" />
+    <texture type="2d" colorspace="linear" name="texture_bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005_1" file="bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_1f09e86a-a4dc4a72bd6e778067310898a5c179607fd78966.png" />
+    <material name="material_e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001" class="world_default" shininess="30" rgba="0.290196 0.290196 0.290196 1" />
+    <material name="material_e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001_1" class="world_default" shininess="30" rgba="0.129412 0.129412 0.133333 1" />
+    <material name="material_e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_light_visual_Plane.001" class="world_default" shininess="30" rgba="0.5 0.5 0.5 1" />
+    <material name="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_Plane" class="world_default" texture="texture_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_Plane" shininess="30" rgba="0.5 0.5 0.5 1" />
+    <material name="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Curve.001" class="world_default" shininess="30" rgba="0.0196078 0.0196078 0.0196078 1" />
+    <material name="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_merged_1" class="world_default" shininess="30" rgba="0.262745 0.262745 0.262745 1" />
+    <material name="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.003_1" class="world_default" shininess="30" rgba="0.8 0.8 0.8 1" />
+    <material name="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.002" class="world_default" shininess="30" rgba="0.207843 0.207843 0.207843 1" />
+    <material name="material_905de86c942092710a3b3b7c801a4a971c55ce1db8e8e66de2d222bccbf68920_sc_plug_visual_merged_0" class="world_default" texture="texture_905de86c942092710a3b3b7c801a4a971c55ce1db8e8e66de2d222bccbf68920_sc_plug_visual_merged_0" shininess="30" rgba="0.5 0.5 0.5 1" />
+    <material name="material_98c00f0bc914fd28942a5b5b497872ae817e62fdc7c7810ecaa8069a9692ceaf_lc_plug_visual_merged_0" class="world_default" texture="texture_98c00f0bc914fd28942a5b5b497872ae817e62fdc7c7810ecaa8069a9692ceaf_lc_plug_visual_merged_0" shininess="30" rgba="0.5 0.5 0.5 1" />
+    <material name="material_bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005" class="world_default" texture="texture_bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005" shininess="30" rgba="0.5 0.5 0.5 1" />
+    <material name="material_bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005_1" class="world_default" texture="texture_bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005_1" shininess="30" rgba="0.5 0.5 0.5 1" />
+    <material name="material_7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019" class="world_default" shininess="30" rgba="0.0352941 0.0352941 0.0313726 1" />
+    <material name="material_7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_1" class="world_default" shininess="30" rgba="0.0313726 0.0313726 0.0313726 1" />
+    <material name="material_7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_2" class="world_default" shininess="30" rgba="0.215686 0 0.215686 1" />
+    <mesh name="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001" class="world_default" content_type="model/obj" file="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001-c990efe7b9dfe87aa065fd6eb3960ce051ae2aef.obj" inertia="shell" />
+    <mesh name="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001_1" class="world_default" content_type="model/obj" file="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001_1-807e07de06af157c84b994a232617507a7059420.obj" inertia="shell" />
+    <mesh name="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_light_visual_Plane.001" class="world_default" content_type="model/obj" file="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_light_visual_Plane.001-a8a774a80bc239d73769a498eae528b206eebcb0.obj" inertia="shell" />
+    <mesh name="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_Plane" class="world_default" content_type="model/obj" file="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_Plane-4dc7f6150ad7c239769a0860a01efb2015657aea.obj" inertia="shell" />
+    <mesh name="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Curve.001" class="world_default" content_type="model/obj" file="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Curve.001-4d7c79ac2e958832fdb15589262141ca1b80d3a5.obj" inertia="shell" />
+    <mesh name="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_merged_1" class="world_default" content_type="model/obj" file="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_merged_1-359a22140d528747936e80bedf90e1437a177a9f.obj" inertia="shell" />
+    <mesh name="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.003_1" class="world_default" content_type="model/obj" file="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.003_1-cd05ed21fa19a2784fb772d7519abf7c31c8b85f.obj" inertia="shell" />
+    <mesh name="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.002" class="world_default" content_type="model/obj" file="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.002-ee4f781765eec46c2256d941981732d4b1857f24.obj" inertia="shell" />
+    <mesh name="905de86c942092710a3b3b7c801a4a971c55ce1db8e8e66de2d222bccbf68920_sc_plug_visual_merged_0" class="world_default" content_type="model/obj" file="905de86c942092710a3b3b7c801a4a971c55ce1db8e8e66de2d222bccbf68920_sc_plug_visual_merged_0-67f94accf247f722dd4954d7448d7956402901f2.obj" inertia="shell" />
+    <mesh name="98c00f0bc914fd28942a5b5b497872ae817e62fdc7c7810ecaa8069a9692ceaf_lc_plug_visual_merged_0" class="world_default" content_type="model/obj" file="98c00f0bc914fd28942a5b5b497872ae817e62fdc7c7810ecaa8069a9692ceaf_lc_plug_visual_merged_0-fdaf59710fc3cc118a7df05add4ff4205edda4ef.obj" inertia="shell" />
+    <mesh name="bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005" class="world_default" content_type="model/obj" file="bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005-f93147e1e403de321fb70c06a4b1e00f20feb9fd.obj" inertia="shell" />
+    <mesh name="bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005_1" class="world_default" content_type="model/obj" file="bac71237ef67393fcec4e1a5deb385aa5fe0d294b7e1711efc530aa1463ef5d6_sfp_module_visual_Body.005_1-4af964a95522e2593eb6381eca4f09ef239782c7.obj" inertia="shell" />
+    <mesh name="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019" class="world_default" content_type="model/obj" file="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019-f814bb518c42769543ab6246809f3fe4af5c2b64.obj" inertia="shell" />
+    <mesh name="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_1" class="world_default" content_type="model/obj" file="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_1-0b276ba9910a7642121235b62d2afc47c3995782.obj" inertia="shell" />
+    <mesh name="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_2" class="world_default" content_type="model/obj" file="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_2-7b96569be9572803417c5650ee83c9c883b44191.obj" inertia="shell" />
+  </asset>
+  <worldbody>
+    <light name="enclosure_light" class="world_default" pos="0 0 2.5" dir="0 0 -1" intensity="0.4" range="2" attenuation="1 0.01 0.001" cutoff="114.592" exponent="0.993023" diffuse="1 1 1" specular="0.1 0.1 0.1" />
+    <light name="ceiling_01" class="world_default" pos="2 2 6" dir="0 0 -1" intensity="2" range="9" castshadow="false" attenuation="1 0.01 0.001" cutoff="360" diffuse="1 1 1" specular="0.1 0.1 0.1" />
+    <light name="ceiling_02" class="world_default" pos="-2 -2 6" dir="0 0 -1" intensity="2" range="9" castshadow="false" attenuation="1 0.01 0.001" cutoff="360" diffuse="1 1 1" specular="0.1 0.1 0.1" />
+    <body name="enclosure_link">
+      <inertial pos="0 0 0" mass="1" diaginertia="1 1 1" />
+      <geom name="v1015026001_collider_box" class="world_default" size="0.75 0.569492 0.75" pos="-0.010998 0.009283 0.569706" quat="1.22475e-07 -1.22474e-07 0.707107 0.707107" type="box" group="3" />
+      <geom name="v1015028001_collider_box" class="world_default" size="0.0254 0.0254 1.25" pos="0.713602 0.733883 1.3292" quat="1.73205e-07 0 0 -1" type="box" group="3" />
+      <geom name="v1015013001_collider_box" class="world_default" size="0.0304 0.75 0.75" pos="-0.010998 0.009283 2.5488" quat="0.707107 0 -0.707107 0" type="box" group="3" />
+      <geom name="v1015027_collider_box" class="world_default" size="0.0254 0.0254 1.25" pos="-0.735598 0.733883 1.3292" quat="1.73205e-07 0 0 -1" type="box" group="3" />
+      <geom name="v1015029_collider_box" class="world_default" size="0.0254 0.0254 1.25" pos="-0.735598 -0.715317 1.3292" quat="0 1.73205e-07 -1 -1.73205e-07" type="box" group="3" />
+      <geom name="v1015030_collider_box" class="world_default" size="0.0254 0.0254 1.25" pos="0.713602 -0.715317 1.3292" quat="1.73205e-07 0 0 -1" type="box" group="3" />
+      <geom name="enclosure_visual" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001" mesh="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001" />
+      <geom name="enclosure_visual_0" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001_1" mesh="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_enclosure_visual_V1014952.001_1" />
+      <geom name="light_visual" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_light_visual_Plane.001" mesh="e35a3160deff872a7475b59ee7dfb4969f85c5fc103de22f82442b320b077c85_light_visual_Plane.001" />
+    </body>
+    <body name="enclosure_walls_link">
+      <inertial pos="0 0 0" mass="1" diaginertia="1 1 1" />
+      <geom name="v1015062006_collider_box" class="world_default" size="0.0250005 0.6796 0.6892" pos="-0.010998 0.734284 1.8288" quat="0.5 0.5 -0.5 -0.5" type="box" group="3" />
+      <geom name="v1015062005_collider_box" class="world_default" size="0.6892 0.6796 0.025" pos="-0.735998 0.009283 1.8288" quat="0.5 0.5 -0.5 -0.5" type="box" group="3" />
+      <geom name="v1015062007_collider_box" class="world_default" size="0.025 0.6846 0.6892" pos="-0.010998 -0.715717 1.8338" quat="0.5 0.5 -0.5 -0.5" type="box" group="3" />
+      <geom name="v1015062008_collider_box" class="world_default" size="0.6892 0.6846 0.025" pos="0.714002 0.009283 1.8338" quat="0.5 0.5 -0.5 -0.5" type="box" group="3" />
+    </body>
+    <body name="floor_link">
+      <inertial pos="0 0 0" mass="1" diaginertia="1 1 1" />
+      <geom name="floor_cylinder" class="world_default" size="5 5 1" type="plane" group="3" />
+      <geom name="floor_visual" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_Plane" mesh="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_floor_visual_Plane" />
+      <geom name="walls_visual" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Curve.001" mesh="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Curve.001" />
+      <geom name="walls_visual_0" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_merged_1" mesh="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_merged_1" />
+      <geom name="walls_visual_1" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.003_1" mesh="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.003_1" />
+      <geom name="walls_visual_2" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.002" mesh="40c09d03e70381a6858aaba3470a3c41133384b4031fa9131cbb5f4dc5cd3986_walls_visual_Plane.002" />
+    </body>
+    <body name="task_board_base_link" pos="0.15 -0.2 1.14" quat="4.63268e-05 0 0 1">
+      <inertial pos="0 0 0" mass="5" diaginertia="0.1 0.1 0.1" />
+      <site name="socket_mouth" pos="-0.09094673 0.02949957 0.0165" size="0.004" rgba="0 1 0 1" />
+      <site name="socket_bottom" pos="-0.09095773 0.02949957 0.03014" size="0.004" rgba="0 0 1 1" />
+      <geom name="task_board_base_link_fixed_joint_lump__v1015083001_collider_box_left_collision" class="world_default" size="0.15 0.114 0.0045" pos="0 -0.1 0.0075" type="box" group="3" />
+      <geom name="task_board_base_link_fixed_joint_lump__v1015083001_collider_right_collision_1" class="world_default" size="0.15 0.0635 0.0045" pos="0 0.149 0.0075" type="box" group="3" />
+      <geom name="task_board_base_link_fixed_joint_lump__v1015083001_collider_mid_collision_2" class="world_default" size="0.07 0.006 0.0045" pos="-0.075 0.05 0.0075" type="box" group="3" />
+      <geom name="task_board_base_link_fixed_joint_lump__v1015083001_collider_bottom_collision_3" class="world_default" size="0.0825 0.2125 0.0045" pos="0.068 0 0.0075" type="box" group="3" />
+      <geom name="task_board_base_link_fixed_joint_lump__v1015083001_collider_top_collision_4" class="world_default" size="0.0075 0.2125 0.0045" pos="-0.143 0 0.0075" type="box" group="3" />
+      <geom name="task_board_base_link_fixed_joint_lump__base_visual_visual" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019" mesh="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019" />
+      <geom name="task_board_base_link_fixed_joint_lump__base_visual_visual_0" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_1" mesh="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_1" />
+      <geom name="task_board_base_link_fixed_joint_lump__base_visual_visual_1" class="world_default" type="mesh" contype="0" conaffinity="0" material="material_7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_2" mesh="7689a9b747d6b156977e79b2206b5e29540e3d66cde22b2879e5c8aaf9f30d90_base_visual_ISO_4762_-_M3_x_8.019_2" />
+    </body>
+    <body name="static_link">
+      <inertial pos="0 0 0" mass="1" diaginertia="1 1 1" />
+    </body>
+    <body name="static_link_0">
+      <inertial pos="0 0 0" mass="1" diaginertia="1 1 1" />
+    </body>
+  </worldbody>
+</mujoco>

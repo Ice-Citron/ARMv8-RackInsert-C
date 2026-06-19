@@ -7,6 +7,19 @@
 #ignore pdf files (just keep source files)
 *.pdf
 
+# Extensions related compilation C code
+extension/rack_insert
+extension/test_evaluator
+extension/test_actuators
+extension/test_scripted_policy
+
+# Extensions related MuJoCo log files
+extension/MUJOCO_LOG.TXT
+results.csv
+
+# Extensions related python dependencies
+extension/.venv
+
 #ignore junk files from latex output
 *.out
 *.log
