@@ -57,7 +57,7 @@ uint32_t assemble_instructions(char* mnemonic, char *operands[], size_t operand_
             return dp_instrs[i].handler(mnemonic, operands, operand_count, pc);
         }
     }
-    fprintf(stderr, "function name doesnt exist");
+    print_error_and_exit("INSTRUCTION DOESN'T EXIST");
     exit(1);
 }
 
@@ -69,25 +69,22 @@ bool assemble_file(char *infile, char *outfile) {
 	FILE *in = fopen(infile, "r" );
 	if( in == NULL )
 	{
-		fprintf(stderr, "ass: can't open %s\n", infile);
-		exit(1);
+		print_error_and_exit("CAN'T OPEN INPUT FILE (ARGUMENT 1)");
 	}
     // open the output file
     FILE *out = fopen(outfile, "wb" );
 	if( out == NULL )
 	{
-		fprintf( stderr, "ass: can't create %s\n", outfile );
-		exit(1);
+		print_error_and_exit("CAN'T CREATE OUTPUT FILE (ARGUMENT 2)");
 	}
 
 	// FIRST PASS:
 
 	uint32_t pc = 0;
-
-	char full_line_buffer[512];
+	char full_line_buffer[CHARS_IN_FULL_LINE_BUFFER];
 	while(fgets(full_line_buffer, sizeof(full_line_buffer), in) != NULL) {
 		char* inner_save_ptr = NULL;
-		char* starting_query = strtok_r(full_line_buffer, " \t\n\r",
+		char* starting_query = strtok_r(full_line_buffer, TERMINATORS,
 			&inner_save_ptr);
 		if (starting_query == NULL) // in case of extra lines
 		{
@@ -96,14 +93,14 @@ bool assemble_file(char *infile, char *outfile) {
 
 		const size_t len = strlen(starting_query);
 
-		if (starting_query[len-1] == ':') // if last char is : then it's a label
+		if (starting_query[len-1] == LABEL_LAST_CHAR) // if last char is : then it's a label
 		{
 			starting_query[len-1] = '\0';
 			add_to_symbol_table(starting_query, pc);
 		}
 		else
 		{
-			pc+=4; // 4 bytes increase on pc
+			pc+=BYTES_IN_32_BITS; // 4 bytes increase on pc
 		}
 	}
 
@@ -119,27 +116,27 @@ bool assemble_file(char *infile, char *outfile) {
 		char* inner_save_ptr = NULL;
 		// char* starting_query = strtok_r(full_line_buffer, " \t\n",
 		// 	&inner_save_ptr);
-		char *mnemonic = strtok_r(full_line_buffer, " \t\n\r", &inner_save_ptr);
+		char *mnemonic = strtok_r(full_line_buffer, TERMINATORS, &inner_save_ptr);
 		if (mnemonic == NULL) // empty line
 		{
 			continue;
 		}
 		size_t len = strlen(mnemonic);
-		if (mnemonic[len-1] == ':') // second pass so skip labels
+		if (mnemonic[len-1] == LABEL_LAST_CHAR) // second pass so skip labels
 		{
 			continue;
 		}
 		char *operands[MAX_OPERANDS]; // store arguments here
 		size_t operand_count = 0;
-		char* args_of_query = strtok_r(NULL, ", \t\n\r", &inner_save_ptr);
+		char* args_of_query = strtok_r(NULL, TERMINATORS_AND_COMMA, &inner_save_ptr);
 		while(args_of_query != NULL)
 		{
 			operands[operand_count++] = args_of_query;
-			args_of_query = strtok_r(NULL, ", \t\n\r", &inner_save_ptr);
+			args_of_query = strtok_r(NULL, TERMINATORS_AND_COMMA, &inner_save_ptr);
 		}
 		uint32_t instruction = 0;
 		//checking if halt instruction 
-		if (strcmp(mnemonic, "and") == 0 && operand_count == 3 &&
+		if (strcmp(mnemonic, "and") == 0 && operand_count == STOP_INSTR_OPCOUNT &&
 			strcmp(operands[0], "x0") == 0 && strcmp(operands[1], "x0") == 0 && strcmp(operands[2], "x0") == 0) {
 			//fwrite halt instruction
 			fwrite(&halt_address, sizeof(uint32_t), 1, out);
@@ -148,7 +145,7 @@ bool assemble_file(char *infile, char *outfile) {
 			//add the other instructions - done
 			fwrite(&instruction, sizeof(uint32_t), 1, out);
 		}
-		pc += 4;
+		pc += BYTES_IN_32_BITS;
 	}
 	fclose(in);
 	fclose(out);

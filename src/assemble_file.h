@@ -7,6 +7,13 @@
 #define DP_FIXED_BIT (1u << 28u)
 #define DP_REG_FIXED_BITS (10u << 24u)
 
+#define CHARS_IN_FULL_LINE_BUFFER 512
+#define STOP_INSTR_OPCOUNT 3
+
+#define LABEL_LAST_CHAR ':'
+#define TERMINATORS " \t\n\r"
+#define TERMINATORS_AND_COMMA ", \t\n\r"
+
 typedef struct {
     const char* instrname;
     uint32_t (*handler)(char *, char* [], size_t, uint32_t);
