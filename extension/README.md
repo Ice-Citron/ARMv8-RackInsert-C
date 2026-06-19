@@ -32,16 +32,133 @@ a simplified independent C implementation by us, not the official AIC scorer.
   Models, e.g. Action Chunking Transformers)
 - Includes unit/smoke tests for evaluators, actuators, and scripted policy.
 
+## Repository Layout
+
+```
+extension/
+    Makefile
+    assets/mujoco/rack_insert/     # AIC-derived MJCF and mesh assets
+    include/                       # public C headers
+    src/                           # C implementation
+    tests/                         # C tests and smoke tests
+    scripts/replay_trace.py        # Python MuJoCo trace viewer
+```
+
+## Build
+
+```bash
+cd armv8_64/extension
+make deps
+make clean all
+```
+
+`make deps` creates a local Python virtual environment and installs the 
+Python `mujoco` library. Our Makefile then auto-detects the MuJoCo headers from
+this environment. `make clean` deletes all compiled binaries and log files. 
+`make all` compiles `./rack_insert` which is required for demo.
+
+## Run Benchmark
+
+```bash
+./rack_insert
+```
+
+Run multiple trials:
+
+```bash
+./rack_insert --trials 10
+```
+
+Use a custom scene:
+
+```bash
+./rack_insert --scene assets/mujoco/rack_insert/rack_insert_scene_cable_softplugin_rollout.xml --trials 3
+```
+
+# Record and Replay
+
+Record a rollout:
+
+```bash
+./rack_insert --trace results.csv
+```
+
+Replay it in the MuJoCo viewer:
+
+```bash
+.venv/bin/python scripts/replay_trace.py --trace results.csv --speed 1.0
+```
+
+Or use:
+
+```bash
+make demo
+```
+
+## Tests
+
+```bash
+make test
+```
+
+This runs:
+- `test_evaluator`: checks evaluator geometry and scoring logic.
+- `test_actuators`: checks MuJoCo actuator integration with program.
+- `test_scripted_policy`: checks that the staged policy runs properly (smoke 
+  test).
+
+## Architecture
+
+- `sim.c` wraps MuJoCo loading, plugin loading, reset, stepping, site lookup, 
+  joint lookup, and actuator commands.
+- `evaluator.c` computes plug/socket geometry and assigns tiered scores, based
+  on 3-tier score rubric.
+- `benchmark.c` runs trials, gathers path length/duration metrics, and writes 
+  optional trace CSV files.
+- `scripted_policy.c` implements a basic finite-state joint-space policy 
+  (motion planning is hardcoded-coords, for now).
+- `logging.c` handles console summaries and trace output.
+
+## Scoring Model
+
+Our scoring rubric for evaluating robot's performance in inserting cable:
+
+- Tier 1: program/model validity. Awarded if program doesn't crash.
+- Tier 2: motion quality, including duration, path length, smoothness 
+  placeholder, and retry penalty.
+- Tier 3: task success:
+    - full insertion
+    - partial insertion
+    - proximity to socket
+
+Full insertion is judged using plug-tip (TCP) position relative to the socket 
+axis.
+
+## Attribution
+
+The MuJoCo robot/environment assets are derived from [Intrinsic's AI for Industry Challenge](https://www.intrinsic.ai/events/ai-for-industry-challenge)
+hosted by Intrinsic, Google Deepmind, NVIDIA and Foxconn.
+
+## Limitations
+
+- The scripted policy is a simple hardcoded demonstration controller, not a
+  learned (e.g., heuristics or ACT) policy.
+- The current policy uses relative joint-space waypoints, not full Cartesian IK.
+- Cable/contact physics have been simplified for a reliable demo.
+- The replay viewer is Python-based; the benchmark/evaluator core is C.
+
 ## Side Note
-Personally, I (Shi Hao) decided to build this by hand because I've joined 2 
-sim-to-real robotics competition (NVIDIA x Revel && Intrinsic's AIC) where I 
-used Gazebo, NVIDIA Isaac Sim, MuJoCO and PyTorch, and during each of them,
-the becnhmark/evaluator infrastructure (like this repo) were already build by
-the hosts. Which, had left a gap in my understanding, as I never managed to had
-the opportunity onto designing and building my own simulation-environment.
-This is a crucial part of teaching a robot by leveraging sim-to-real... which is
-hence why I decided to tackle this for the C project... I also get to gain 
-experience using MuJoCo's C API, as conventionally I'm more used to controlling
-MuJoCo, Gazebo, etc. inside Python.
+I chose to build this robotic infrastructure for the C project from scratch to
+close a specific gap in my robotics knowledge. Previously, I've participated in
+2 major sim-to-real robotics competition (NVIDIA x Revel && Intrinsic's AIC),
+this means I'm experienced in operating robotics simulation engines like 
+Gazebo, NVIDIA Isaac Sim, MuJoCo using PyTorch. However, and during each 
+competiton, the benchmark/evaluator infrastructure were always provided by
+the hosts. This left a gap in my understanding, as I never had the opportunity
+ to designing and building my own simulation environment from scratch. Because 
+desining this infrastructure is a crucial part of teaching a robot via 
+sim-to-real pipelines, I've hence decided to tackle this undertaking for this 
+`C project`. This also gave me the excuse to dive deeply in using MuJoCo's C
+API to additionally upskill.
 
 Author: Shi Hao
