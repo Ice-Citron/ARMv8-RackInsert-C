@@ -6,7 +6,7 @@
 #include <assert.h>
 #include <stdlib.h>
 
-// (Helper):
+// (Helper)
 static void read_geometry(const Sim *sim, EvalGeometry *geom) {
     sim_get_site_pos(sim, "plug_tip"     , geom->plug_tip);
     sim_get_site_pos(sim, "socket_mouth" , geom->socket_mouth);

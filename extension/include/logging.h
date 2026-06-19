@@ -11,4 +11,7 @@ void print_trial_summary(const char *title, const TrialScore *initial,
                          const TrialScore *final, double plug_motion, 
                          double duration);
 
+// Benchmark module. Acts as simulation's telemetry logger, converting live
+// MuJoCo Physics data into readable CS file.
+
 #endif

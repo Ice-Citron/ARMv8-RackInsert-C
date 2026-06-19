@@ -1,4 +1,6 @@
 #include "logging.h"
+#include "sim.h"
+#include "evaluator.h"
 
 #include <stdio.h>
 
@@ -52,4 +54,32 @@ void print_trial_summary(const char *title, const TrialScore *initial,
     printf("    final_lateral_error     = %.6f\n", final->lateral_error);
     printf("    final_axial_depth       = %.6f\n", final->axial_depth);
     printf("    final_total_score       = %.6f\n", final->total);
+}
+
+// Runs exactly once at start of trial to generate top row of column labels
+void write_trace_header(FILE *trace, const Sim *sim) {
+    fprintf(trace, "time,state");
+
+    for (int i = 0; i < sim->model->nu; i++) {
+        fprintf(trace, ",ctrl_%d", i);
+    }
+
+    fprintf(trace, ",plug_tip_x,plug_tip_y,plug_tip_z,lateral_error,"
+                   "axial_depth,plug_port_distance\n")
+}
+
+// Runs repeatedly inside `while` loop right after each `sim_step`
+void write_trace_row(FILE *trace, const Sim *sim, 
+                     const ScriptedPolicy *policy) {
+    EvalGeometry geom  = {0};
+    TrialScore   score = {0};
+
+    read_geometry(sim, &geom);
+    eval_compute_geometry(&geom, &score);
+
+    fprintf(trace, "%.6f,%d", sim->data->time, (int)policy->state);
+
+    for (int i = 0; i < sim->model->nu; i++) {
+        fprintf(trace, ",", i);
+    }
 }
