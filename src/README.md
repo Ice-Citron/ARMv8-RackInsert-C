@@ -1,0 +1,1 @@
+The assembler and emulator binaries will be found in this folder upon running "make".
