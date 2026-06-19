@@ -16,6 +16,16 @@ void check_opcount(opcount_checker *opcount_table, int opct_length, char* target
     return;
 }
 
+void check_shift_amt(uint32_t shift_amount, uint32_t sf) {
+    if (sf == 0) {
+        if (shift_amount > MAX_32BIT_SHIFT_AMOUNT) {
+            print_error_and_exit("SHIFT TOO LARGE FOR 32 BIT");
+        }
+    } else if (shift_amount > MAX_64BIT_SHIFT_AMOUNT) {
+        print_error_and_exit("SHIFT TOO LARGE FOR 64 BIT");
+    }
+}
+
 static const char *skip_hash(const char *s) {
     return s[0] == '#' ? s + 1 : s;
 }

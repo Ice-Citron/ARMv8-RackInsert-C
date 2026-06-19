@@ -20,12 +20,6 @@
 #define OTHER_DPIMM_OPCOUNT_SHIFT 5
 
 #define DPIMM_OPC_TABLE_LENGTH 3
-#define LENGTH_OF_SHIFT_COMMAND 3
-
-#define SHIFT_LSL 0u
-#define SHIFT_LSR 1u
-#define SHIFT_ASR 2u
-#define SHIFT_ROR 3u
 
 extern opcount_checker immreg_opcounts[];
 void check_opcode (char* mnemonic, uint32_t *opc);

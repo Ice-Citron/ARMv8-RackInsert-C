@@ -13,9 +13,9 @@ static idx_operand_no immreg_instrs[] = {
 };
 
 opcount_checker immreg_opcounts[] = {
-	{"cmpcmn", 2, 4},
-	{"negnegs", 2, 4},
-	{"other", 3, 5},
+	{"cmpcmn", CMPCMN_OPCOUNT_NOSHIFT, CMPCMN_OPCOUNT_SHIFT},
+	{"negnegs", NEGNEGS_OPCOUNT_NOSHIFT, NEGNEGS_OPCOUNT_SHIFT},
+	{"other", OTHER_DPIMM_OPCOUNT_NOSHIFT, OTHER_DPIMM_OPCOUNT_SHIFT},
 };
 
 void check_opcode (char* mnemonic, uint32_t *opc) {

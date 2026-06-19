@@ -1,11 +1,5 @@
 #include "assemble_dp_reg.h"
 
-#define DP_REG_ARITHMETIC_OPR (8u << 21u)
-#define DP_REG_RM_SHIFT 16u
-#define DP_REG_SHIFTAMOUNT_SHIFT 10u
-#define DP_REG_RN_SHIFT 5u
-#define SHIFT_TYPE_SHIFT 22u
-
 uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
 
     uint32_t sf = 0u;
@@ -75,7 +69,7 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         char *amount_text = operands[shift_index + 1];
         shift_amount = read_number_or_label(amount_text);
         //this should really be a helper
-        if (sf == 0u) {
+        if (sf == 0) {
             if (shift_amount > MAX_32BIT_SHIFT_AMOUNT) {
                 print_error_and_exit("SHIFT TOO LARGE FOR 32 BIT");
             }
