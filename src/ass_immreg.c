@@ -26,13 +26,11 @@ uint32_t decide_imm_or_reg(char* mnemonic, char *operands[], size_t operand_coun
 	}
 
 	if (!found_instruction) {
-		fprintf(stderr, "ERROR: Unknown mnemonic, %s\n", mnemonic);
-		exit(1);
+		print_error_and_exit("UNKNOWN MNEMONIC");
 	}
 
 	if (operand_count < operand_2_idx) {
-		fprintf(stderr, "ERROR: too few operands for %s\n", mnemonic);
-		exit(1);
+		print_error_and_exit("TOO FEW OPERANDS");
 	}
 
 	if (operands[operand_2_idx] [0] == IMMEDIATE_CHARACTER) {

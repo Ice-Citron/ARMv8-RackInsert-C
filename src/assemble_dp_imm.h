@@ -11,6 +11,9 @@
 #define DP_IMM_IMM12_MASK 0xfffu
 #define DP_IMM_LSL_AMOUNT 12u
 
+#define DP_IMM_DISTANCE_IMM_SHIFTAMT 3
+#define DP_IMM_DISTANCE_IMM_SHIFTTYPE 2
+
 uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc);
 
 #endif

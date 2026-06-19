@@ -17,7 +17,7 @@ static uint32_t check_mnemonic_if_cond(char* mnemonic) {
             return bc_values[i];
         }
     }
-    fprintf(stderr, "Invalid Cond Branch Function");
+    print_error_and_exit("INVALID COND BRANCH FUNCTION");
     exit(1);
 }
 
@@ -37,8 +37,7 @@ uint32_t ass_branch(char* mnemonic, char *operands[],
                     size_t operand_count, uint32_t pc) {
     //check number of operands
     if (operand_count != BRANCH_NUMBEROF_OPERANDS) {
-        fprintf(stderr, "wrong number of operands");
-        exit(1);
+        print_error_and_exit("WRONG NUMBER OF OPERANDS");
     }
     //target can be label or value
     uint32_t target_memory;

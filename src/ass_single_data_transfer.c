@@ -2,7 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-
 //expectation: result = f86f68b4 	
 // instruction = ldr	x20, [x5, x15]
 uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
@@ -10,8 +9,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
 {
     //checking # operands
     if (operand_count < DATATRANSFER_MINOPS || operand_count > DATATRANSFER_MAXOPS) {
-        fprintf(stderr, "wrong number of operands");
-        exit(1);
+        print_error_and_exit("WRONG NUMBER OF OPERANDS");
     } 
     uint32_t sf = 0;
     //taking in the first varianble - target register
@@ -26,18 +24,15 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     if (operands[1][0] != '[') // to not start with '['
     //necessarily a load literal
     {
-        fprintf(stderr, "LOAD LITERAL \n");
         if (strcmp(mnemonic, "ldr") != 0) {
-            fprintf(stderr, "only ldr supports literal addressing");
-            exit(1);
+            print_error_and_exit("only ldr supports literal addressing");
         }
         //change to bitwise
         res |= LOAD_LITERAL_BITS << LOAD_LITERAL_BITS_POS;
         //i think this duplicates ass_branch.h helper
         uint32_t target_addr = read_number_or_label(operands[1]);
         int64_t offset = offset = (int64_t)target_addr - (int64_t)pc;
-        //magic no
-        int64_t simm19 = (offset >> 2) & SIM_19_BIT_MASK;
+        int64_t simm19 = (offset >> LOG2_BYTES_IN_32_BITS) & SIM_19_BIT_MASK;
         res |= simm19 << SIM_19_POS;
         return res;
     }
@@ -55,7 +50,7 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     }
     else if (strcmp(mnemonic, "str") != 0) // not ldr and not str
     {
-        fprintf(stderr, "mnemonic neither ldr nor str");
+        print_error_and_exit("MNEMONIC NEITHER LDR NOT STR");
         exit(1);
         return 0;
     }
@@ -97,9 +92,8 @@ uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
     res |= (imm_val & PRE_POST_INDEX_SIMM9_BITMASK) << PRE_POST_INDEX_SIMM9_POS;
     if (PRE_INDEX_COND) // PRE INDEX
     {
-        fprintf(stderr, "PRE INDEX \n");
         res |= 1 << PRE_INDEX_BIT_POS;
     }
-    fprintf(stderr, "POST INDEX \n");
+    //POST INDEX
     return res;
 }

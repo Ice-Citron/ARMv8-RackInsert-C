@@ -71,19 +71,19 @@ uint32_t assemble_dp_imm(char* mnemonic, char *operands[], size_t operand_count,
 
     imm12 = (uint32_t) parsed_imm << DP_IMM_IMM12_SHIFT;
 
-    if (operand_count == imm_index + 3u) {
+    if (operand_count == imm_index + DP_IMM_DISTANCE_IMM_SHIFTAMT) {
         const char *shift_name = operands[imm_index + 1u];
         if (strcmp(shift_name,"lsl") != 0) {
             fprintf(stderr, "ERROR: Arithmetic immediate instruction only supports lsl shift\n");
             exit(1);
         }
 
-        uint32_t parsed_shift = read_number_or_label(operands[imm_index + 2u]);
+        uint32_t parsed_shift = read_number_or_label(operands[imm_index + DP_IMM_DISTANCE_IMM_SHIFTTYPE]);
         if (parsed_shift != 0 && parsed_shift != DP_IMM_LSL_AMOUNT) {
             fprintf(stderr, "ERROR: Arithmetic immediate shift must be lsl #12\n");
             exit(1);
         }
-        //shifting by zero is not a shift lmaooo
+        //shifting by zero is not a shift
         if (parsed_shift != 0) {
             sh = 1u << DP_IMM_SH_SHIFT;
         }

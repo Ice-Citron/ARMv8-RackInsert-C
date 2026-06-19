@@ -4,6 +4,7 @@
 #include "assemble.h"
 #include "symbol_table.h"
 
+void print_error_and_exit(const char *complaint);
 uint32_t read_number_or_label(char *string);
 uint32_t parse_reg(const char *text, uint32_t *sf);
 

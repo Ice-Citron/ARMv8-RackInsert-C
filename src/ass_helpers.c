@@ -1,5 +1,10 @@
 #include "ass_helpers.h"
 
+void print_error_and_exit(const char *complaint) {
+    fprintf(stderr, "ERROR %s\n", complaint);
+    exit(1);
+}
+
 static const char *skip_hash(const char *s) {
     return s[0] == '#' ? s + 1 : s;
 }
@@ -14,8 +19,7 @@ uint32_t read_number_or_label(char *string) {
     unsigned long value = strtoul(text, &endptr, 0);
     // Check: no digits parsed, not at end, or overflow
     if (text == endptr || *endptr != '\0' || value > UINT32_MAX) {
-        fprintf(stderr, "ERROR: invalid number or unknown label: %s\n", string);
-        exit(1);
+        print_error_and_exit("INVALID NUMBER OR LABEL");
     }
     return (uint32_t)value;
 }
@@ -36,16 +40,15 @@ uint32_t parse_reg(const char *text, uint32_t *sf) {
     } else if (text[0] == 'w') {
         *sf = REG_W_SF;
     } else {
-        fprintf(stderr, "invalid register: %s\n text[0] = %c\n", text, text[0]);
-        exit(1);
+        print_error_and_exit("INVALID REGISTER LABEL");
     }
 
     char *end = NULL;
     uint32_t reg = strtoul(text + 1, &end, 10);
-    if (*end != '\0' || reg > 30) {
-        fprintf(stderr, "invalid register: %s\n. reg = %d, end = %c\n", text, reg, *end);
-        exit(1);
+    if (*end != '\0' || reg > ZERO_REGISTER_NUMBER - 1) {
+        print_error_and_exit("INVALID REGISTER NUMBER");
     }
 
     return reg;
 }
+
