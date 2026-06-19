@@ -4,6 +4,11 @@
 #include "assemble.h"
 #include "symbol_table.h"
 
+#define SHIFT_LSL 0u
+#define SHIFT_LSR 1u
+#define SHIFT_ASR 2u
+#define SHIFT_ROR 3u
+
 typedef struct {
     char* instrname;
     int index;
