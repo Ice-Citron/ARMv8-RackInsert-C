@@ -16,6 +16,7 @@ int main(int argc, char **argv) {
     assert(argv[0] != NULL && argc > 0);
 
     const char *scene_path = DEFAULT_SCENE_PATH;
+    const char *trace_path = NULL;    // Path to store recorded trajectory csv
     int trials = 1;
 
     // Dynamic CLI parser which allows user to set --scene and --trials
@@ -26,7 +27,7 @@ int main(int argc, char **argv) {
                 print_usage_guide(argv[0]);
                 return EXIT_FAILURE;
             }
-            scene_path = argv[++i];
+            scene_path = argv[++i];     // Parses path
         } else if (strcmp(argv[i], "--trials") == 0) {
             int parse_success = parse_int_arg(argv[i + 1], &trials);
             if (i + 1 >= argc || !parse_success) {
@@ -34,6 +35,12 @@ int main(int argc, char **argv) {
                 return EXIT_FAILURE;
             }
             i++;
+        } else if (strcmp(argv[i], "--trace") == 0) {
+            if (i + 1 >= argc) {
+                print_usage_guide(argv[0]);
+                return EXIT_FAILURE;
+            }
+            trace_path = argv[++i];     // Parses path
         } else { // If doesn't parse to `--scene` or `--trials`
             print_usage_guide(argv[0]);
             return EXIT_FAILURE;
@@ -46,13 +53,25 @@ int main(int argc, char **argv) {
     printf("\n\nRACK INSERT BENCHMARK\n");
     printf("\tscene  = %s\n", scene_path);
     printf("\ttrials = %d\n", trials);
+    
+    // Logging trace path
+    if (trace_path != NULL) {
+        printf("\ttrace  = %s\n", trace_path);
+    }
+    if (trace_path != NULL && trials != 1) {
+        fprintf(stderr, "ERROR: --trace currently only supports exactly one"
+                        " trial.\n");
+        return EXIT_FAILURE;
+    }
 
     for (int trial = 0; trial < trials; trial++) {
         Sim sim;
         sim_load (&sim, scene_path);
 
         BenchmarkResult result;
-        benchmark_run_scripted_policy_trial(&sim, DEFAULT_MAX_SECONDS, &result);
+        const char *trial_trace_path = (trial == 0) ? trace_path : NULL;    // Currently trace only supports exactly one trial
+        benchmark_run_scripted_policy_trial_trace(&sim, DEFAULT_MAX_SECONDS, 
+                                                  trial_trace_path, &result);
 
         const char *title = "SCRIPTED POLICY BENCHMARK";
         printf("\nTRIAL %d/%d\n", trial + 1, trials);

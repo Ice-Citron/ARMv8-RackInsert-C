@@ -21,5 +21,8 @@ typedef struct {
 
 void benchmark_run_scripted_policy_trial(Sim *sim, double max_seconds,
                                          BenchmarkResult *result);
+void benchmark_run_scripted_policy_trial_trace(Sim *sim, double max_seconds,
+                                               const char *trace_path,
+                                               BenchmarkResult *result);
 
 #endif

@@ -80,6 +80,10 @@ void write_trace_row(FILE *trace, const Sim *sim,
     fprintf(trace, "%.6f,%d", sim->data->time, (int)policy->state);
 
     for (int i = 0; i < sim->model->nu; i++) {
-        fprintf(trace, ",", i);
+        fprintf(trace, ",%.9f", sim->data->ctrl[i]);
     }
+
+    fprintf(trace, ",%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n", 
+            geom.plug_tip[0], geom.plug_tip[1], geom.plug_tip[2], 
+            score.lateral_error, score.axial_depth, score.plug_port_distance);
 }

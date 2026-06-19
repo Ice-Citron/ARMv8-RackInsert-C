@@ -2,6 +2,7 @@
 
 #include "vec.h"
 #include "scripted_policy.h"
+#include "logging.h"
 
 #include <assert.h>
 #include <stdlib.h>
@@ -13,9 +14,11 @@ static void read_geometry(const Sim *sim, EvalGeometry *geom) {
     sim_get_site_pos(sim, "socket_bottom", geom->socket_bottom);
 }
 
-void benchmark_run_scripted_policy_trial(Sim *sim, double max_seconds,
-                                         BenchmarkResult *result) {
+void benchmark_run_scripted_policy_trial_trace(Sim *sim, double max_seconds,
+                                               const char *trace_path,
+                                               BenchmarkResult *result) {
     assert(sim != NULL && max_seconds > 0.0 && result != NULL);
+    assert(trace_path != NULL);
     EvalConfig config = eval_default_config();
 
     EvalGeometry initial_geom = {0};
@@ -39,12 +42,26 @@ void benchmark_run_scripted_policy_trial(Sim *sim, double max_seconds,
     double previous_tip[3];
     copy_vec3(initial_geom.plug_tip, previous_tip);
 
+    // For recording of trajectory in designated file path
+    trace = fopen(trace_path, "w");
+    if (trace == NULL) {
+        fprintf(stderr, "ERROR: Failed to record data in %s\n", trace_path);
+        exit(EXIT_FAILURE);
+    }
+    write_trace_header(trace, sim);
+
+    // Start time specific to each trial
+    double start_time = sim->data->time;
+
     // Heartbeat of smoke test benchmark. 
-    while (!scripted_policy_is_done(&policy) && sim->data->time < max_seconds) {
+    while (!scripted_policy_is_done(&policy) 
+           && sim->data->time - start_time < max_seconds) {
         // Policy calculates exact motor angles for each ms and sends commands
         scripted_policy_update(&policy, sim);
         // MuJoCo physics engine ticks forward based on policy's commands
         sim_step(sim);
+        
+        write_trace_row(trace, sim, &policy);
 
         double current_tip[3];
         sim_get_site_pos(sim, "plug_tip", current_tip);
@@ -56,13 +73,16 @@ void benchmark_run_scripted_policy_trial(Sim *sim, double max_seconds,
         copy_vec3(current_tip, previous_tip);
     }
 
+    fclose(trace);
+
     read_geometry(sim, &final_geom);
     eval_compute_geometry(&final_geom, &result->final_score);
 
+    // `TrialScore result->final_score` specific stats
     result->final_score.initial_plug_port_distance = 
         result->initial_score.plug_port_distance;
     result->final_score.path_length  = result->path_length;
-    result->final_score.duration     = sim->data->time;
+    result->final_score.duration     = sim->data->time - start_time;
     result->final_score.average_jerk = 0.0;
     result->final_score.retries      = policy.retries;
 
@@ -70,8 +90,14 @@ void benchmark_run_scripted_policy_trial(Sim *sim, double max_seconds,
 
     copy_vec3(final_geom.plug_tip, result->final_plug_tip);
 
+    // `BenchmarkResult` specific stats
     result->plug_motion = vec3_distance(initial_geom.plug_tip, 
                                         final_geom.plug_tip);
-    result->duration = sim->data->time;
+    result->duration = sim->data->time - start_time;
     result->policy_finished = scripted_policy_is_done(&policy);
+}
+
+void benchmark_run_scripted_policy_trial(Sim *sim, double max_seconds,
+                                         BenchmarkResult *result) {
+    benchmark_run_scripted_policy_trial_trace(sim, max_seconds, result, NULL);
 }
