@@ -37,4 +37,7 @@
 #define MAX_OPERANDS 5
 #define HALT_ADDRESS 0x8a000000
 
+#define MAX_32BIT_SHIFT_AMOUNT 31u
+#define MAX_64BIT_SHIFT_AMOUNT 63u
+
 #endif

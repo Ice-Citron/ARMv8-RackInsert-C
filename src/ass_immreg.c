@@ -12,6 +12,25 @@ static idx_operand_no immreg_instrs[] = {
     {"negs", 1},
 };
 
+opcount_checker immreg_opcounts[] = {
+	{"cmpcmn", 2, 4},
+	{"negnegs", 2, 4},
+	{"other", 3, 5},
+};
+
+void check_opcode (char* mnemonic, uint32_t *opc) {
+	if (strcmp(mnemonic,"add") == 0) {
+        *opc = OPC_ADD;
+    } else if (strcmp(mnemonic, "adds") == 0 || strcmp(mnemonic, "cmn") == 0) {
+        *opc = OPC_ADDS;
+    } else if (strcmp(mnemonic, "sub") == 0 || strcmp(mnemonic, "neg") == 0) {
+        *opc = OPC_SUB;
+    } else {
+        *opc = OPC_SUBS;
+    }
+    *opc = *opc << DP_OPC_SHIFT;
+}
+
 //function handling decision whether immediate or register for dpimm and dpreg instrs
 uint32_t decide_imm_or_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
     size_t operand_2_idx = 0;

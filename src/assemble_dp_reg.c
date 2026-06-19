@@ -1,24 +1,10 @@
 #include "assemble_dp_reg.h"
 
 #define DP_REG_ARITHMETIC_OPR (8u << 21u)
-
 #define DP_REG_RM_SHIFT 16u
 #define DP_REG_SHIFTAMOUNT_SHIFT 10u
 #define DP_REG_RN_SHIFT 5u
-
-#define SHIFT_LSL 0u
-#define SHIFT_LSR 1u
-#define SHIFT_ASR 2u
-
 #define SHIFT_TYPE_SHIFT 22u
-
-#define MAX_32BIT_SHIFT_AMOUNT 31u
-#define MAX_64BIT_SHIFT_AMOUNT 63u
-
-#define OPC_ADD 0u
-#define OPC_ADDS 1u
-#define OPC_SUB 2u
-#define OPC_SUBS 3u
 
 uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count, uint32_t pc) {
 
@@ -38,46 +24,27 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
     bool use_rn = true;
 
     if (strcmp(mnemonic, "cmp") == 0 || strcmp(mnemonic, "cmn") == 0) {
-
-        if (operand_count != 2u && operand_count != 4u) {
-            fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
-            exit(1);
-        }
+        check_opcount(immreg_opcounts, DPIMM_OPC_TABLE_LENGTH, "cmpcmn", operand_count);
         use_rd = false;
         rn_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
     } else if (strcmp(mnemonic, "neg") == 0 || strcmp(mnemonic, "negs") == 0) {
-        if (operand_count != 2u && operand_count != 4u) {
-            fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
-            exit(1);
-        }
+        check_opcount(immreg_opcounts, DPIMM_OPC_TABLE_LENGTH, "negnegs", operand_count);
         rn = ZERO_REGISTER_NUMBER;
         use_rn = false;
         rd_index = 0u;
         rm_index = 1u;
         shift_index = 2u;
     } else {
-        if (operand_count != 3u && operand_count != 5u) {
-            fprintf(stderr, "ERROR: Wrong operand count for %s\n", mnemonic);
-            exit(1);
-        }
+        check_opcount(immreg_opcounts, DPIMM_OPC_TABLE_LENGTH, "other", operand_count);
         shift_index = 3u;
         rd_index = 0u;
         rn_index = 1u;
         rm_index = 2u;
     }
 
-    if (strcmp(mnemonic,"add") == 0) {
-        opc = OPC_ADD;
-    } else if (strcmp(mnemonic, "adds") == 0 || strcmp(mnemonic, "cmn") == 0) {
-        opc = OPC_ADDS;
-    } else if (strcmp(mnemonic, "sub") == 0 || strcmp(mnemonic, "neg") == 0) {
-        opc = OPC_SUB;
-    } else {
-        opc = OPC_SUBS;
-    }
-    opc = opc << DP_OPC_SHIFT;
+    check_opcode(mnemonic, &opc);
 
     //should factor this out into function
     rd = parse_reg(operands[rd_index], &sf);
@@ -94,15 +61,14 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
 
     if (operand_count > shift_index) {
         const char *shift_text = operands[shift_index];
-        if (strncmp(shift_text, "lsl", 3) == 0) {
+        if (strncmp(shift_text, "lsl", LENGTH_OF_SHIFT_COMMAND) == 0) {
             shift_type = SHIFT_LSL;
-        } else if (strncmp(shift_text, "lsr", 3) == 0) {
+        } else if (strncmp(shift_text, "lsr", LENGTH_OF_SHIFT_COMMAND) == 0) {
             shift_type = SHIFT_LSR;
-        } else if (strncmp(shift_text, "asr", 3) == 0) {
+        } else if (strncmp(shift_text, "asr", LENGTH_OF_SHIFT_COMMAND) == 0) {
             shift_type = SHIFT_ASR;
         } else {
-            fprintf(stderr, "ERROR: invalid shift type %s\n", shift_text);
-            exit(1);
+            print_error_and_exit("INVALID SHIFT TYPE");
         }
         shift_type = shift_type << SHIFT_TYPE_SHIFT;
 
@@ -111,12 +77,10 @@ uint32_t assemble_dp_reg(char* mnemonic, char *operands[], size_t operand_count,
         //this should really be a helper
         if (sf == 0u) {
             if (shift_amount > MAX_32BIT_SHIFT_AMOUNT) {
-                fprintf(stderr, "ERROR: Shift amount too large for 32 bit registers\n");
-                exit(1);
+                print_error_and_exit("SHIFT TOO LARGE FOR 32 BIT");
             }
         } else if (shift_amount > MAX_64BIT_SHIFT_AMOUNT) {
-            fprintf(stderr, "ERROR: Shift amount too large for 64 bit register\n");
-            exit(1);
+            print_error_and_exit("SHIFT TOO LARGE FOR 64 BIT");
         }
         shift_amount = shift_amount << DP_REG_SHIFTAMOUNT_SHIFT;
     }

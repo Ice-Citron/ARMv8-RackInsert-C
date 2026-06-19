@@ -2,15 +2,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+static opcount_checker datatrans_opcounts[] = {
+    {"datatrans", DATATRANSFER_MINOPS, DATATRANSFER_MAXOPS},
+};
 //expectation: result = f86f68b4 	
 // instruction = ldr	x20, [x5, x15]
 uint32_t ass_single_data_transfer(char* mnemonic, char *operands[],
                                   size_t operand_count, uint32_t pc)
 {
     //checking # operands
-    if (operand_count < DATATRANSFER_MINOPS || operand_count > DATATRANSFER_MAXOPS) {
-        print_error_and_exit("WRONG NUMBER OF OPERANDS");
-    } 
+    check_opcount(datatrans_opcounts, DTOPCOUNTS_LENGTH, "datatrans", operand_count);
     uint32_t sf = 0;
     //taking in the first varianble - target register
     uint32_t res = parse_reg(operands[0], &sf);

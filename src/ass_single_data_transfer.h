@@ -34,6 +34,7 @@
 #define POS_OF_XN 5
 #define DATATRANSFER_MINOPS 2
 #define DATATRANSFER_MAXOPS 3
+#define DTOPCOUNTS_LENGTH 1
 
 #define LOAD_LITERAL_2OPS_COND (operand_count == 2 && strchr(operands[1], '[') != NULL && strchr(operands[1], ']') != NULL)
 #define HASHTAG_ADDRESS_3OPS_LOAD_LITERAL (strchr(operands[2], '#'))
