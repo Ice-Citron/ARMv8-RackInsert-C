@@ -2,8 +2,7 @@
 #define EXTENSION_SCRIPTED_POLICY
 
 #include "sim.h"
-
-#define SCRIPTED_POLICY_ACTUATOR_COUNT 7
+#include "utils.h"
 
 // Finite State Machine (FSM) states to handle cable insertion task.
 typedef enum {
@@ -18,13 +17,13 @@ typedef enum {
 typedef struct {
     ScriptedPolicyState state;
 
-    int actuator_ids[SCRIPTED_POLICY_ACTUATOR_COUNT];
+    int actuator_ids[ROBOT_ACTUATOR_JOINT_COUNT];
 
-    double home_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
-    double start_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
-    double target_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
+    double home_qpos[ROBOT_ACTUATOR_JOINT_COUNT];
+    double start_qpos[ROBOT_ACTUATOR_JOINT_COUNT];
+    double target_qpos[ROBOT_ACTUATOR_JOINT_COUNT];
     // Live, instantaneous insruction sent to motors at this exact millisecond.
-    double command_qpos[SCRIPTED_POLICY_ACTUATOR_COUNT];
+    double command_qpos[ROBOT_ACTUATOR_JOINT_COUNT];
 
     double state_start_time;
     int retries;

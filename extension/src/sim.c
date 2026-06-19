@@ -1,4 +1,6 @@
 #include "sim.h"
+#include "utils.h"
+#include "logging.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,15 +12,6 @@ static void sim_clear (Sim *sim) {
     sim->data  = NULL;
 }
 
-// (Helper): Print MuJoCo's XML loading errors.
-static void print_load_error(const char *scene_path, const char *error) {
-    assert(scene_path != NULL && error != NULL);
-    fprintf(stderr, "ERROR: Failed to load MuJoCo's scene: %s\n", scene_path);
-    if (error[0] != '\0') {
-        fprintf(stderr, "ERROR: [MuJoCo] %s\n", error);
-    }
-}
-
 // (Helper): Loads MuJoCo plugins, since C/MuJoCo doesn't auto-handle this.
 static void load_mujoco_plugins(void) {
     static int plugins_loaded = 0;
@@ -27,6 +20,29 @@ static void load_mujoco_plugins(void) {
         plugins_loaded = 1;
         mj_loadAllPluginLibraries(MUJOCO_PLUGIN_DIR, NULL);    
     }
+}
+
+static void sim_apply_home_pose(Sim *sim) {
+    assert(sim != NULL);
+    assert(sim->data != NULL && sim->model != NULL);
+
+    for (int i = 0; i < ROBOT_ACTUATOR_JOINT_COUNT; i++) {
+        sim_set_joint_qpos(sim, JOINT_NAMES[i], HOME_QPOS[i]);
+    }
+
+    for (int i = 0; i < ROBOT_ACTUATOR_JOINT_COUNT; i++) {
+        int actuator_id = mj_name2id(
+            sim->model,
+            mjOBJ_ACTUATOR,
+            ACTUATOR_NAMES[i]
+        );
+
+        if (actuator_id >= 0) {
+            sim_set_ctrl(sim, actuator_id, HOME_QPOS[i]);
+        }
+    }
+
+    mj_forward(sim->model, sim->data);
 }
 
 void sim_load(Sim *sim, const char *scene_path) {
@@ -50,8 +66,7 @@ void sim_load(Sim *sim, const char *scene_path) {
         exit(EXIT_FAILURE);
     }
 
-    // Refreshes ghost coordinates from last trial, recalculates all kinematics.
-    mj_forward(sim->model, sim->data);
+    sim_apply_home_pose(sim);
 }
 
 void sim_reset(Sim *sim) {
@@ -59,7 +74,7 @@ void sim_reset(Sim *sim) {
     assert(sim->data != NULL && sim->model != NULL);
 
     mj_resetData(sim->model, sim->data);
-    mj_forward(sim->model, sim->data);   // Re-calcs physics whilst time frozen
+    sim_apply_home_pose(sim);
 }
 
 void sim_free(Sim *sim) {
@@ -150,6 +165,21 @@ double sim_get_joint_qpos(const Sim *sim, const char *joint_name) {
     int joint_id = sim_find_joint_id(sim, joint_name);
     int qpos_addr = sim->model->jnt_qposadr[joint_id];
     return sim->data->qpos[qpos_addr];
+}
+
+void sim_set_joint_qpos(const Sim *sim, const char *joint_name, double value) {
+    assert(sim != NULL && joint_name != NULL);
+    assert(sim->data != NULL && sim->model != NULL);
+
+    int joint_id  = sim_find_joint_id(sim, joint_name);
+    int qpos_addr = sim->model->jnt_qposadr[joint_id];
+    int dof_addr  = sim->model->jnt_dofadr[joint_id];
+
+    sim->data->qpos[qpos_addr] = value;
+
+    if (dof_addr >= 0 && dof_addr < sim->model->nv) {
+        sim->data->qvel[dof_addr] = 0.0;
+    }
 }
 
 // Finds integer ID of actuator of robotic arm based on `actuator_name`.

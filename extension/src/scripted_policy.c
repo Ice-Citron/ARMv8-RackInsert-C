@@ -1,47 +1,27 @@
 #include "scripted_policy.h"
 #include "trajectory.h"
-#include "utils.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 
-static const char *ACTUATOR_NAMES[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
-    "shoulder_pan_joint_motor",
-    "shoulder_lift_joint_motor",
-    "elbow_joint_motor",
-    "wrist_1_joint_motor",
-    "wrist_2_joint_motor",
-    "wrist_3_joint_motor",
-    "gripper/left_finger_joint_motor",
+// These are harcoded default relative joint-space waypoints, they are tweaked 
+// by eye. Ideally, we would have a AI model (e.g., Action Chunking Transformer)
+// controlling the robotic arm.
+static const double APPROACH_OFFSET[ROBOT_ACTUATOR_JOINT_COUNT] = {
+    -0.35, -0.15, 0.20, -0.20, 0.10, 0.00, 0.010
 };
 
-static const char *JOINT_NAMES[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
-    "shoulder_pan_joint",
-    "shoulder_lift_joint",
-    "elbow_joint",
-    "wrist_1_joint",
-    "wrist_2_joint",
-    "wrist_3_joint",
-    "gripper/left_finger_joint",
+static const double HOVER_OFFSET[ROBOT_ACTUATOR_JOINT_COUNT] = {
+    -0.45, -0.25, 0.35, -0.30, 0.15, 0.05, 0.010
 };
 
-// These are initial relative joint-space waypoints, they are tweaked by eye
-// I will implement proper motion planning code after, ideally...
-static const double APPROACH_OFFSET[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
-    0.15, -0.20, -0.10, 0.05, 0.00, 0.00, 0.010
+static const double ALIGN_OFFSET[ROBOT_ACTUATOR_JOINT_COUNT] = {
+    -0.50, -0.28, 0.40, -0.32, 0.15, 0.08, 0.010
 };
 
-static const double HOVER_OFFSET[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
-    0.25, -0.28, -0.06, 0.02, 0.00, 0.04, 0.010
-};
-
-static const double ALIGN_OFFSET[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
-    0.30, -0.30, -0.04, 0.01, 0.00, 0.06, 0.010
-};
-
-static const double INSERT_OFFSET[SCRIPTED_POLICY_ACTUATOR_COUNT] = {
-    0.34, -0.25, -0.10, 0.03, 0.00, 0.06, 0.008
+static const double INSERT_OFFSET[ROBOT_ACTUATOR_JOINT_COUNT] = {
+    -0.52, -0.30, 0.45, -0.35, 0.15, 0.08, 0.008
 };
 
 static double state_duration(ScriptedPolicyState state) {
@@ -76,8 +56,8 @@ static ScriptedPolicyState next_state(ScriptedPolicyState state) {
 
 // (Helper): Outputs current rotational angle of each actuator.
 static void read_current_qpos(const Sim *sim, 
-                              double out[SCRIPTED_POLICY_ACTUATOR_COUNT]) {
-    for (int i = 0; i < SCRIPTED_POLICY_ACTUATOR_COUNT; i++) {
+                              double out[ROBOT_ACTUATOR_JOINT_COUNT]) {
+    for (int i = 0; i < ROBOT_ACTUATOR_JOINT_COUNT; i++) {
         out[i] = sim_get_joint_qpos(sim, JOINT_NAMES[i]);
     }
 }
@@ -122,7 +102,7 @@ static void enter_state(ScriptedPolicy *policy, const Sim *sim,
         assert(offset != NULL);
         read_current_qpos(sim, policy->start_qpos);
 
-        for (int i = 0; i < SCRIPTED_POLICY_ACTUATOR_COUNT; i++) {
+        for (int i = 0; i < ROBOT_ACTUATOR_JOINT_COUNT; i++) {
             // Calculates absolute destination (angle) for this new FSM state
             policy->target_qpos[i] = policy->home_qpos[i] + offset[i];
         }
@@ -145,7 +125,7 @@ void scripted_policy_init(ScriptedPolicy *policy, const Sim *sim) {
     policy->started = 0;
     policy->done = 0;
 
-    for (int i = 0; i < SCRIPTED_POLICY_ACTUATOR_COUNT; i++) {
+    for (int i = 0; i < ROBOT_ACTUATOR_JOINT_COUNT; i++) {
         policy->actuator_ids[i] = sim_find_actuator_id(sim, ACTUATOR_NAMES[i]);
 
         policy->home_qpos[i] = 0.0;
@@ -187,9 +167,9 @@ void scripted_policy_update(ScriptedPolicy *policy, Sim *sim) {
     // Uses Lerp to understand what angles should each actuators hold at current
     // the millisecond.
     traj_lerp_array(policy->start_qpos, policy->target_qpos,
-                    policy->command_qpos, SCRIPTED_POLICY_ACTUATOR_COUNT, t);
+                    policy->command_qpos, ROBOT_ACTUATOR_JOINT_COUNT, t);
     
-    for (int i = 0; i < SCRIPTED_POLICY_ACTUATOR_COUNT; i++) {
+    for (int i = 0; i < ROBOT_ACTUATOR_JOINT_COUNT; i++) {
         int actuator_id = policy-> actuator_ids[i];
         double command = clamp_actuator_ctrl(sim, actuator_id, 
                                              policy->command_qpos[i]);

@@ -56,6 +56,10 @@ test_scripted_policy: $(SCRIPTED_POLICY_TEST_OBJS)
 run: rack_insert
 	./rack_insert
 
+demo: rack_insert
+	./rack_insert --trace results.csv
+	$(PYTHON) scripts/replay_trace.py --trace results.csv --speed 1.0
+
 test: test_evaluator test_actuators test_scripted_policy
 	./test_evaluator
 	./test_actuators
@@ -83,4 +87,4 @@ deps:
 
 clean:
 	rm -rf build rack_insert test_evaluator test_actuators MUJOCO_LOG.TXT \
-		test_scripted_policy
+		test_scripted_policy results.csv

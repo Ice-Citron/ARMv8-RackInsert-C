@@ -22,8 +22,9 @@ void sim_get_site_pos_by_id(const Sim *sim, int site_id, double out[3]);
 void sim_get_site_pos(const Sim *sim, const char *site_name, double out[3]);
 
 // Robot-arm's `joint` related functions
-int  sim_find_joint_id(const Sim *sim, const char *joint_name);
+int    sim_find_joint_id(const Sim *sim, const char *joint_name);
 double sim_get_joint_qpos(const Sim *sim, const char *joint_name);
+void   sim_set_joint_qpos(const Sim *sim, const char *joint_name, double value);
 
 // Robot-arm's `actuator` related functions
 int  sim_find_actuator_id(const Sim *sim, const char *actuator_name);

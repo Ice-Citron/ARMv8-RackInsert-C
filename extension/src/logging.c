@@ -62,12 +62,27 @@ void print_trial_summary(const char *title, const TrialScore *initial,
     printf("    final_total_score       = %.6f\n", final->total);
 }
 
+// Print MuJoCo's XML loading errors.
+void print_load_error(const char *scene_path, const char *error) {
+    assert(scene_path != NULL && error != NULL);
+    fprintf(stderr, "ERROR: Failed to load MuJoCo's scene: %s\n", scene_path);
+    if (error[0] != '\0') {
+        fprintf(stderr, "ERROR: [MuJoCo] %s\n", error);
+    }
+}
+
 // Runs exactly once at start of trial to generate top row of column labels
 void write_trace_header(FILE *trace, const Sim *sim) {
     fprintf(trace, "time,state");
 
+    // motor ctrl command signal columns
     for (int i = 0; i < sim->model->nu; i++) {
         fprintf(trace, ",ctrl_%d", i);
+    }
+
+    // joint-angle per actuator columns
+    for (int i = 0; i < sim->model->nq; i++) {
+        fprintf(trace, ",qpos_%d", i);
     }
 
     fprintf(trace, ",plug_tip_x,plug_tip_y,plug_tip_z,lateral_error,"
@@ -85,8 +100,14 @@ void write_trace_row(FILE *trace, const Sim *sim,
 
     fprintf(trace, "%.6f,%d", sim->data->time, (int)policy->state);
 
+    // motor ctrl command signal columns
     for (int i = 0; i < sim->model->nu; i++) {
         fprintf(trace, ",%.9f", sim->data->ctrl[i]);
+    }
+
+    // joint-angle per actuator columns
+    for (int i = 0; i < sim->model->nq; i++) {
+        fprintf(trace, ",%.9f", sim->data->qpos[i]);
     }
 
     fprintf(trace, ",%.9f,%.9f,%.9f,%.9f,%.9f,%.9f\n", 
