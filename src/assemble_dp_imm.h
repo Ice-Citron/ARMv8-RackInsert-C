@@ -1,7 +1,6 @@
 #ifndef ASSEMBLE_DP_IMM_H
 #define ASSEMBLE_DP_IMM_H
 
-#include "assemble.h"
 #include "ass_helpers.h"
 
 #define DP_IMM_SH_SHIFT 22u
