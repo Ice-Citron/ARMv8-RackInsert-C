@@ -10,13 +10,14 @@
 
 #define DEFAULT_SCENE_PATH \
     "assets/mujoco/rack_insert/rack_insert_scene_cable_softplugin_rollout.xml"
+#define DEFAULT_RESULTS_CSV_PATH "results.csv"
 #define DEFAULT_MAX_SECONDS 8.0
 
 int main(int argc, char **argv) {
     assert(argv[0] != NULL && argc > 0);
 
     const char *scene_path = DEFAULT_SCENE_PATH;
-    const char *trace_path = NULL;    // Path to store recorded trajectory csv
+    const char *trace_path = DEFAULT_RESULTS_CSV_PATH;  // Path to store recorded trajectory csv
     int trials = 1;
 
     // Dynamic CLI parser which allows user to set --scene and --trials
@@ -29,8 +30,7 @@ int main(int argc, char **argv) {
             }
             scene_path = argv[++i];     // Parses path
         } else if (strcmp(argv[i], "--trials") == 0) {
-            int parse_success = parse_int_arg(argv[i + 1], &trials);
-            if (i + 1 >= argc || !parse_success) {
+            if (i + 1 >= argc || !parse_int_arg(argv[i + 1], &trials)) {
                 print_usage_guide(argv[0]);   // argv[0] == char *program_name
                 return EXIT_FAILURE;
             }
@@ -55,14 +55,11 @@ int main(int argc, char **argv) {
     printf("\ttrials = %d\n", trials);
     
     // Logging trace path
-    if (trace_path != NULL) {
+    if (trace_path != NULL)
         printf("\ttrace  = %s\n", trace_path);
-    }
-    if (trace_path != NULL && trials != 1) {
-        fprintf(stderr, "ERROR: --trace currently only supports exactly one"
-                        " trial.\n");
-        return EXIT_FAILURE;
-    }
+    if (trace_path != NULL && trials != 1)
+        printf("\033[33mNOTE: --trace currently only supports exactly one "
+               "trial.\033[0m\n");
 
     for (int trial = 0; trial < trials; trial++) {
         Sim sim;

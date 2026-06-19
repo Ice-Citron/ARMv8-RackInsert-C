@@ -7,7 +7,6 @@
 #include <assert.h>
 #include <stdlib.h>
 
-// (Helper)
 static void read_geometry(const Sim *sim, EvalGeometry *geom) {
     sim_get_site_pos(sim, "plug_tip"     , geom->plug_tip);
     sim_get_site_pos(sim, "socket_mouth" , geom->socket_mouth);
@@ -18,7 +17,6 @@ void benchmark_run_scripted_policy_trial_trace(Sim *sim, double max_seconds,
                                                const char *trace_path,
                                                BenchmarkResult *result) {
     assert(sim != NULL && max_seconds > 0.0 && result != NULL);
-    assert(trace_path != NULL);
     EvalConfig config = eval_default_config();
 
     EvalGeometry initial_geom = {0};
@@ -43,12 +41,15 @@ void benchmark_run_scripted_policy_trial_trace(Sim *sim, double max_seconds,
     copy_vec3(initial_geom.plug_tip, previous_tip);
 
     // For recording of trajectory in designated file path
-    trace = fopen(trace_path, "w");
-    if (trace == NULL) {
-        fprintf(stderr, "ERROR: Failed to record data in %s\n", trace_path);
-        exit(EXIT_FAILURE);
+    FILE *trace = NULL;
+    if (trace_path != NULL) {
+        trace = fopen(trace_path, "w");
+        if (trace == NULL) {
+            fprintf(stderr, "ERROR: Failed to record data in %s\n", trace_path);
+            exit(EXIT_FAILURE);
+        }
+        write_trace_header(trace, sim);
     }
-    write_trace_header(trace, sim);
 
     // Start time specific to each trial
     double start_time = sim->data->time;
@@ -61,7 +62,7 @@ void benchmark_run_scripted_policy_trial_trace(Sim *sim, double max_seconds,
         // MuJoCo physics engine ticks forward based on policy's commands
         sim_step(sim);
         
-        write_trace_row(trace, sim, &policy);
+        if (trace != NULL) write_trace_row(trace, sim, &policy);
 
         double current_tip[3];
         sim_get_site_pos(sim, "plug_tip", current_tip);
@@ -73,7 +74,7 @@ void benchmark_run_scripted_policy_trial_trace(Sim *sim, double max_seconds,
         copy_vec3(current_tip, previous_tip);
     }
 
-    fclose(trace);
+    if (trace != NULL) fclose(trace);
 
     read_geometry(sim, &final_geom);
     eval_compute_geometry(&final_geom, &result->final_score);
@@ -99,5 +100,5 @@ void benchmark_run_scripted_policy_trial_trace(Sim *sim, double max_seconds,
 
 void benchmark_run_scripted_policy_trial(Sim *sim, double max_seconds,
                                          BenchmarkResult *result) {
-    benchmark_run_scripted_policy_trial_trace(sim, max_seconds, result, NULL);
+    benchmark_run_scripted_policy_trial_trace(sim, max_seconds, NULL, result);
 }

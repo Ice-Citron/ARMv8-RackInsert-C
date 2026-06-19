@@ -4,6 +4,12 @@
 
 #include <stdio.h>
 
+static void read_geometry(const Sim *sim, EvalGeometry *geom) {
+    sim_get_site_pos(sim, "plug_tip"     , geom->plug_tip);
+    sim_get_site_pos(sim, "socket_mouth" , geom->socket_mouth);
+    sim_get_site_pos(sim, "socket_bottom", geom->socket_bottom);
+}
+
 // Console logs 3D-vector information
 void print_vec3(const char *label, const double v[3]) {
     printf("%-14s = %.6f %.6f %.6f\n", label, v[0], v[1], v[2]);
@@ -65,7 +71,7 @@ void write_trace_header(FILE *trace, const Sim *sim) {
     }
 
     fprintf(trace, ",plug_tip_x,plug_tip_y,plug_tip_z,lateral_error,"
-                   "axial_depth,plug_port_distance\n")
+                   "axial_depth,plug_port_distance\n");
 }
 
 // Runs repeatedly inside `while` loop right after each `sim_step`
