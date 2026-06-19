@@ -29,6 +29,10 @@ static uint32_t calc_offset(uint32_t label_address, uint32_t caller_address,
     return extract_bits(output_bits - 1, 0, (uint32_t) offset_unmasked);
 }
 
+static opcount_checker branch_opcounts[] = {
+    {"branches", 1, 1},
+};
+
 //instructions that we must handle
 //b <literal>
 //br xn
@@ -36,9 +40,7 @@ static uint32_t calc_offset(uint32_t label_address, uint32_t caller_address,
 uint32_t ass_branch(char* mnemonic, char *operands[], 
                     size_t operand_count, uint32_t pc) {
     //check number of operands
-    if (operand_count != BRANCH_NUMBEROF_OPERANDS) {
-        print_error_and_exit("WRONG NUMBER OF OPERANDS");
-    }
+    check_opcount(branch_opcounts, LENGTH_BRANCH_OPCOUNTS, "branches", operand_count);
     //target can be label or value
     uint32_t target_memory;
     if (strcmp(REG_BRANCH_STR_PREFIX, mnemonic) == 0) {

@@ -16,6 +16,7 @@ typedef struct {
 } opcount_checker;
 
 void print_error_and_exit(const char *complaint);
+void check_opcount(opcount_checker *opcount_table, int opct_length, char* target, int opcount);
 uint32_t read_number_or_label(char *string);
 uint32_t parse_reg(const char *text, uint32_t *sf);
 

@@ -22,6 +22,7 @@
 #define BRANCH_COND_STR_PREFIX       "b."
 //misc
 #define OUTPUT_BYTES_PER_LINE_LOG2 2
+#define LENGTH_BRANCH_OPCOUNTS 1
 
 uint32_t ass_branch(char* mnemonic, char *operands[], 
                     size_t operand_count, uint32_t pc);
