@@ -3,7 +3,9 @@
 This repository contains a C project from Imperial College London.
 The project includes a robotics extension that uses the MuJoCo C API and ARMv8 tools.
 
-[![RackInsert-C scene in MuJoCo, with a robot arm and a task board](docs/report_sources/mujoco-c.png)](FINAL_REPORT.pdf)
+[![RackInsert-C scene in MuJoCo, with a robot arm and a fiber-optic task board](docs/report_sources/mujoco-c.png)](FINAL_REPORT.pdf)
+
+*RackInsert-C scene in MuJoCo, with a robot arm and a fiber-optic task board*
 
 RackInsert-C is the robotics extension.
 It uses a scripted controller to move a cable plug in the direction of the socket.
