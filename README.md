@@ -18,6 +18,8 @@ The program records a CSV trace for replay.
 [Interim report](docs/Interim_Report_C_Project_Group_64.pdf) ·
 [Coursework specification](docs/40009_35_spec.pdf)
 
+[![RackInsert-C scene in MuJoCo, with a robot arm and a fiber-optic task board](docs/rack-insert-extension.MOV)
+
 ## Project
 
 This is the Group 64 project for the Programming III course at Imperial College London.
@@ -31,9 +33,21 @@ This is the Group 64 project for the Programming III course at Imperial College 
 
 The ARMv8 tools use the instruction subset in the coursework specification.
 
-## Shi Hao Ng’s work
+### Raspberry Pi GPIO
 
-Shi Hao Ng was the primary developer of RackInsert-C.
+The [GPIO program](programs/led_blink.s) controls an LED through
+memory-mapped GPIO registers. It sets GPIO17 as an output.
+The program uses different registers to set the output high and low.
+Delay loops control the time between output changes.
+
+[GPIO demonstration](docs/RPI-GPIO.MP4)
+
+*Other team members wrote the GPIO program and the ARMv8 emulator.
+These components form part of the Group 64 project.*
+
+## My Contribution
+
+I was the primary developer of RackInsert-C.
 This work included most of the code for the robotics extension:
 
 - The simulation interface.
@@ -42,7 +56,7 @@ This work included most of the code for the robotics extension:
 - The trace output.
 - The tests.
 
-Shi Hao Ng also wrote a large part of the ARMv8 assembler.
+I also wrote a large part of the ARMv8 assembler.
 
 This repository contains the group source code and its commit history.
 The contributor list gives the names of all four team members.
