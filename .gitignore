@@ -1,3 +1,6 @@
+# MacOS artifact files
+.DS_Store
+
 # Machine-specific .vscode configuration file
 .vscode/c_cpp_properties.json
 
