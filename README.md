@@ -18,7 +18,9 @@ The program records a CSV trace for replay.
 [Interim report](docs/Interim_Report_C_Project_Group_64.pdf) ·
 [Coursework specification](docs/40009_35_spec.pdf)
 
-[![RackInsert-C scene in MuJoCo, with a robot arm and a fiber-optic task board](docs/rack-insert-extension.MOV)
+[![RackInsert-C scene in MuJoCo, with a robot arm and a fiber-optic task board]](docs/rack-insert-extension.MOV)
+
+*Recording of RackInsert-C Benchmark: Evaluating a simple UR5e control policy restricted to 1D vertical TCP motion. Benchmark score is 0 in this case*
 
 ## Project
 
