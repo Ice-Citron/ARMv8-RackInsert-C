@@ -7,9 +7,6 @@
 #ignore temp files
 *~
 
-#ignore pdf files (just keep source files)
-*.pdf
-
 # Extensions related compilation C code
 extension/rack_insert
 extension/test_evaluator
