@@ -18,7 +18,8 @@ The program records a CSV trace for replay.
 [Interim report](docs/Interim_Report_C_Project_Group_64.pdf) ·
 [Coursework specification](docs/40009_35_spec.pdf)
 
-[![RackInsert-C scene in MuJoCo, with a robot arm and a fiber-optic task board]](docs/rack-insert-extension.MOV)
+[Watch the RackInsert-C benchmark](https://www.youtube.com/shorts/SQgaQZX8pvA)
+
 
 *Recording of RackInsert-C Benchmark: Evaluating a simple UR5e control policy restricted to 1D vertical TCP motion. Benchmark score is 0 in this case*
 
@@ -42,7 +43,7 @@ memory-mapped GPIO registers. It sets GPIO17 as an output.
 The program uses different registers to set the output high and low.
 Delay loops control the time between output changes.
 
-[GPIO demonstration](docs/RPI-GPIO.MP4)
+[Watch the Raspberry Pi GPIO demonstration](https://www.youtube.com/shorts/EGduXmo1t-E)
 
 *Other team members wrote the GPIO program and the ARMv8 emulator.
 These components form part of the Group 64 project.*
