@@ -16,8 +16,7 @@ The program records a CSV trace for replay.
 [Robotics source](rack_insert_c/) ·
 [Assembler source](armv8/assembler/) ·
 [Interim report](docs/Interim_Report_C_Project_Group_64.pdf) ·
-[Coursework specification](docs/40009_35_spec.pdf)
-
+[Coursework specification](docs/40009_35_spec.pdf) ·
 [Watch the RackInsert-C benchmark](https://www.youtube.com/shorts/SQgaQZX8pvA)
 
 
