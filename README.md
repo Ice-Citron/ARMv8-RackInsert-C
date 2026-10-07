@@ -67,7 +67,7 @@ The contributor list gives the names of all four team members.
 
 I chose to build this robotic infrastructure for the C project from scratch to
 close a specific gap in my robotics knowledge. Previously, I've participated in
-2 major sim-to-real robotics competition (NVIDIA x Revel && Intrinsic's AIC),
+a sim-to-real robotics competition (Intrinsic's AI for Industry Challenge),
 this means I'm experienced in operating robotics simulation engines like 
 Gazebo, NVIDIA Isaac Sim, MuJoCo using PyTorch. However, and during each 
 competiton, the benchmark/evaluator infrastructure were always provided by
