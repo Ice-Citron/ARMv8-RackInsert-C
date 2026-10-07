@@ -149,8 +149,8 @@ hosted by Intrinsic, Google Deepmind, NVIDIA and Foxconn.
 
 ## Side Note
 I chose to build this robotic infrastructure for the C project from scratch to
-close a specific gap in my robotics knowledge. Previously, I've participated in
-in a sim-to-real robotics competition (Intrinsic's AI for Industry Challenge),
+close a specific gap in my robotics knowledge. Previously, I've participated in 
+a sim-to-real robotics competition (Intrinsic's AI for Industry Challenge),
 this means I'm experienced in operating robotics simulation engines like 
 Gazebo, NVIDIA Isaac Sim, MuJoCo using PyTorch. However, and during each 
 competiton, the benchmark/evaluator infrastructure were always provided by
